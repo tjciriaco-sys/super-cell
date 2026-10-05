@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
-import { ExternalLink, Pencil } from "lucide-react";
+import { ExternalLink, Pencil, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/utils";
 import { configuredAutomaticPrice } from "@/lib/pricing";
@@ -28,7 +28,10 @@ export default async function ProductsPage() {
   return <>
     <div className="admin-heading">
       <div><span className="eyebrow">Catálogo</span><h1>Produtos</h1></div>
-      <a className="admin-outline" href="/" target="_blank"><ExternalLink/> Ver vitrine</a>
+      <div style={{display:"flex",gap:8,alignItems:"center"}}>
+        <Link className="admin-outline" href="/admin/produtos/novo" aria-label="Cadastrar novo produto"><Plus/> Novo</Link>
+        <a className="admin-outline" href="/" target="_blank" aria-label="Ver vitrine"><ExternalLink/></a>
+      </div>
     </div>
 
     <AdminProductSearch />
