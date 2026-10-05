@@ -1,9 +1,8 @@
 import { createPublicClient } from "@/lib/supabase/public";
 import type { Acquirer, CatalogVariant, CommercialSettings, LogisticsException, Schedule } from "@/lib/types";
-import { previewGuanacelVariants } from "@/lib/preview-guanacel";
 
-// Temporary Execucao 3 visual pilot. Production keeps the approved covers until
-// the owner explicitly authorizes the catalog-wide migration.
+// Temporary visual pilots for selected Android products. F1 iPhones now come
+// exclusively from Supabase so admin edits are reflected immediately in Preview.
 const previewPilotCovers: Record<string, string> = {
   "iphone-17-pro": "/products/pilots-v2/iphone-17-pro-1-color.webp",
   "poco-f8-pro-5g-nfc": "/products/pilots-v2/poco-f8-pro-2-colors.webp",
@@ -44,15 +43,15 @@ function isLegacyF1Iphone(variant: CatalogVariant) {
 export async function getCatalog() {
   const { data, error } = await createPublicClient().from("public_catalog").select("*").order("featured", { ascending: false }).order("product_name");
   if (error) throw error;
-  const catalog = ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
-  return process.env.VERCEL_ENV === "production" ? catalog : [...catalog, ...previewGuanacelVariants];
+  return ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
 }
+
 export async function getProduct(slug: string) {
   const { data, error } = await createPublicClient().from("public_catalog").select("*").eq("slug", slug).order("storage_gb").order("color");
   if (error) throw error;
-  const catalog = ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
-  return process.env.VERCEL_ENV === "production" ? catalog : [...catalog, ...previewGuanacelVariants.filter((variant) => variant.slug === slug)];
+  return ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
 }
+
 export async function getCommerceData() {
   const supabase = createPublicClient();
   const [a, s, e, c] = await Promise.all([
