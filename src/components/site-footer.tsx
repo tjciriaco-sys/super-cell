@@ -11,5 +11,5 @@ export function SiteFooter({ whatsapp, cnpj, location = "Natal, Rio Grande do No
     <div className="footer-intro"><div className="brand footer-brand"><strong>SUPER</strong> CELL</div><p>Tecnologia ao seu alcance, com compra assistida e pagamento somente na entrega.</p></div>
     <div className="footer-links"><strong>Super Cell</strong><Link href="/quem-somos"><Building2/> Quem somos</Link><span><MapPin/> {location}</span>{cnpj&&<small>CNPJ {cnpj}</small>}</div>
     <div className="footer-contact"><strong>Precisa de ajuda?</strong><a href={whatsappUrl(whatsapp)} target="_blank" rel="noreferrer"><MessageCircle/> Chamar no WhatsApp</a><small>Disponibilidade e condições são confirmadas antes da conclusão do pedido.</small></div>
-  </div><div className="shell footer-bottom"><span>Super Cell · Uma marca do ecossistema X1 Commerce</span><Link href="/admin/login" className="manager-access">Acesso do gestor</Link></div></footer>;
+  </div><div className="shell footer-bottom"><span>Super Cell · Uma marca do ecossistema X1 Commerce</span><Link href="/admin/login" className="manager-access" style={{display:"block",marginLeft:0,marginTop:7}}>Acesso do gestor</Link></div></footer>;
 }
