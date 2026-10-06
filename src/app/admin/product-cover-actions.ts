@@ -50,7 +50,7 @@ export async function saveGeneratedStorefrontCover(formData: FormData): Promise<
 
     if (productError || !product) return { status: "error", message: "Produto não encontrado." };
 
-    const path = `covers/${slugify(product.model || product.slug)}/${randomUUID()}.${extension}`;
+    const path = `covers-v2/${slugify(product.model || product.slug)}/${randomUUID()}.${extension}`;
     const { error: uploadError } = await supabase.storage
       .from("product-images")
       .upload(path, await file.arrayBuffer(), { contentType: file.type, cacheControl: "31536000", upsert: false });
@@ -62,7 +62,7 @@ export async function saveGeneratedStorefrontCover(formData: FormData): Promise<
 
     const { error: updateError } = await supabase
       .from("products")
-      .update({ storefront_image: coverUrl, updated_at: new Date().toISOString() })
+      .update({ storefront_image: coverUrl, image_strategy: "variant", updated_at: new Date().toISOString() })
       .eq("id", productId);
 
     if (updateError) return { status: "error", message: `A capa foi enviada, mas não pôde ser vinculada ao produto: ${updateError.message}` };
