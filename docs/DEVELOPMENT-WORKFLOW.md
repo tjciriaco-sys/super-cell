@@ -31,6 +31,16 @@ Antes de enviar o usuário para Work, terminal, CLI ou procedimento manual:
 3. evitar transferir o projeto para outro ambiente sem necessidade;
 4. evitar ciclos manuais de autenticação e infraestrutura quando o conector já resolve a operação.
 
+## Protocolo de confirmação e execução
+Quando Tiago pedir uma correção ou evolução dentro de um projeto que já esteja integrado aos plugins:
+1. explicar em linguagem humana o que foi entendido, incluindo causa provável, resultado esperado e qualquer decisão relevante;
+2. aguardar apenas a confirmação quando houver ambiguidade material ou quando Tiago pedir explicitamente essa confirmação;
+3. depois da confirmação, definir internamente o plano técnico e executar diretamente pelos plugins/conectores adequados;
+4. não entregar prompt, comando copiável ou “texto exato da correção” quando a própria conversa já possui capacidade de implementação;
+5. prompts para Work/Codex ou outro ambiente só devem ser produzidos quando a execução realmente precisar ser transferida para outro ambiente;
+6. após implementar, gerar/validar o Preview e informar objetivamente o que mudou e o que deve ser homologado.
+
+Em resumo: ENTENDER -> EXPLICAR EM LINGUAGEM HUMANA -> CONFIRMAR QUANDO NECESSÁRIO -> IMPLEMENTAR DIRETAMENTE -> PREVIEW -> HOMOLOGAR.
 ## Quando Work pode ser usado
 Work é exceção. Só deve ser recomendado quando pelo menos uma destas condições ocorrer:
 - a operação exige manipulação local pesada ou ferramenta não exposta pelos plugins;
