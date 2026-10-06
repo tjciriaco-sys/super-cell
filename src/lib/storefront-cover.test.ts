@@ -29,15 +29,15 @@ describe("storefront cover helpers", () => {
     ])).toBe(true);
   });
 
-  it("asks to replace an old generated cover with the layered v7 format", () => {
+  it("asks to replace an old generated cover with the layered v8 format", () => {
     expect(storefrontCoverNeedsGeneration("https://example.com/covers/model/old.webp", [
       { color: "Preto", image: "preto.webp" },
       { color: "Azul", image: "azul.webp" },
     ])).toBe(true);
   });
 
-  it("keeps a layered v7 cover", () => {
-    expect(storefrontCoverNeedsGeneration("https://example.com/covers-v7/model/new.webp", [
+  it("keeps a layered v8 cover", () => {
+    expect(storefrontCoverNeedsGeneration("https://example.com/covers-v8/model/new.webp", [
       { color: "Preto", image: "preto.webp" },
       { color: "Azul", image: "azul.webp" },
     ])).toBe(false);

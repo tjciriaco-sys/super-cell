@@ -38,5 +38,15 @@ Nesses casos, explicar qual capacidade está faltando.
 ## Regra de continuidade
 Se Tiago corrigir o fluxo e reforçar que a execução deve ocorrer pelos plugins, essa orientação passa a valer imediatamente. Não repetir a transferência da mesma classe de tarefa sem uma mudança objetiva de capacidade.
 
+## Regra de autenticação dos conectores
+Não presumir que uma autorização de GitHub, Vercel, Supabase ou outro conector expirou apenas porque passou tempo, houve troca de mensagem ou começou uma nova etapa.
+
+Antes de pedir a Tiago para autorizar/ativar novamente:
+1. fazer uma chamada real de leitura ao conector;
+2. distinguir falha de autenticação de falha de permissão, recurso ou operação;
+3. só solicitar nova autorização quando a própria ferramenta retornar erro de autenticação/conexão ou quando o conector estiver objetivamente ausente.
+
+Se o conector responder normalmente, continuar a execução sem pedir nova autorização.
+
 ## Aplicação
 Este padrão vale para Super Cell, MonMon.App, Painel DataCrazy e projetos futuros.

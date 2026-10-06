@@ -43,6 +43,16 @@ Para projetos já estruturados:
 - Só mudar para outro ambiente quando uma limitação concreta do conector tiver sido verificada.
 - Não oferecer prompt copiável quando a própria conversa consegue executar a tarefa.
 
+## Persistência de autorização dos conectores
+Uma autorização previamente concedida a GitHub, Vercel, Supabase ou outro conector não deve ser tratada como expirada por suposição.
+
+Antes de solicitar nova autorização ou afirmar falta de acesso:
+1. testar o conector com uma operação de leitura segura;
+2. se responder, considerar o acesso ativo e prosseguir;
+3. só pedir nova autorização diante de erro explícito de autenticação/conexão.
+
+Tempo decorrido, mudança de mensagem ou ausência de terminal local não são evidência de perda de acesso.
+
 ## Protocolo de confirmação e execução
 Quando Tiago pedir uma correção ou evolução dentro de um projeto que já esteja integrado aos plugins:
 1. explicar em linguagem humana o que foi entendido, incluindo causa provável, resultado esperado e qualquer decisão relevante;

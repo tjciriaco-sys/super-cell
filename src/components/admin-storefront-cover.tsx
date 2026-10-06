@@ -33,6 +33,7 @@ function extractObject(
   image: HTMLImageElement,
   cropStartRatio = 0,
   cropWidthRatio = 1,
+  removeBackground = true,
 ) {
   const width = image.naturalWidth || image.width;
   const height = image.naturalHeight || image.height;
@@ -68,13 +69,20 @@ function extractObject(
       const brightness = (red + green + blue) / 3;
       const neutral = max - min < 26;
 
-      if (neutral && brightness >= 248) {
-        data[offset + 3] = 0;
-      } else if (neutral && brightness > 235) {
-        data[offset + 3] = Math.min(data[offset + 3], Math.round(255 * ((248 - brightness) / 13)));
+      const isBackground = neutral && brightness > 235;
+
+      // Nas traseiras auxiliares ainda removemos o fundo claro. Na imagem
+      // comercial principal, porém, preservamos os pixels originais para
+      // evitar que reflexos/tons claros do próprio aparelho sejam apagados.
+      if (removeBackground) {
+        if (neutral && brightness >= 248) {
+          data[offset + 3] = 0;
+        } else if (neutral && brightness > 235) {
+          data[offset + 3] = Math.min(data[offset + 3], Math.round(255 * ((248 - brightness) / 13)));
+        }
       }
 
-      if (data[offset + 3] > 24) {
+      if (!isBackground && data[offset + 3] > 24) {
         columnCounts[x] += 1;
         rowCounts[y] += 1;
         fallbackMinX = Math.min(fallbackMinX, x);
@@ -123,6 +131,17 @@ function extractObject(
     maxY = fallbackMaxY;
   }
 
+  // A imagem principal mantém uma margem real da arte original ao redor do
+  // objeto. Isso protege quinas claras e reflexos que poderiam ficar fora da
+  // caixa detectada por contraste.
+  if (!removeBackground) {
+    const sourceMargin = Math.max(8, Math.round(Math.max(sourceWidth, height) * 0.012));
+    minX = Math.max(0, minX - sourceMargin);
+    minY = Math.max(0, minY - sourceMargin);
+    maxX = Math.min(sourceWidth - 1, maxX + sourceMargin);
+    maxY = Math.min(height - 1, maxY + sourceMargin);
+  }
+
   const objectWidth = maxX - minX + 1;
   const objectHeight = maxY - minY + 1;
   const padding = Math.max(4, Math.round(Math.max(objectWidth, objectHeight) * 0.008));
@@ -151,7 +170,7 @@ function extractObject(
 function extractCommercialGroup(image: HTMLImageElement) {
   // A imagem principal da capa preserva a apresentação comercial completa:
   // traseira à esquerda + tela/frente à direita.
-  return extractObject(image, 0, 1);
+  return extractObject(image, 0, 1, false);
 }
 
 function extractRearDevice(image: HTMLImageElement) {
@@ -161,7 +180,7 @@ function extractRearDevice(image: HTMLImageElement) {
 }
 
 function visibleRatioForColorCount(count: number) {
-  if (count <= 2) return 0.50;
+  if (count <= 2) return 0.55;
   if (count === 3) return 0.40;
   return 0.30;
 }
