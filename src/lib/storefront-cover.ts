@@ -1,5 +1,7 @@
 export type StorefrontCoverSource = { color: string | null; image: string | null | undefined };
 
+export const STOREFRONT_COVER_VERSION_PATH = "/covers-v2/";
+
 export function storefrontCoverSources(sources: StorefrontCoverSource[]) {
   const byColor = new Map<string, { color: string; image: string }>();
   const withoutColor = new Map<string, { color: string; image: string }>();
@@ -31,6 +33,7 @@ export function storefrontCoverNeedsGeneration(
 
   const cover = currentCover?.trim();
   if (!cover) return true;
+  if (items.some((item) => item.image === cover)) return true;
 
-  return items.some((item) => item.image === cover);
+  return !cover.includes(STOREFRONT_COVER_VERSION_PATH);
 }
