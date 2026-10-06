@@ -50,7 +50,7 @@ export async function saveGeneratedStorefrontCover(formData: FormData): Promise<
 
     if (productError || !product) return { status: "error", message: "Produto não encontrado." };
 
-    const path = `covers-v4/${slugify(product.model || product.slug)}/${randomUUID()}.${extension}`;
+    const path = `covers-v5/${slugify(product.model || product.slug)}/${randomUUID()}.${extension}`;
     const { error: uploadError } = await supabase.storage
       .from("product-images")
       .upload(path, await file.arrayBuffer(), { contentType: file.type, cacheControl: "31536000", upsert: false });
