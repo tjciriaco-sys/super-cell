@@ -33,9 +33,10 @@ function extractRearDevice(image: HTMLImageElement) {
   const width = image.naturalWidth || image.width;
   const height = image.naturalHeight || image.height;
 
-  // Padrão operacional aprovado: a foto individual mostra a traseira à esquerda
-  // e a tela à direita. Para a capa coletiva usamos somente a traseira.
-  const cropWidth = Math.max(1, Math.round(width * 0.46));
+  // Padrão aprovado: a foto individual mostra a traseira à esquerda e a
+  // tela à direita. Para a capa coletiva usamos a traseira e recompomos
+  // discretamente a faixa que costuma ficar escondida pela tela.
+  const cropWidth = Math.max(1, Math.round(width * 0.50));
   const source = document.createElement("canvas");
   source.width = cropWidth;
   source.height = height;
@@ -79,28 +80,67 @@ function extractRearDevice(image: HTMLImageElement) {
 
   sourceContext.putImageData(pixels, 0, 0);
 
-  if (maxX < minX || maxY < minY) throw new Error("Não foi possível identificar o aparelho em uma das imagens.");
+  if (maxX < minX || maxY < minY) {
+    throw new Error("Não foi possível identificar a traseira em uma das imagens.");
+  }
 
   const objectWidth = maxX - minX + 1;
   const objectHeight = maxY - minY + 1;
-  const padding = Math.max(4, Math.round(Math.max(objectWidth, objectHeight) * 0.012));
-  const output = document.createElement("canvas");
-  output.width = objectWidth + padding * 2;
-  output.height = objectHeight + padding * 2;
-  const outputContext = output.getContext("2d");
-  if (!outputContext) throw new Error("O navegador não conseguiu recortar uma das imagens.");
+  const object = document.createElement("canvas");
+  object.width = objectWidth;
+  object.height = objectHeight;
+  const objectContext = object.getContext("2d", { willReadFrequently: true });
+  if (!objectContext) throw new Error("O navegador não conseguiu recortar uma das imagens.");
 
-  outputContext.drawImage(
-    source,
-    minX,
-    minY,
-    objectWidth,
-    objectHeight,
-    padding,
-    padding,
-    objectWidth,
-    objectHeight,
-  );
+  objectContext.drawImage(source, minX, minY, objectWidth, objectHeight, 0, 0, objectWidth, objectHeight);
+
+  const objectPixels = objectContext.getImageData(0, 0, objectWidth, objectHeight);
+  const samples: Array<[number, number, number]> = [];
+  const sampleX1 = Math.round(objectWidth * 0.25);
+  const sampleX2 = Math.round(objectWidth * 0.75);
+  const sampleY1 = Math.round(objectHeight * 0.55);
+  const sampleY2 = Math.round(objectHeight * 0.85);
+
+  for (let y = sampleY1; y < sampleY2; y += 6) {
+    for (let x = sampleX1; x < sampleX2; x += 6) {
+      const offset = (y * objectWidth + x) * 4;
+      if (objectPixels.data[offset + 3] < 180) continue;
+      samples.push([
+        objectPixels.data[offset],
+        objectPixels.data[offset + 1],
+        objectPixels.data[offset + 2],
+      ]);
+    }
+  }
+
+  const median = (values: number[]) => {
+    const sorted = [...values].sort((a, b) => a - b);
+    return sorted[Math.floor(sorted.length / 2)] ?? 128;
+  };
+  const bodyColor = samples.length
+    ? {
+        red: median(samples.map((item) => item[0])),
+        green: median(samples.map((item) => item[1])),
+        blue: median(samples.map((item) => item[2])),
+      }
+    : { red: 128, green: 128, blue: 128 };
+
+  const reconstructedWidth = Math.round(objectWidth * 1.10);
+  const output = document.createElement("canvas");
+  output.width = reconstructedWidth;
+  output.height = objectHeight;
+  const outputContext = output.getContext("2d");
+  if (!outputContext) throw new Error("O navegador não conseguiu recompor uma das imagens.");
+
+  const radius = Math.max(16, Math.round(Math.min(reconstructedWidth, objectHeight) * 0.045));
+  outputContext.save();
+  outputContext.beginPath();
+  outputContext.roundRect(0, 0, reconstructedWidth, objectHeight, radius);
+  outputContext.clip();
+  outputContext.fillStyle = `rgb(${bodyColor.red}, ${bodyColor.green}, ${bodyColor.blue})`;
+  outputContext.fillRect(0, 0, reconstructedWidth, objectHeight);
+  outputContext.drawImage(object, 0, 0, reconstructedWidth, objectHeight);
+  outputContext.restore();
 
   return output;
 }
@@ -117,23 +157,25 @@ function composeLayeredCover(images: HTMLImageElement[]) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   const count = devices.length;
-  const frontHeight = count === 4 ? 900 : count === 3 ? 940 : 980;
+  const frontHeight = count === 4 ? 760 : count === 3 ? 800 : 820;
   const rendered = devices.map((device, index) => {
-    const scale = 1 - index * 0.055;
+    const scale = 1 - index * (count === 2 ? 0.04 : 0.045);
     const height = frontHeight * scale;
     const width = height * (device.width / device.height);
     return { device, width, height };
   });
 
   const frontWidth = rendered[0].width;
-  const step = frontWidth * (count === 4 ? 0.34 : count === 3 ? 0.37 : 0.40);
+  const stepRatio = count === 2 ? 0.72 : count === 3 ? 0.58 : 0.50;
+  const step = frontWidth * stepRatio;
   const totalWidth = frontWidth + step * (count - 1);
   const left = (canvas.width - totalWidth) / 2;
-  const bottom = 1100;
+  const bottom = 1060;
 
-  // Desenha primeiro o aparelho mais ao fundo (esquerda) e termina pelo
-  // aparelho principal, que fica à frente e à direita. O deslocamento foi
-  // calculado para manter os módulos de câmera visíveis.
+  // Perspectiva do observador: o aparelho principal fica à frente e à
+  // direita. Os demais seguem para trás em direção à esquerda. Como o
+  // deslocamento horizontal é maior que a posição das câmeras, todos os
+  // módulos permanecem visíveis.
   for (let index = count - 1; index >= 0; index -= 1) {
     const item = rendered[index];
     const x = left + (count - 1 - index) * step;
