@@ -20,9 +20,10 @@ Toda melhoria aprovada deve seguir esta ordem de preferência:
 ## Imagens e cores
 
 - Aplicar integralmente `docs/catalog-image-standard.md`.
-- A estratégia padrão é uma imagem por cor; foto coletiva precisa ser marcada conscientemente.
+- Cada variante/cor é exibida como item comercial independente na vitrine.
+- A imagem principal do item é a imagem própria da variante; não gerar capa multicor por sobreposição.
 - Toda cor nova pode receber `color_hex`, evitando representação visual genérica.
-- A troca de variante deve atualizar conjuntamente imagem, preço, capacidade, condição e fornecedor.
+- A abertura do card deve manter a página do produto restrita à variante selecionada, preservando conjuntamente imagem, preço, capacidade, condição e fornecedor.
 
 ## Seminovos
 
@@ -46,6 +47,7 @@ Toda melhoria aprovada deve seguir esta ordem de preferência:
 - Armazenamento/RAM devem aparecer no card e na página sempre que conhecidos.
 - O CTA principal deve informar que o pedido será enviado pelo WhatsApp.
 - Valores, parcelamento, entrega e mensagem do WhatsApp devem derivar da variante selecionada.
+- Cores diferentes do mesmo modelo aparecem em cards separados, mesmo quando compartilham o mesmo produto-base no banco.
 
 ## Critério de conclusão
 
