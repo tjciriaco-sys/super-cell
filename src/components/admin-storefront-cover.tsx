@@ -179,11 +179,12 @@ function composeLayeredCover(images: HTMLImageElement[]) {
     height: targetHeight,
   }));
 
-  // Regra visual aprovada: cada aparelho que fica atrás deve permanecer
-  // aproximadamente 40% visível e 60% encoberto pelo aparelho à frente.
-  // Como todos têm o mesmo tamanho, 40% de deslocamento equivale de fato
-  // a cerca de 40% do aparelho posterior exposto.
-  const stepRatio = 0.40;
+  // Calibração perceptual: no card final, 40% matemáticos de deslocamento
+  // estavam aparentando apenas ~15–20% do aparelho posterior. Aumentamos o
+  // avanço horizontal para 58% da largura normalizada para que a área
+  // efetivamente percebida do aparelho de trás fique próxima dos ~40%
+  // aprovados, mantendo 60% visualmente encobertos pela camada da frente.
+  const stepRatio = 0.58;
   const step = targetWidth * stepRatio;
   const totalWidth = targetWidth + step * (count - 1);
   const left = (canvas.width - totalWidth) / 2;
@@ -265,7 +266,7 @@ export function AdminStorefrontCover({
       <strong>Capa da vitrine</strong>
       <small>
         {sources.length >= 2
-          ? `${sources.length} cores com imagem detectadas. A capa usa as traseiras em sobreposição: aparelhos no mesmo tamanho, principal à direita e demais atrás seguindo para a esquerda, com cerca de 40% visível.`
+          ? `${sources.length} cores com imagem detectadas. A capa usa as traseiras em sobreposição: aparelhos no mesmo tamanho, principal à direita e demais atrás seguindo para a esquerda, com cerca de 40% visualmente exposto.`
           : "Com uma única cor, a própria imagem cadastrada é usada na vitrine."}
       </small>
       {sources.length >= 2 && <small style={{ marginTop: 5 }}>
