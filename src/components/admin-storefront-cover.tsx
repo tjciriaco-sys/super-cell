@@ -31,6 +31,74 @@ function canvasBlob(canvas: HTMLCanvasElement) {
 
 type BackgroundRemovalMode = "standard" | "soft" | "none";
 
+function removeConnectedBackground(data: Uint8ClampedArray, width: number, height: number, mode: BackgroundRemovalMode) {
+  if (mode === "none" || width < 2 || height < 2) return;
+
+  const patch = Math.max(2, Math.min(16, Math.round(Math.min(width, height) * 0.025)));
+  let red = 0, green = 0, blue = 0, samples = 0;
+  const corners = [
+    [0, 0], [Math.max(0, width - patch), 0],
+    [0, Math.max(0, height - patch)], [Math.max(0, width - patch), Math.max(0, height - patch)],
+  ];
+
+  for (const [startX, startY] of corners) {
+    for (let y = startY; y < Math.min(height, startY + patch); y += 1) {
+      for (let x = startX; x < Math.min(width, startX + patch); x += 1) {
+        const offset = (y * width + x) * 4;
+        red += data[offset];
+        green += data[offset + 1];
+        blue += data[offset + 2];
+        samples += 1;
+      }
+    }
+  }
+
+  if (!samples) return;
+  const bgR = red / samples;
+  const bgG = green / samples;
+  const bgB = blue / samples;
+  const threshold = mode === "soft" ? 58 : 72;
+  const seedThreshold = threshold * 0.82;
+  const visited = new Uint8Array(width * height);
+  const queue = new Int32Array(width * height);
+  let head = 0, tail = 0;
+
+  const distance = (index: number) => {
+    const offset = index * 4;
+    const dr = data[offset] - bgR;
+    const dg = data[offset + 1] - bgG;
+    const db = data[offset + 2] - bgB;
+    return Math.sqrt(dr * dr + dg * dg + db * db);
+  };
+
+  const enqueue = (index: number, limit: number) => {
+    if (visited[index] || distance(index) > limit) return;
+    visited[index] = 1;
+    queue[tail++] = index;
+  };
+
+  for (let x = 0; x < width; x += 1) {
+    enqueue(x, seedThreshold);
+    enqueue((height - 1) * width + x, seedThreshold);
+  }
+  for (let y = 0; y < height; y += 1) {
+    enqueue(y * width, seedThreshold);
+    enqueue(y * width + width - 1, seedThreshold);
+  }
+
+  while (head < tail) {
+    const index = queue[head++];
+    const x = index % width;
+    const y = Math.floor(index / width);
+    data[index * 4 + 3] = 0;
+
+    if (x > 0) enqueue(index - 1, threshold);
+    if (x + 1 < width) enqueue(index + 1, threshold);
+    if (y > 0) enqueue(index - width, threshold);
+    if (y + 1 < height) enqueue(index + width, threshold);
+  }
+}
+
 function extractObject(
   image: HTMLImageElement,
   cropStartRatio = 0,
@@ -50,8 +118,7 @@ function extractObject(
 
   sourceContext.drawImage(image, sourceX, 0, sourceWidth, height, 0, 0, sourceWidth, height);
 
-  const pixels = sourceContext.getImageData(0, 0, sourceWidth, height);
-  const data = pixels.data;
+  const pixels = sourceContext.getImageData(0, 0, sourceWidth, height);\n  const data = pixels.data;\n  removeConnectedBackground(data, sourceWidth, height, backgroundRemoval);
   const columnCounts = new Uint32Array(sourceWidth);
   const rowCounts = new Uint32Array(height);
 
@@ -71,27 +138,7 @@ function extractObject(
       const brightness = (red + green + blue) / 3;
       const neutral = max - min < 26;
 
-      const isBackground = neutral && brightness > 235;
-
-      if (backgroundRemoval !== "none") {
-        const soft = backgroundRemoval === "soft";
-        const removalNeutral = max - min < (soft ? 14 : 26);
-        const fadeStart = soft ? 249 : 235;
-        const fullyTransparentAt = soft ? 254 : 248;
-
-        // A imagem principal usa um recorte deliberadamente mais conservador:
-        // apenas brancos/quase-brancos realmente neutros são removidos. Isso
-        // limpa o fundo sem apagar reflexos, quinas claras ou tons do aparelho.
-        if (removalNeutral && brightness >= fullyTransparentAt) {
-          data[offset + 3] = 0;
-        } else if (removalNeutral && brightness > fadeStart) {
-          const remainingAlpha = (fullyTransparentAt - brightness) / (fullyTransparentAt - fadeStart);
-          data[offset + 3] = Math.min(
-            data[offset + 3],
-            Math.max(0, Math.round(255 * remainingAlpha)),
-          );
-        }
-      }
+      const isBackground = data[offset + 3] <= 24 || (neutral && brightness > 248);
 
       if (!isBackground && data[offset + 3] > 24) {
         columnCounts[x] += 1;
