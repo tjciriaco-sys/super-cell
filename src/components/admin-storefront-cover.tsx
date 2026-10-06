@@ -19,35 +19,140 @@ function loadImage(src: string) {
   });
 }
 
-function drawContained(
-  context: CanvasRenderingContext2D,
-  image: HTMLImageElement,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-) {
-  const naturalWidth = image.naturalWidth || image.width;
-  const naturalHeight = image.naturalHeight || image.height;
-  const scale = Math.min(width / naturalWidth, height / naturalHeight);
-  const drawWidth = naturalWidth * scale;
-  const drawHeight = naturalHeight * scale;
-  context.drawImage(image, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
-}
-
 function canvasBlob(canvas: HTMLCanvasElement) {
   return new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("O navegador não conseguiu montar o arquivo da capa.")), "image/webp", 0.94);
+    canvas.toBlob(
+      (blob) => blob ? resolve(blob) : reject(new Error("O navegador não conseguiu montar o arquivo da capa.")),
+      "image/webp",
+      0.95,
+    );
   });
+}
+
+function extractRearDevice(image: HTMLImageElement) {
+  const width = image.naturalWidth || image.width;
+  const height = image.naturalHeight || image.height;
+
+  // Padrão operacional aprovado: a foto individual mostra a traseira à esquerda
+  // e a tela à direita. Para a capa coletiva usamos somente a traseira.
+  const cropWidth = Math.max(1, Math.round(width * 0.56));
+  const source = document.createElement("canvas");
+  source.width = cropWidth;
+  source.height = height;
+  const sourceContext = source.getContext("2d", { willReadFrequently: true });
+  if (!sourceContext) throw new Error("O navegador não conseguiu preparar uma das imagens.");
+
+  sourceContext.drawImage(image, 0, 0, cropWidth, height, 0, 0, cropWidth, height);
+
+  const pixels = sourceContext.getImageData(0, 0, cropWidth, height);
+  const data = pixels.data;
+  let minX = cropWidth;
+  let minY = height;
+  let maxX = -1;
+  let maxY = -1;
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < cropWidth; x += 1) {
+      const offset = (y * cropWidth + x) * 4;
+      const red = data[offset];
+      const green = data[offset + 1];
+      const blue = data[offset + 2];
+      const max = Math.max(red, green, blue);
+      const min = Math.min(red, green, blue);
+      const brightness = (red + green + blue) / 3;
+      const neutral = max - min < 24;
+
+      if (neutral && brightness >= 248) {
+        data[offset + 3] = 0;
+      } else if (neutral && brightness > 235) {
+        data[offset + 3] = Math.min(data[offset + 3], Math.round(255 * ((248 - brightness) / 13)));
+      }
+
+      if (data[offset + 3] > 24) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+  }
+
+  sourceContext.putImageData(pixels, 0, 0);
+
+  if (maxX < minX || maxY < minY) throw new Error("Não foi possível identificar o aparelho em uma das imagens.");
+
+  const objectWidth = maxX - minX + 1;
+  const objectHeight = maxY - minY + 1;
+  const padding = Math.max(4, Math.round(Math.max(objectWidth, objectHeight) * 0.012));
+  const output = document.createElement("canvas");
+  output.width = objectWidth + padding * 2;
+  output.height = objectHeight + padding * 2;
+  const outputContext = output.getContext("2d");
+  if (!outputContext) throw new Error("O navegador não conseguiu recortar uma das imagens.");
+
+  outputContext.drawImage(
+    source,
+    minX,
+    minY,
+    objectWidth,
+    objectHeight,
+    padding,
+    padding,
+    objectWidth,
+    objectHeight,
+  );
+
+  return output;
+}
+
+function composeLayeredCover(images: HTMLImageElement[]) {
+  const devices = images.map(extractRearDevice);
+  const canvas = document.createElement("canvas");
+  canvas.width = 1200;
+  canvas.height = 1200;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("O navegador não conseguiu iniciar o gerador de capa.");
+
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  const count = devices.length;
+  const frontHeight = count === 4 ? 780 : count === 3 ? 840 : 900;
+  const rendered = devices.map((device, index) => {
+    const scale = 1 - index * 0.055;
+    const height = frontHeight * scale;
+    const width = height * (device.width / device.height);
+    return { device, width, height };
+  });
+
+  const frontWidth = rendered[0].width;
+  const step = frontWidth * (count === 4 ? 0.49 : count === 3 ? 0.53 : 0.56);
+  const totalWidth = frontWidth + step * (count - 1);
+  const left = (canvas.width - totalWidth) / 2;
+  const bottom = 1060;
+
+  // Desenha primeiro o aparelho mais ao fundo (esquerda) e termina pelo
+  // aparelho principal, que fica à frente e à direita. O deslocamento foi
+  // calculado para manter os módulos de câmera visíveis.
+  for (let index = count - 1; index >= 0; index -= 1) {
+    const item = rendered[index];
+    const x = left + (count - 1 - index) * step;
+    const y = bottom - item.height;
+    context.drawImage(item.device, x, y, item.width, item.height);
+  }
+
+  return canvas;
 }
 
 export function AdminStorefrontCover({
   productId,
   currentCover,
+  imageStrategy,
   variants,
 }: {
   productId: string;
   currentCover?: string | null;
+  imageStrategy?: string | null;
   variants: StorefrontCoverSource[];
 }) {
   const router = useRouter();
@@ -62,33 +167,18 @@ export function AdminStorefrontCover({
 
     try {
       setBusy(true);
-      setFeedback({ status: "working", message: automatic ? "Montando automaticamente a capa com as cores cadastradas…" : "Gerando nova capa da vitrine…" });
+      setFeedback({
+        status: "working",
+        message: automatic
+          ? "Montando automaticamente a capa sobreposta com as cores cadastradas…"
+          : "Gerando nova capa sobreposta da vitrine…",
+      });
 
       const selected = sources.slice(0, 4);
       const images = await Promise.all(selected.map((item) => loadImage(item.image)));
-      const canvas = document.createElement("canvas");
-      canvas.width = 1200;
-      canvas.height = 1200;
-      const context = canvas.getContext("2d");
-      if (!context) throw new Error("O navegador não conseguiu iniciar o gerador de capa.");
-
-      context.fillStyle = "#ffffff";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-
-      const count = images.length;
-      const horizontalPadding = count === 2 ? 70 : count === 3 ? 30 : 20;
-      const gap = count === 2 ? 30 : count === 3 ? 10 : 4;
-      const cellWidth = (1200 - horizontalPadding * 2 - gap * (count - 1)) / count;
-      const y = count === 2 ? 120 : count === 3 ? 105 : 120;
-      const cellHeight = count === 2 ? 960 : count === 3 ? 990 : 960;
-
-      images.forEach((image, index) => {
-        const x = horizontalPadding + index * (cellWidth + gap);
-        drawContained(context, image, x, y, cellWidth, cellHeight);
-      });
-
+      const canvas = composeLayeredCover(images);
       const blob = await canvasBlob(canvas);
-      const file = new File([blob], `capa-vitrine-${Date.now()}.webp`, { type: "image/webp" });
+      const file = new File([blob], `capa-vitrine-sobreposta-${Date.now()}.webp`, { type: "image/webp" });
       const formData = new FormData();
       formData.set("product_id", productId);
       formData.set("cover_file", file);
@@ -97,26 +187,32 @@ export function AdminStorefrontCover({
       setFeedback(result);
       if (result.status === "success") router.refresh();
     } catch (error) {
-      setFeedback({ status: "error", message: error instanceof Error ? error.message : "Não foi possível gerar a capa da vitrine." });
+      setFeedback({
+        status: "error",
+        message: error instanceof Error ? error.message : "Não foi possível gerar a capa da vitrine.",
+      });
     } finally {
       setBusy(false);
     }
   }, [busy, productId, router, sources]);
 
   useEffect(() => {
-    if (!needsGeneration || sources.length < 2 || autoStarted.current) return;
+    if (imageStrategy !== "variant" || !needsGeneration || sources.length < 2 || autoStarted.current) return;
     autoStarted.current = true;
     void generate(true);
-  }, [generate, needsGeneration, sources.length]);
+  }, [generate, imageStrategy, needsGeneration, sources.length]);
 
   return <div className="admin-image-upload" style={{ marginTop: 18 }}>
     <div>
       <strong>Capa da vitrine</strong>
       <small>
         {sources.length >= 2
-          ? `${sources.length} cores com imagem detectadas. O sistema reúne automaticamente até 4 cores em uma única capa.`
+          ? `${sources.length} cores com imagem detectadas. A capa usa as traseiras em sobreposição: principal à direita, demais atrás seguindo para a esquerda.`
           : "Com uma única cor, a própria imagem cadastrada é usada na vitrine."}
       </small>
+      {sources.length >= 2 && <small style={{ marginTop: 5 }}>
+        Padrão da foto individual: traseira à esquerda e tela à direita, em fundo claro.
+      </small>}
     </div>
 
     {currentCover && !needsGeneration
