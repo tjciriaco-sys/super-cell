@@ -1,5 +1,6 @@
 import { createPublicClient } from "@/lib/supabase/public";
 import type { Acquirer, CatalogVariant, CommercialSettings, LogisticsException, Schedule } from "@/lib/types";
+import { mergePreviewGuanacelCatalog, mergePreviewGuanacelProduct } from "@/lib/preview-guanacel-online-20261006";
 
 // Temporary visual pilots for selected Android products. F1 iPhones now come
 // exclusively from Supabase so admin edits are reflected immediately in Preview.
@@ -43,13 +44,15 @@ function isLegacyF1Iphone(variant: CatalogVariant) {
 export async function getCatalog() {
   const { data, error } = await createPublicClient().from("public_catalog").select("*").order("featured", { ascending: false }).order("product_name");
   if (error) throw error;
-  return ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
+  const base = ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
+  return mergePreviewGuanacelCatalog(base);
 }
 
 export async function getProduct(slug: string) {
   const { data, error } = await createPublicClient().from("public_catalog").select("*").eq("slug", slug).order("storage_gb").order("color");
   if (error) throw error;
-  return ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
+  const base = ((data ?? []) as CatalogVariant[]).map(withPreviewPilotCover).filter((variant) => !isLegacyF1Iphone(variant));
+  return mergePreviewGuanacelProduct(slug, base);
 }
 
 export async function getCommerceData() {
