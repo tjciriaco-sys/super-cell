@@ -97,6 +97,51 @@ function removeConnectedBackground(data: Uint8ClampedArray, width: number, heigh
     if (y > 0) enqueue(index - width, threshold);
     if (y + 1 < height) enqueue(index + width, threshold);
   }
+
+  // Limpeza leve de halo: pixels claros que ficaram na borda do recorte
+  // recebem transparência parcial somente quando encostam no fundo removido.
+  // É intencionalmente conservador para não apagar quinas/reflexos do aparelho.
+  const alphaSnapshot = new Uint8ClampedArray(width * height);
+  for (let index = 0; index < width * height; index += 1) {
+    alphaSnapshot[index] = data[index * 4 + 3];
+  }
+
+  const featherLimit = threshold * (mode === "soft" ? 1.28 : 1.42);
+  const featherStart = threshold * (mode === "soft" ? 0.72 : 0.62);
+
+  for (let y = 1; y < height - 1; y += 1) {
+    for (let x = 1; x < width - 1; x += 1) {
+      const index = y * width + x;
+      const alpha = alphaSnapshot[index];
+      if (alpha === 0) continue;
+
+      const touchesTransparent =
+        alphaSnapshot[index - 1] === 0 ||
+        alphaSnapshot[index + 1] === 0 ||
+        alphaSnapshot[index - width] === 0 ||
+        alphaSnapshot[index + width] === 0;
+
+      if (!touchesTransparent) continue;
+
+      const d = distance(index);
+      if (d >= featherLimit) continue;
+
+      const normalized = Math.max(0, Math.min(1, (d - featherStart) / Math.max(1, featherLimit - featherStart)));
+      const eased = normalized * normalized * (3 - 2 * normalized);
+      const newAlpha = Math.round(255 * eased);
+      data[index * 4 + 3] = Math.min(alpha, newAlpha);
+
+      // Defringe suave: reduz a contaminação do branco/cinza do fundo nos
+      // pixels semitransparentes sem alterar o miolo opaco do aparelho.
+      if (newAlpha < 245) {
+        const offset = index * 4;
+        const strength = (1 - newAlpha / 255) * 0.55;
+        data[offset] = Math.max(0, Math.round(data[offset] - Math.max(0, bgR - data[offset]) * strength));
+        data[offset + 1] = Math.max(0, Math.round(data[offset + 1] - Math.max(0, bgG - data[offset + 1]) * strength));
+        data[offset + 2] = Math.max(0, Math.round(data[offset + 2] - Math.max(0, bgB - data[offset + 2]) * strength));
+      }
+    }
+  }
 }
 
 function extractObject(
