@@ -43,7 +43,7 @@ export function ProductExperience({ variants, initialVariantId, acquirer, schedu
   return <><div className="product-layout shell">
     <div className="product-primary">
       <div className="product-gallery">
-        <ProductImage src={selected.storefront_image??selected.images?.[0]} alt={`${selectedProductName} nas cores disponíveis`} priority/>
+        <ProductImage src={selected.images?.[0]??selected.storefront_image} alt={`${selectedProductName}${selected.color?` na cor ${selected.color}`:""}`} priority/>
         {colors.length>0&&<div className="available-colors" aria-label="Cores disponíveis"><strong>{colors.length===1?`Cor disponível: ${colors[0]}`:`${colors.length} cores disponíveis`}</strong>{colors.length>1&&<span>{colors.join(" · ")}</span>}</div>}
         <div className="gallery-note"><BadgeCheck/> Imagem ilustrativa. Unidade confirmada no WhatsApp.</div>
       </div>
