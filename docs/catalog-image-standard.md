@@ -20,7 +20,9 @@ Este padrão é obrigatório para todo produto novo ou atualizado por catálogo 
 ## Regra de cor
 
 - Estratégia `variant` (padrão): cada cor anunciada precisa de imagem própria e vinculada à variante correta.
-- Estratégia `group` (exceção consciente): uma única foto pode ser compartilhada somente quando ela mostra, na própria imagem, todas as cores oferecidas.
+- Cada variante/cor é publicada como um item separado na vitrine, usando diretamente sua própria imagem.
+- Não gerar capa automática por sobreposição de várias cores e não depender de remoção de fundo para montar composições.
+- Foto coletiva só pode ser usada manualmente como imagem da própria variante quando representar corretamente aquele item; ela não agrupa cores diferentes em um único card.
 - Nunca vincular uma foto de uma única cor a variantes de outras cores.
 - Cor, capacidade, RAM, preço e disponibilidade devem formar uma combinação real do fornecedor; não criar combinações implícitas.
 
@@ -32,7 +34,7 @@ Antes de publicar, confirmar:
 2. formato WebP, dimensões e peso;
 3. ausência de marca d'água ou identificação de terceiros;
 4. correspondência entre cor selecionada e imagem;
-5. troca de cor atualizando imagem, preço, capacidade e fornecedor quando aplicável;
+5. cada card representa uma única variante/cor e abre a mesma variante na página do produto;
 6. visualização no card e na página do produto em 360, 390 e 430 px.
 
-O painel administrativo audita automaticamente produtos ativos sem imagem própria por cor, imagens repetidas entre cores e fotos coletivas sem arquivo geral.
+O painel administrativo deve priorizar a imagem da própria variante. Capas multicor legadas podem permanecer armazenadas, mas não fazem parte do fluxo comercial atual.
