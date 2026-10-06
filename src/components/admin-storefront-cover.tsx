@@ -194,6 +194,33 @@ function peelLightEdgeFringe(data: Uint8ClampedArray, width: number, height: num
   }
 }
 
+function erodeAlphaEdge(data: Uint8ClampedArray, width: number, height: number, radius = 1) {
+  if (radius <= 0 || width < 3 || height < 3) return;
+
+  const alpha = new Uint8ClampedArray(width * height);
+  for (let i = 0; i < width * height; i += 1) alpha[i] = data[i * 4 + 3];
+
+  for (let y = radius; y < height - radius; y += 1) {
+    for (let x = radius; x < width - radius; x += 1) {
+      const index = y * width + x;
+      if (alpha[index] === 0) continue;
+
+      let touchesTransparent = false;
+      for (let oy = -radius; oy <= radius && !touchesTransparent; oy += 1) {
+        for (let ox = -radius; ox <= radius; ox += 1) {
+          if (ox === 0 && oy === 0) continue;
+          if (alpha[(y + oy) * width + (x + ox)] <= 24) {
+            touchesTransparent = true;
+            break;
+          }
+        }
+      }
+
+      if (touchesTransparent) data[index * 4 + 3] = 0;
+    }
+  }
+}
+
 function extractObject(
   image: HTMLImageElement,
   cropStartRatio = 0,
