@@ -127,6 +127,11 @@ export async function saveVariantImageWithFeedback(
       }
 
       for (const affectedProduct of affectedProducts ?? []) {
+        if (affectedProduct.image_strategy !== "variant") {
+          revalidatePath(`/produto/${affectedProduct.slug}`);
+          continue;
+        }
+
         const { data: productVariants, error: variantsError } = await supabase
           .from("product_variants")
           .select("color,images")
