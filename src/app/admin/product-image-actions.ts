@@ -117,16 +117,47 @@ export async function saveVariantImageWithFeedback(
     if (updateError) return { status: "error", message: "A imagem foi enviada, mas não pôde ser vinculada à variante." };
 
     if (targetProductIds.length) {
-      const { error: coverError } = await supabase
+      const { data: affectedProducts, error: affectedProductsError } = await supabase
         .from("products")
-        .update({ storefront_image: imageUrl, updated_at: new Date().toISOString() })
-        .in("id", targetProductIds)
-        .eq("image_strategy", "variant");
+        .select("id,slug,image_strategy")
+        .in("id", targetProductIds);
 
-      if (coverError) return { status: "error", message: "A imagem foi salva, mas a capa da vitrine não pôde ser atualizada." };
+      if (affectedProductsError) {
+        return { status: "error", message: "A imagem foi salva, mas não foi possível atualizar a capa da vitrine." };
+      }
 
-      const { data: affectedProducts } = await supabase.from("products").select("slug").in("id", targetProductIds);
-      for (const item of affectedProducts ?? []) revalidatePath(`/produto/${item.slug}`);
+      for (const affectedProduct of affectedProducts ?? []) {
+        const { data: productVariants, error: variantsError } = await supabase
+          .from("product_variants")
+          .select("color,images")
+          .eq("product_id", affectedProduct.id);
+
+        if (variantsError) {
+          return { status: "error", message: "A imagem foi salva, mas não foi possível revisar as cores da capa." };
+        }
+
+        const imagesByColor = new Map<string, string>();
+        for (const item of productVariants ?? []) {
+          const candidate = Array.isArray(item.images) ? item.images[0] : null;
+          if (!candidate) continue;
+          const colorKey = String(item.color ?? candidate).trim().toLocaleLowerCase("pt-BR");
+          if (!imagesByColor.has(colorKey)) imagesByColor.set(colorKey, candidate);
+        }
+
+        const distinctImages = Array.from(new Set(imagesByColor.values()));
+        const storefrontImage = distinctImages.length >= 2 ? null : distinctImages[0] ?? null;
+
+        const { error: coverError } = await supabase
+          .from("products")
+          .update({ storefront_image: storefrontImage, updated_at: new Date().toISOString() })
+          .eq("id", affectedProduct.id);
+
+        if (coverError) {
+          return { status: "error", message: "A imagem foi salva, mas a capa da vitrine não pôde ser preparada." };
+        }
+
+        revalidatePath(`/produto/${affectedProduct.slug}`);
+      }
     }
 
     revalidatePath("/admin/produtos");
@@ -135,7 +166,7 @@ export async function saveVariantImageWithFeedback(
     const count = targetIds.length;
     return {
       status: "success",
-      message: count > 1 ? `Imagem salva e aplicada a ${count} variantes equivalentes.` : "Imagem salva e atualizada na vitrine.",
+      message: count > 1 ? `Imagem salva e aplicada a ${count} variantes equivalentes. A capa da vitrine será atualizada automaticamente quando houver mais de uma cor.` : "Imagem salva. A capa da vitrine será atualizada automaticamente quando houver mais de uma cor.",
     };
   } catch (error) {
     return { status: "error", message: error instanceof Error ? error.message : "Não foi possível salvar a imagem." };
