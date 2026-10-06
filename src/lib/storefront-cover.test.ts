@@ -29,8 +29,15 @@ describe("storefront cover helpers", () => {
     ])).toBe(true);
   });
 
-  it("keeps an already generated cover", () => {
-    expect(storefrontCoverNeedsGeneration("capa-gerada.webp", [
+  it("asks to replace an old generated cover with the layered v2 format", () => {
+    expect(storefrontCoverNeedsGeneration("https://example.com/covers/model/old.webp", [
+      { color: "Preto", image: "preto.webp" },
+      { color: "Azul", image: "azul.webp" },
+    ])).toBe(true);
+  });
+
+  it("keeps a layered v2 cover", () => {
+    expect(storefrontCoverNeedsGeneration("https://example.com/covers-v2/model/new.webp", [
       { color: "Preto", image: "preto.webp" },
       { color: "Azul", image: "azul.webp" },
     ])).toBe(false);
