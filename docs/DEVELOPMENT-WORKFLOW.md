@@ -31,6 +31,18 @@ Antes de enviar o usuário para Work, terminal, CLI ou procedimento manual:
 3. evitar transferir o projeto para outro ambiente sem necessidade;
 4. evitar ciclos manuais de autenticação e infraestrutura quando o conector já resolve a operação.
 
+## Verificação obrigatória de conectores
+Antes de sugerir Work, Codex, terminal ou qualquer ambiente externo, verificar primeiro os conectores disponíveis na conversa.
+
+Para projetos já estruturados:
+- GitHub conectado com escrita = implementar pelo GitHub.
+- Vercel conectado = usar Preview/deploy pelo Vercel.
+- Supabase conectado = operar backend pelo Supabase quando necessário.
+- A falta de terminal local não significa falta de capacidade de implementação.
+- Se o usuário disser “pode implementar”, seguir direto para a execução por plugins depois que o entendimento já estiver confirmado.
+- Só mudar para outro ambiente quando uma limitação concreta do conector tiver sido verificada.
+- Não oferecer prompt copiável quando a própria conversa consegue executar a tarefa.
+
 ## Protocolo de confirmação e execução
 Quando Tiago pedir uma correção ou evolução dentro de um projeto que já esteja integrado aos plugins:
 1. explicar em linguagem humana o que foi entendido, incluindo causa provável, resultado esperado e qualquer decisão relevante;
