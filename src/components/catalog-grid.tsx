@@ -74,15 +74,28 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
   }), [variants, category, normalizedQuery, priceRange, condition, storage, connectivity]);
 
   const products = useMemo(() => {
-    const map = new Map<string, ProductGroup>();
-    for (const variant of filteredVariants) {
-      const key = `${variant.slug}:${variant.condition_grade ?? variant.condition}`;
-      const current = map.get(key);
-      const colors = Array.from(new Set([...(current?.colors ?? []), ...(variant.color ? [variant.color] : [])]));
-      const next: ProductGroup = { key, variantId: variant.variant_id, slug: variant.slug, name: catalogProductName(variant), brand: variant.brand_name, category: variant.category_slug, condition: variant.condition, conditionGrade: variant.condition_grade, connectivity: variant.connectivity, pricingMode: variant.pricing_mode, price: variant.price_pix === null ? null : Number(variant.price_pix), supplierCode: variant.supplier_code, image: variant.storefront_image ?? variant.images?.[0], badges: variant.badges, variant: [variant.ram_gb ? `${variant.ram_gb} GB` : null, variant.storage_gb ? `${variant.storage_gb} GB` : null].filter(Boolean).join(" + "), colors, commercialStatus: variant.commercial_status, batteryHealth: variant.condition === "seminovo" ? variant.battery_health_minimum : null };
-      if (!current || (next.price !== null && (current.price === null || next.price < current.price))) map.set(key, next); else current.colors = colors;
-    }
-    return [...map.values()].sort((a, b) => {
+    const items: ProductGroup[] = filteredVariants.map((variant) => ({
+      key: variant.variant_id,
+      variantId: variant.variant_id,
+      slug: variant.slug,
+      name: catalogProductName(variant),
+      brand: variant.brand_name,
+      category: variant.category_slug,
+      condition: variant.condition,
+      conditionGrade: variant.condition_grade,
+      connectivity: variant.connectivity,
+      pricingMode: variant.pricing_mode,
+      price: variant.price_pix === null ? null : Number(variant.price_pix),
+      supplierCode: variant.supplier_code,
+      image: variant.images?.[0] ?? variant.storefront_image ?? undefined,
+      badges: variant.badges,
+      variant: [variant.ram_gb ? `${variant.ram_gb} GB` : null, variant.storage_gb ? `${variant.storage_gb} GB` : null].filter(Boolean).join(" + "),
+      colors: variant.color ? [variant.color] : [],
+      commercialStatus: variant.commercial_status,
+      batteryHealth: variant.condition === "seminovo" ? variant.battery_health_minimum : null,
+    }));
+
+    return items.sort((a, b) => {
       if (sort === "price_asc") return (a.price ?? Number.MAX_SAFE_INTEGER) - (b.price ?? Number.MAX_SAFE_INTEGER);
       if (sort === "price_desc") return (b.price ?? -1) - (a.price ?? -1);
       if (sort === "name") return a.name.localeCompare(b.name, "pt-BR");
