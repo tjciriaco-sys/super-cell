@@ -488,3 +488,19 @@
   .catalog-controls>button{height:40px;padding-inline:10px;font-size:11px}
   .other-categories{margin:0 0 12px;padding:9px}
 }
+
+
+/* Customer experience v13 — catalog authority badge and compact secondary categories. */
+.catalog-total-badge{display:grid;justify-items:center;align-content:center;min-width:94px;padding:8px 10px;border:1px solid rgba(194,151,58,.38);border-radius:16px;background:linear-gradient(145deg,rgba(255,251,239,.94),rgba(246,235,205,.62));color:#73571d;box-shadow:0 5px 16px rgba(106,77,20,.055);text-align:center;line-height:1}
+.catalog-total-badge strong{font-size:19px;font-weight:900;letter-spacing:-.02em}
+.catalog-total-badge small{margin-top:4px;max-width:76px;font-size:8.5px;font-weight:800;line-height:1.1;text-transform:uppercase;letter-spacing:.04em}
+.other-categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px;margin:0 0 12px;border-radius:12px}
+.other-categories button{min-width:0;min-height:36px;padding:5px 6px;border-radius:8px;font-size:11px;font-weight:760;line-height:1.12;text-align:center}
+
+@media(max-width:700px){
+  .catalog-total-badge{min-width:88px;padding:7px 8px;border-radius:14px}
+  .catalog-total-badge strong{font-size:18px}
+  .catalog-total-badge small{font-size:8px}
+  .other-categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:7px}
+  .other-categories button{min-height:35px;padding:4px 5px;font-size:10.5px}
+}
