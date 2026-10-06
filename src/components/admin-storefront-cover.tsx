@@ -144,11 +144,62 @@ function removeConnectedBackground(data: Uint8ClampedArray, width: number, heigh
   }
 }
 
+
+function peelLightEdgeFringe(data: Uint8ClampedArray, width: number, height: number, passes = 2) {
+  if (passes <= 0 || width < 3 || height < 3) return;
+
+  for (let pass = 0; pass < passes; pass += 1) {
+    const alpha = new Uint8ClampedArray(width * height);
+    for (let index = 0; index < width * height; index += 1) {
+      alpha[index] = data[index * 4 + 3];
+    }
+
+    const toClear: number[] = [];
+    for (let y = 1; y < height - 1; y += 1) {
+      for (let x = 1; x < width - 1; x += 1) {
+        const index = y * width + x;
+        if (alpha[index] <= 24) continue;
+
+        const touchesTransparent =
+          alpha[index - 1] <= 24 ||
+          alpha[index + 1] <= 24 ||
+          alpha[index - width] <= 24 ||
+          alpha[index + width] <= 24 ||
+          alpha[index - width - 1] <= 24 ||
+          alpha[index - width + 1] <= 24 ||
+          alpha[index + width - 1] <= 24 ||
+          alpha[index + width + 1] <= 24;
+
+        if (!touchesTransparent) continue;
+
+        const offset = index * 4;
+        const red = data[offset];
+        const green = data[offset + 1];
+        const blue = data[offset + 2];
+        const max = Math.max(red, green, blue);
+        const min = Math.min(red, green, blue);
+        const brightness = (red + green + blue) / 3;
+        const neutral = max - min < 42;
+
+        // Contrai somente resíduos claros e neutros ligados ao fundo já removido.
+        // Assim elimina molduras/halos brancos sem invadir o corpo escuro/colorido.
+        if (neutral && brightness > 205) toClear.push(index);
+      }
+    }
+
+    if (!toClear.length) break;
+    for (const index of toClear) {
+      data[index * 4 + 3] = 0;
+    }
+  }
+}
+
 function extractObject(
   image: HTMLImageElement,
   cropStartRatio = 0,
   cropWidthRatio = 1,
   backgroundRemoval: BackgroundRemovalMode = "standard",
+  edgeCleanupPasses = 0,
 ) {
   const width = image.naturalWidth || image.width;
   const height = image.naturalHeight || image.height;
@@ -166,6 +217,7 @@ function extractObject(
   const pixels = sourceContext.getImageData(0, 0, sourceWidth, height);
   const data = pixels.data;
   removeConnectedBackground(data, sourceWidth, height, backgroundRemoval);
+  peelLightEdgeFringe(data, sourceWidth, height, edgeCleanupPasses);
   const columnCounts = new Uint32Array(sourceWidth);
   const rowCounts = new Uint32Array(height);
 
@@ -281,7 +333,7 @@ function extractCommercialGroup(image: HTMLImageElement) {
 function extractRearDevice(image: HTMLImageElement) {
   // As cores adicionais entram apenas com a traseira. O padrão das imagens
   // individuais coloca a traseira no lado esquerdo da arte.
-  return extractObject(image, 0, 0.54);
+  return extractObject(image, 0, 0.54, "standard", 2);
 }
 
 function visibleRatioForColorCount(count: number) {
