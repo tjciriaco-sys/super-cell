@@ -157,29 +157,41 @@ function composeLayeredCover(images: HTMLImageElement[]) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   const count = devices.length;
-  const frontHeight = count === 4 ? 760 : count === 3 ? 800 : 820;
-  const rendered = devices.map((device, index) => {
-    const scale = 1 - index * (count === 2 ? 0.04 : 0.045);
-    const height = frontHeight * scale;
-    const width = height * (device.width / device.height);
-    return { device, width, height };
-  });
 
-  const frontWidth = rendered[0].width;
+  // Todos os aparelhos representam o mesmo modelo, portanto devem aparecer
+  // com o MESMO tamanho aparente. A versão anterior reduzia discretamente
+  // os aparelhos de trás e isso fazia a camada posterior parecer pequena.
+  const targetHeight = count === 4 ? 880 : count === 3 ? 920 : 980;
+
+  // Normalizamos também a largura. As imagens comerciais podem ter pequenos
+  // recortes diferentes entre as cores; sem normalização uma cor pode ficar
+  // visualmente muito mais estreita que outra.
+  const naturalRatios = devices
+    .map((device) => device.width / device.height)
+    .filter((ratio) => Number.isFinite(ratio) && ratio > 0);
+  const averageRatio = naturalRatios.reduce((sum, ratio) => sum + ratio, 0) / Math.max(1, naturalRatios.length);
+  const targetRatio = Math.min(0.52, Math.max(0.40, averageRatio));
+  const targetWidth = targetHeight * targetRatio;
+
+  const rendered = devices.map((device) => ({
+    device,
+    width: targetWidth,
+    height: targetHeight,
+  }));
+
   // Regra visual aprovada: cada aparelho que fica atrás deve permanecer
   // aproximadamente 40% visível e 60% encoberto pelo aparelho à frente.
-  // Como o módulo de câmera fica no lado esquerdo da traseira, esse avanço
-  // para a esquerda preserva a câmera de cada camada.
+  // Como todos têm o mesmo tamanho, 40% de deslocamento equivale de fato
+  // a cerca de 40% do aparelho posterior exposto.
   const stepRatio = 0.40;
-  const step = frontWidth * stepRatio;
-  const totalWidth = frontWidth + step * (count - 1);
+  const step = targetWidth * stepRatio;
+  const totalWidth = targetWidth + step * (count - 1);
   const left = (canvas.width - totalWidth) / 2;
-  const bottom = 1060;
+  const bottom = 1090;
 
   // Perspectiva do observador: o aparelho principal fica à frente e à
-  // direita. Os demais seguem para trás em direção à esquerda. Como o
-  // deslocamento horizontal é maior que a posição das câmeras, todos os
-  // módulos permanecem visíveis.
+  // direita. Os demais seguem para trás em direção à esquerda. Desenhamos
+  // do fundo para a frente para produzir a sobreposição correta.
   for (let index = count - 1; index >= 0; index -= 1) {
     const item = rendered[index];
     const x = left + (count - 1 - index) * step;
@@ -253,7 +265,7 @@ export function AdminStorefrontCover({
       <strong>Capa da vitrine</strong>
       <small>
         {sources.length >= 2
-          ? `${sources.length} cores com imagem detectadas. A capa usa as traseiras em sobreposição: principal à direita, demais atrás seguindo para a esquerda.`
+          ? `${sources.length} cores com imagem detectadas. A capa usa as traseiras em sobreposição: aparelhos no mesmo tamanho, principal à direita e demais atrás seguindo para a esquerda, com cerca de 40% visível.`
           : "Com uma única cor, a própria imagem cadastrada é usada na vitrine."}
       </small>
       {sources.length >= 2 && <small style={{ marginTop: 5 }}>
