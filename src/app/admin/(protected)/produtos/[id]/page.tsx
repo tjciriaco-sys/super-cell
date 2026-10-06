@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
-import { ArrowLeft, Eye, Plus, Save } from "lucide-react";
+import { ArrowLeft, Eye, Save } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/utils";
 import { configuredAutomaticPrice } from "@/lib/pricing";
-import { createVariantForProduct, saveCatalogStatus, saveCommercialStatus, saveImageStrategy, saveManualPrice } from "@/app/admin/actions";
+import { saveCatalogStatus, saveCommercialStatus, saveManualPrice } from "@/app/admin/actions";
 import { AdminProductImageUpload } from "@/components/admin-product-image-upload";
-import { AdminStorefrontCover } from "@/components/admin-storefront-cover";
 
 export default async function EditProduct({params}:{params:Promise<{id:string}>}) {
   const {id}=await params;
@@ -18,7 +17,7 @@ export default async function EditProduct({params}:{params:Promise<{id:string}>}
   return <>
     <div className="admin-heading"><div><Link className="back-link" href="/admin/produtos"><ArrowLeft/> Produtos</Link><h1>{p.name}</h1><p>{p.brand?.name} · {p.category?.name} · {p.condition}</p></div><a className="admin-outline" href={`/produto/${p.slug}`} target="_blank"><Eye/> Visualizar como cliente</a></div>
     <section className="admin-card"><div className="card-title"><strong>Informações básicas</strong></div><div className="detail-grid"><div><span>Modelo</span><strong>{p.model}</strong></div><div><span>Conectividade</span><strong>{p.connectivity||"Não informado"}</strong></div><div><span>Condição</span><strong>{p.condition}</strong></div><div><span>Publicação</span><strong>{p.catalog_status==="ready"?"QA aprovado":"Rascunho"}</strong></div></div><form action={saveCatalogStatus} className="price-form catalog-status-form"><input type="hidden" name="product_id" value={p.id}/><label>Status do catálogo<select name="catalog_status" defaultValue={p.catalog_status??"draft"}><option value="draft">Rascunho — oculto da vitrine</option><option value="ready">QA aprovado — pode aparecer</option></select></label><button type="submit"><Save/> Salvar status</button></form><form action={saveCommercialStatus} className="price-form catalog-status-form"><input type="hidden" name="product_id" value={p.id}/><label>Situação comercial<select name="commercial_status" defaultValue={p.commercial_status??"available"}><option value="available">Disponível</option><option value="coming_soon">Em breve</option><option value="restocking">Aguardando reposição</option></select></label><button type="submit"><Save/> Salvar situação</button></form></section>
-    <section className="admin-card"><div className="card-title"><strong>Padrão das imagens por cor</strong><small>Cadastre cada cor individualmente. Quando houver duas ou mais cores com foto, o sistema cria uma capa única para a vitrine.</small></div><form action={saveImageStrategy} className="price-form"><input type="hidden" name="product_id" value={p.id}/><label>Estratégia visual<select name="image_strategy" defaultValue={p.image_strategy??"variant"}><option value="variant">Imagens separadas por cor + capa automática</option><option value="group">Foto coletiva cadastrada manualmente</option></select></label><button type="submit"><Save/> Salvar padrão</button></form><AdminStorefrontCover productId={p.id} currentCover={p.storefront_image??null} imageStrategy={p.image_strategy??"variant"} variants={p.product_variants.map((variant:any)=>({color:variant.color??null,image:variant.images?.[0]??null}))}/></section>
+    <section className="admin-card"><div className="card-title"><strong>Imagens comerciais</strong><small>Cada variante/cor é um item independente na vitrine e usa diretamente a sua própria imagem. Não há geração de capa multicor.</small></div><p style={{margin:0,color:"#74684f",lineHeight:1.55}}>Para trocar a foto exibida ao cliente, altere a imagem da variante correspondente abaixo. A capa antiga do produto pode permanecer armazenada, mas não é usada quando a variante possui imagem própria.</p></section>
     <section className="admin-card">
       <div className="card-title"><strong>Variantes e preços</strong><small>Preço manual nunca é sobrescrito por atualização de custo.</small></div>
       <div className="variant-admin-list">{p.product_variants.map((v:any)=>{
