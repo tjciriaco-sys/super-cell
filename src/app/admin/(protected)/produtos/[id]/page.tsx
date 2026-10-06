@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
-import { ArrowLeft, Eye, Save } from "lucide-react";
+import { ArrowLeft, Eye, Plus, Save } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { money } from "@/lib/utils";
 import { configuredAutomaticPrice } from "@/lib/pricing";
-import { saveCatalogStatus, saveCommercialStatus, saveImageStrategy, saveManualPrice } from "@/app/admin/actions";
+import { createVariantForProduct, saveCatalogStatus, saveCommercialStatus, saveImageStrategy, saveManualPrice } from "@/app/admin/actions";
 import { AdminProductImageUpload } from "@/components/admin-product-image-upload";
 import { AdminStorefrontCover } from "@/components/admin-storefront-cover";
 
 export default async function EditProduct({params}:{params:Promise<{id:string}>}) {
   const {id}=await params;
   const supabase=await createClient();
-  const [{data:p},{data:standardTiers},{data:accessoryTiers},{data:costs}]=await Promise.all([supabase.from("products").select("*,brand:brands(name),category:categories(name,pricing_mode),product_variants(*,supplier_offers(cost,available,supplier:suppliers(code,name)))").eq("id",id).single(),supabase.from("pricing_tiers").select("*").eq("active",true).order("sort_order"),supabase.from("accessory_pricing_tiers").select("*").eq("active",true).order("sort_order"),supabase.from("operational_costs").select("*").single()]);
+  const [{data:p},{data:standardTiers},{data:accessoryTiers},{data:costs},{data:suppliers}]=await Promise.all([supabase.from("products").select("*,brand:brands(name),category:categories(name,pricing_mode),product_variants(*,supplier_offers(cost,available,supplier:suppliers(code,name)))").eq("id",id).single(),supabase.from("pricing_tiers").select("*").eq("active",true).order("sort_order"),supabase.from("accessory_pricing_tiers").select("*").eq("active",true).order("sort_order"),supabase.from("operational_costs").select("*").single(),supabase.from("suppliers").select("id,code,name").eq("active",true).order("code")]);
   if(!p)notFound();
 
   return <>
