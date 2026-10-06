@@ -118,7 +118,9 @@ function extractObject(
 
   sourceContext.drawImage(image, sourceX, 0, sourceWidth, height, 0, 0, sourceWidth, height);
 
-  const pixels = sourceContext.getImageData(0, 0, sourceWidth, height);\n  const data = pixels.data;\n  removeConnectedBackground(data, sourceWidth, height, backgroundRemoval);
+  const pixels = sourceContext.getImageData(0, 0, sourceWidth, height);
+  const data = pixels.data;
+  removeConnectedBackground(data, sourceWidth, height, backgroundRemoval);
   const columnCounts = new Uint32Array(sourceWidth);
   const rowCounts = new Uint32Array(height);
 
