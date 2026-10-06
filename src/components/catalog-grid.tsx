@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { BadgeDollarSign, ChevronDown, ChevronRight, ListFilter, Search, SlidersHorizontal, X } from "lucide-react";
+import { BadgeDollarSign, ChevronDown, ChevronRight, ListFilter, Search, X } from "lucide-react";
 import type { CatalogVariant } from "@/lib/types";
 import { money, productDisplayName } from "@/lib/utils";
 import { ProductImage } from "@/components/product-image";
@@ -16,14 +16,14 @@ type ProductGroup = {
 type SortMode = "featured" | "price_asc" | "price_desc" | "name";
 const gradeLabels = { bom: "Bom", muito_bom: "Muito bom", excelente: "Excelente" } as const;
 const primaryCategories = [
-  { slug: "iphones", label: "iPhones" }, { slug: "androids", label: "Androids" },
-  { slug: "tablets", label: "Tablets" }, { slug: "smartwatches", label: "Smartwatches" },
+  { slug: "iphones", label: "iPhones" },
+  { slug: "androids", label: "Androids" },
 ];
 
 function matchesCategory(variant: CatalogVariant, category: string) {
   if (category === "todos") return true;
-  if (category === "iphones") return variant.brand_slug === "apple" || /iphone/i.test(variant.category_slug);
-  if (category === "androids") return variant.brand_slug !== "apple" && /smartphone/i.test(variant.category_slug);
+  if (category === "iphones") return /iphone/i.test(`${variant.category_slug} ${variant.category_name} ${variant.product_name} ${variant.model}`);
+  if (category === "androids") return variant.brand_slug !== "apple" && /smartphone|celular|android/i.test(`${variant.category_slug} ${variant.category_name}`);
   if (category === "tablets") return /tablet/i.test(variant.category_slug);
   if (category === "smartwatches") return /smartwatch|relogio|relógio/i.test(`${variant.category_slug} ${variant.category_name}`);
   return variant.category_slug === category;
@@ -55,10 +55,11 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
   const [otherOpen, setOtherOpen] = useState(false);
 
   const availablePrimary = useMemo(() => primaryCategories.filter((item) => variants.some((variant) => matchesCategory(variant, item.slug))), [variants]);
-  const otherCategories = useMemo(() => {
-    const primarySlugs = new Set(["iphone", "smartphones", "tablets", "smartwatches"]);
-    return Array.from(new Map(variants.filter((variant) => !primarySlugs.has(variant.category_slug)).map((variant) => [variant.category_slug, { slug: variant.category_slug, label: variant.category_name }])).values());
-  }, [variants]);
+  const otherCategories = useMemo(() => Array.from(new Map(
+    variants
+      .filter((variant) => !matchesCategory(variant, "iphones") && !matchesCategory(variant, "androids"))
+      .map((variant) => [variant.category_slug, { slug: variant.category_slug, label: variant.category_name }]),
+  ).values()), [variants]);
   const defaultCategory = variants.some((variant) => matchesCategory(variant, "iphones")) ? "iphones" : variants.some((variant) => matchesCategory(variant, "androids")) ? "androids" : "todos";
   const requestedCategory = searchParams.get("categoria") ?? defaultCategory;
   const category = requestedCategory === "todos" || variants.some((variant) => matchesCategory(variant, requestedCategory)) ? requestedCategory : defaultCategory;
@@ -100,7 +101,13 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
 
   return <section id="catalogo" className="catalog-section shell">
     <div className="section-heading"><div><span className="eyebrow">📱 Escolha com segurança</span><h2>Encontre seu próximo aparelho</h2></div><span className="result-count">{filteredVariants.length} {filteredVariants.length === 1 ? "opção disponível" : "opções disponíveis"}</span></div>
-    <div className="catalog-tools"><label className="search-field"><Search size={20}/><span className="sr-only">Buscar produtos</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="O que você procura?"/></label><div className="category-scroll" role="group" aria-label="Categorias"><SlidersHorizontal size={18}/>{availablePrimary.map((item) => <button key={item.slug} className={category === item.slug ? "active" : ""} onClick={() => selectCategory(item.slug)}>{item.label}</button>)}{otherCategories.length > 0 && <button className={otherCategories.some((item) => item.slug === category) ? "active" : ""} onClick={() => setOtherOpen((open) => !open)} aria-expanded={otherOpen}>Outras <ChevronDown/></button>}<button className={category === "todos" ? "active" : ""} onClick={() => selectCategory("todos")}>Todos</button></div></div>
+    <div className="catalog-tools">
+      <label className="search-field"><Search size={20}/><span className="sr-only">Buscar produtos</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="O que você procura?"/></label>
+      <div className="category-primary-grid" role="group" aria-label="Categorias principais">
+        {primaryCategories.map((item) => <button key={item.slug} className={`category-primary-button ${category === item.slug ? "active" : ""}`} onClick={() => selectCategory(item.slug)} aria-pressed={category === item.slug}>{item.label}</button>)}
+        <button className={`category-primary-button category-primary-more ${otherCategories.some((item) => item.slug === category) ? "active" : ""}`} onClick={() => setOtherOpen((open) => !open)} aria-expanded={otherOpen} disabled={otherCategories.length === 0}><span className="category-button-label"><strong>Outros</strong><small>produtos</small></span><ChevronDown/></button>
+      </div>
+    </div>
     {otherOpen && <div className="other-categories" aria-label="Outras categorias">{otherCategories.map((item) => <button key={item.slug} onClick={() => selectCategory(item.slug)}>{item.label}</button>)}</div>}
     <div className="catalog-controls"><label><span>Ordenar</span><select value={sort} onChange={(event) => setSort(event.target.value as SortMode)}><option value="featured">Destaques</option><option value="price_asc">Menor preço → maior preço</option><option value="price_desc">Maior preço → menor preço</option><option value="name">Nome A–Z</option></select></label><button className={filtersOpen ? "active" : ""} onClick={() => setFiltersOpen((open) => !open)} aria-expanded={filtersOpen}><ListFilter/> Filtros{activeFilterCount > 0 && <b>{activeFilterCount}</b>}</button></div>
     {filtersOpen && <div className="filter-panel"><div className="filter-panel-head"><strong>Filtrar produtos</strong>{activeFilterCount > 0 && <button onClick={clearFilters}><X/> Limpar</button>}</div><div className="filter-fields"><label>Faixa de preço<select value={priceRange} onChange={(event) => setPriceRange(event.target.value)}><option value="todos">Todos os preços</option><option value="ate-1000">Até R$ 1.000</option><option value="1000-2000">R$ 1.000 a R$ 2.000</option><option value="2000-3000">R$ 2.000 a R$ 3.000</option><option value="acima-3000">Acima de R$ 3.000</option></select></label><label>Condição<select value={condition} onChange={(event) => setCondition(event.target.value)}><option value="todos">Todas</option><option value="novo">Novo · Lacrado</option><option value="seminovo">Seminovo</option></select></label><label>Armazenamento<select value={storage} onChange={(event) => setStorage(event.target.value)}><option value="todos">Todos</option>{storageOptions.map((value) => <option key={value} value={value}>{value} GB</option>)}</select></label><label>Conectividade<select value={connectivity} onChange={(event) => setConnectivity(event.target.value)}><option value="todos">Todas</option><option value="4G">4G</option><option value="5G">5G</option></select></label></div></div>}
