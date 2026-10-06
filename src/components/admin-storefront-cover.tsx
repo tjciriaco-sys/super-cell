@@ -29,11 +29,13 @@ function canvasBlob(canvas: HTMLCanvasElement) {
   });
 }
 
+type BackgroundRemovalMode = "standard" | "soft" | "none";
+
 function extractObject(
   image: HTMLImageElement,
   cropStartRatio = 0,
   cropWidthRatio = 1,
-  removeBackground = true,
+  backgroundRemoval: BackgroundRemovalMode = "standard",
 ) {
   const width = image.naturalWidth || image.width;
   const height = image.naturalHeight || image.height;
@@ -71,14 +73,23 @@ function extractObject(
 
       const isBackground = neutral && brightness > 235;
 
-      // Nas traseiras auxiliares ainda removemos o fundo claro. Na imagem
-      // comercial principal, porém, preservamos os pixels originais para
-      // evitar que reflexos/tons claros do próprio aparelho sejam apagados.
-      if (removeBackground) {
-        if (neutral && brightness >= 248) {
+      if (backgroundRemoval !== "none") {
+        const soft = backgroundRemoval === "soft";
+        const removalNeutral = max - min < (soft ? 14 : 26);
+        const fadeStart = soft ? 249 : 235;
+        const fullyTransparentAt = soft ? 254 : 248;
+
+        // A imagem principal usa um recorte deliberadamente mais conservador:
+        // apenas brancos/quase-brancos realmente neutros são removidos. Isso
+        // limpa o fundo sem apagar reflexos, quinas claras ou tons do aparelho.
+        if (removalNeutral && brightness >= fullyTransparentAt) {
           data[offset + 3] = 0;
-        } else if (neutral && brightness > 235) {
-          data[offset + 3] = Math.min(data[offset + 3], Math.round(255 * ((248 - brightness) / 13)));
+        } else if (removalNeutral && brightness > fadeStart) {
+          const remainingAlpha = (fullyTransparentAt - brightness) / (fullyTransparentAt - fadeStart);
+          data[offset + 3] = Math.min(
+            data[offset + 3],
+            Math.max(0, Math.round(255 * remainingAlpha)),
+          );
         }
       }
 
@@ -131,10 +142,10 @@ function extractObject(
     maxY = fallbackMaxY;
   }
 
-  // A imagem principal mantém uma margem real da arte original ao redor do
-  // objeto. Isso protege quinas claras e reflexos que poderiam ficar fora da
-  // caixa detectada por contraste.
-  if (!removeBackground) {
+  // No recorte suave da imagem principal mantemos uma margem real da arte
+  // original. Depois da remoção conservadora essa margem fica transparente,
+  // mas protege quinas e reflexos contra um corte geométrico excessivo.
+  if (backgroundRemoval === "soft") {
     const sourceMargin = Math.max(8, Math.round(Math.max(sourceWidth, height) * 0.012));
     minX = Math.max(0, minX - sourceMargin);
     minY = Math.max(0, minY - sourceMargin);
@@ -170,7 +181,7 @@ function extractObject(
 function extractCommercialGroup(image: HTMLImageElement) {
   // A imagem principal da capa preserva a apresentação comercial completa:
   // traseira à esquerda + tela/frente à direita.
-  return extractObject(image, 0, 1, false);
+  return extractObject(image, 0, 1, "soft");
 }
 
 function extractRearDevice(image: HTMLImageElement) {

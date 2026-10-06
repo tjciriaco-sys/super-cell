@@ -1,6 +1,6 @@
 export type StorefrontCoverSource = { color: string | null; image: string | null | undefined };
 
-export const STOREFRONT_COVER_VERSION_PATH = "/covers-v8/";
+export const STOREFRONT_COVER_VERSION_PATH = "/covers-v9/";
 
 export function storefrontCoverSources(sources: StorefrontCoverSource[]) {
   const byColor = new Map<string, { color: string; image: string }>();
