@@ -166,7 +166,11 @@ function composeLayeredCover(images: HTMLImageElement[]) {
   });
 
   const frontWidth = rendered[0].width;
-  const stepRatio = count === 2 ? 0.72 : count === 3 ? 0.58 : 0.50;
+  // Regra visual aprovada: cada aparelho que fica atrás deve permanecer
+  // aproximadamente 40% visível e 60% encoberto pelo aparelho à frente.
+  // Como o módulo de câmera fica no lado esquerdo da traseira, esse avanço
+  // para a esquerda preserva a câmera de cada camada.
+  const stepRatio = 0.40;
   const step = frontWidth * stepRatio;
   const totalWidth = frontWidth + step * (count - 1);
   const left = (canvas.width - totalWidth) / 2;
