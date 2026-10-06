@@ -12,6 +12,68 @@ export async function activateOwner(formData:FormData){const name=z.string().min
 export async function logout(){const supabase=await createClient();await supabase.auth.signOut();redirect("/admin/login")}
 export async function toggleProduct(formData:FormData){const supabase=await assertAdmin();const id=z.string().uuid().parse(formData.get("id"));const active=formData.get("active")==="true";const {error}=await supabase.from("products").update({active:!active,updated_at:new Date().toISOString()}).eq("id",id);if(error)throw error;revalidatePath("/admin/produtos");revalidatePath("/", "layout")}
 export async function saveManualPrice(formData:FormData){const supabase=await assertAdmin();const variantId=z.string().uuid().parse(formData.get("variant_id"));const mode=z.enum(["automatic","manual"]).parse(formData.get("mode"));const price=mode==="manual"?z.coerce.number().positive().parse(formData.get("manual_price")):null;const reason=String(formData.get("reason")||"").trim()||null;const update:Record<string,unknown>={manual_price:price,manual_price_reason:reason,manual_price_started_at:price?new Date().toISOString():null,updated_at:new Date().toISOString()};if(formData.has("color"))update.color=z.string().trim().min(2).max(50).parse(formData.get("color"));if(formData.has("image_url")){const url=z.string().trim().max(500).parse(formData.get("image_url")??"");update.images=url?[url]:[];}if(formData.has("color_hex")){const value=String(formData.get("color_hex")||"").trim();update.color_hex=value?z.string().regex(/^#[0-9A-Fa-f]{6}$/).parse(value):null;}if(formData.has("condition_grade")){update.condition_grade=z.enum(["bom","muito_bom","excelente"]).parse(formData.get("condition_grade"));update.battery_health_minimum=z.coerce.number().int().min(1).max(100).parse(formData.get("battery_health_minimum"));update.original_components=z.enum(["true","false"]).parse(formData.get("original_components"))==="true";update.never_opened=z.enum(["true","false"]).parse(formData.get("never_opened"))==="true";update.warranty_months=z.coerce.number().int().min(0).max(60).parse(formData.get("warranty_months"));update.condition_details=z.string().trim().max(500).parse(formData.get("condition_details")??"")||null;}const {error}=await supabase.from("product_variants").update(update).eq("id",variantId);if(error)throw error;revalidatePath("/admin/produtos");revalidatePath("/", "layout")}
+export async function createVariantForProduct(formData:FormData){
+  const supabase=await assertAdmin();
+  const productId=z.string().uuid().parse(formData.get("product_id"));
+  const supplierId=z.string().uuid().parse(formData.get("supplier_id"));
+  const color=z.string().trim().min(2,"Informe a cor.").max(50).parse(formData.get("color"));
+  const colorHex=z.string().regex(/^#[0-9A-Fa-f]{6}$/,"Cor visual inválida.").parse(formData.get("color_hex"));
+  const ramText=String(formData.get("ram_gb")??"").trim();
+  const storageText=String(formData.get("storage_gb")??"").trim();
+  const ramGb=ramText?z.coerce.number().int().min(0).parse(ramText):null;
+  const storageGb=storageText?z.coerce.number().int().min(0).parse(storageText):null;
+  const cost=z.coerce.number().positive("Informe um custo válido.").parse(String(formData.get("cost")??"").replace(",","."));
+  const externalCode=String(formData.get("external_code")??"").trim()||null;
+  const now=new Date().toISOString();
+
+  const {data:product,error:productError}=await supabase.from("products").select("id,slug,commercial_status").eq("id",productId).single();
+  if(productError||!product)throw new Error("Produto não encontrado.");
+
+  let duplicateQuery=supabase.from("product_variants").select("id").eq("product_id",productId).eq("color",color);
+  duplicateQuery=ramGb===null?duplicateQuery.is("ram_gb",null):duplicateQuery.eq("ram_gb",ramGb);
+  duplicateQuery=storageGb===null?duplicateQuery.is("storage_gb",null):duplicateQuery.eq("storage_gb",storageGb);
+  const {data:duplicate}=await duplicateQuery.maybeSingle();
+  if(duplicate)throw new Error("Já existe uma variante com esta cor e configuração.");
+
+  const {data:variant,error:variantError}=await supabase.from("product_variants").insert({
+    product_id:productId,
+    sku:`ADM-VAR-${randomUUID().slice(0,8).toUpperCase()}`,
+    ram_gb:ramGb,
+    storage_gb:storageGb,
+    color,
+    color_hex:colorHex,
+    images:[],
+    active:false,
+    source_mode:"manual",
+    updated_at:now,
+  }).select("id").single();
+  if(variantError||!variant)throw new Error(`Não foi possível criar a variante: ${variantError?.message??"erro desconhecido"}`);
+
+  const {error:offerError}=await supabase.from("supplier_offers").insert({
+    supplier_id:supplierId,
+    variant_id:variant.id,
+    external_code:externalCode,
+    source_label:"Cadastro manual do gestor",
+    cost,
+    available:true,
+    source_updated_at:now,
+    raw_data:{origin:"admin_manual_variant"},
+    updated_at:now,
+  });
+  if(offerError){
+    await supabase.from("product_variants").delete().eq("id",variant.id);
+    throw new Error(`Não foi possível criar a oferta da variante: ${offerError.message}`);
+  }
+
+  const {error:activateError}=await supabase.from("product_variants").update({active:true,updated_at:now}).eq("id",variant.id);
+  if(activateError)throw new Error(`A variante foi criada, mas não pôde ser ativada: ${activateError.message}`);
+
+  revalidatePath(`/admin/produtos/${productId}`);
+  revalidatePath("/admin/produtos");
+  revalidatePath(`/produto/${product.slug}`);
+  revalidatePath("/", "layout");
+}
+
 export async function saveVariantImage(formData: FormData) {
   const supabase = await assertAdmin();
   const variantId = z.string().uuid().parse(formData.get("variant_id"));
