@@ -35,7 +35,7 @@ function extractRearDevice(image: HTMLImageElement) {
 
   // Padrão operacional aprovado: a foto individual mostra a traseira à esquerda
   // e a tela à direita. Para a capa coletiva usamos somente a traseira.
-  const cropWidth = Math.max(1, Math.round(width * 0.56));
+  const cropWidth = Math.max(1, Math.round(width * 0.46));
   const source = document.createElement("canvas");
   source.width = cropWidth;
   source.height = height;
@@ -117,7 +117,7 @@ function composeLayeredCover(images: HTMLImageElement[]) {
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   const count = devices.length;
-  const frontHeight = count === 4 ? 780 : count === 3 ? 840 : 900;
+  const frontHeight = count === 4 ? 900 : count === 3 ? 940 : 980;
   const rendered = devices.map((device, index) => {
     const scale = 1 - index * 0.055;
     const height = frontHeight * scale;
@@ -126,10 +126,10 @@ function composeLayeredCover(images: HTMLImageElement[]) {
   });
 
   const frontWidth = rendered[0].width;
-  const step = frontWidth * (count === 4 ? 0.49 : count === 3 ? 0.53 : 0.56);
+  const step = frontWidth * (count === 4 ? 0.34 : count === 3 ? 0.37 : 0.40);
   const totalWidth = frontWidth + step * (count - 1);
   const left = (canvas.width - totalWidth) / 2;
-  const bottom = 1060;
+  const bottom = 1100;
 
   // Desenha primeiro o aparelho mais ao fundo (esquerda) e termina pelo
   // aparelho principal, que fica à frente e à direita. O deslocamento foi
@@ -211,7 +211,7 @@ export function AdminStorefrontCover({
           : "Com uma única cor, a própria imagem cadastrada é usada na vitrine."}
       </small>
       {sources.length >= 2 && <small style={{ marginTop: 5 }}>
-        Padrão da foto individual: traseira à esquerda e tela à direita, em fundo claro.
+        Padrão da foto individual: aparelho em apresentação comercial (traseira + tela), com fundo claro. Na capa coletiva o sistema recorta a traseira e sobrepõe as cores, preservando as câmeras.
       </small>}
     </div>
 
