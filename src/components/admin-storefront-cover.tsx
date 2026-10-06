@@ -29,39 +29,44 @@ function canvasBlob(canvas: HTMLCanvasElement) {
   });
 }
 
-function extractRearDevice(image: HTMLImageElement) {
+function extractObject(
+  image: HTMLImageElement,
+  cropStartRatio = 0,
+  cropWidthRatio = 1,
+) {
   const width = image.naturalWidth || image.width;
   const height = image.naturalHeight || image.height;
+  const sourceX = Math.max(0, Math.round(width * cropStartRatio));
+  const sourceWidth = Math.max(1, Math.min(width - sourceX, Math.round(width * cropWidthRatio)));
 
-  // Padrão aprovado: a foto individual mostra a traseira à esquerda e a
-  // tela à direita. Para a capa coletiva usamos a traseira e recompomos
-  // discretamente a faixa que costuma ficar escondida pela tela.
-  const cropWidth = Math.max(1, Math.round(width * 0.50));
   const source = document.createElement("canvas");
-  source.width = cropWidth;
+  source.width = sourceWidth;
   source.height = height;
   const sourceContext = source.getContext("2d", { willReadFrequently: true });
   if (!sourceContext) throw new Error("O navegador não conseguiu preparar uma das imagens.");
 
-  sourceContext.drawImage(image, 0, 0, cropWidth, height, 0, 0, cropWidth, height);
+  sourceContext.drawImage(image, sourceX, 0, sourceWidth, height, 0, 0, sourceWidth, height);
 
-  const pixels = sourceContext.getImageData(0, 0, cropWidth, height);
+  const pixels = sourceContext.getImageData(0, 0, sourceWidth, height);
   const data = pixels.data;
-  let minX = cropWidth;
-  let minY = height;
-  let maxX = -1;
-  let maxY = -1;
+  const columnCounts = new Uint32Array(sourceWidth);
+  const rowCounts = new Uint32Array(height);
+
+  let fallbackMinX = sourceWidth;
+  let fallbackMinY = height;
+  let fallbackMaxX = -1;
+  let fallbackMaxY = -1;
 
   for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < cropWidth; x += 1) {
-      const offset = (y * cropWidth + x) * 4;
+    for (let x = 0; x < sourceWidth; x += 1) {
+      const offset = (y * sourceWidth + x) * 4;
       const red = data[offset];
       const green = data[offset + 1];
       const blue = data[offset + 2];
       const max = Math.max(red, green, blue);
       const min = Math.min(red, green, blue);
       const brightness = (red + green + blue) / 3;
-      const neutral = max - min < 24;
+      const neutral = max - min < 26;
 
       if (neutral && brightness >= 248) {
         data[offset + 3] = 0;
@@ -70,83 +75,103 @@ function extractRearDevice(image: HTMLImageElement) {
       }
 
       if (data[offset + 3] > 24) {
-        minX = Math.min(minX, x);
-        minY = Math.min(minY, y);
-        maxX = Math.max(maxX, x);
-        maxY = Math.max(maxY, y);
+        columnCounts[x] += 1;
+        rowCounts[y] += 1;
+        fallbackMinX = Math.min(fallbackMinX, x);
+        fallbackMinY = Math.min(fallbackMinY, y);
+        fallbackMaxX = Math.max(fallbackMaxX, x);
+        fallbackMaxY = Math.max(fallbackMaxY, y);
       }
     }
   }
 
   sourceContext.putImageData(pixels, 0, 0);
 
-  if (maxX < minX || maxY < minY) {
-    throw new Error("Não foi possível identificar a traseira em uma das imagens.");
+  if (fallbackMaxX < fallbackMinX || fallbackMaxY < fallbackMinY) {
+    throw new Error("Não foi possível identificar o aparelho em uma das imagens.");
+  }
+
+  // Ignora pequenos elementos soltos do material comercial (por exemplo,
+  // selos ou logos nos cantos) e mantém o corpo principal do aparelho.
+  const minColumnMass = Math.max(2, Math.round(height * 0.025));
+  const minRowMass = Math.max(2, Math.round(sourceWidth * 0.025));
+
+  let minX = columnCounts.findIndex((count) => count >= minColumnMass);
+  let maxX = -1;
+  for (let x = sourceWidth - 1; x >= 0; x -= 1) {
+    if (columnCounts[x] >= minColumnMass) {
+      maxX = x;
+      break;
+    }
+  }
+
+  let minY = rowCounts.findIndex((count) => count >= minRowMass);
+  let maxY = -1;
+  for (let y = height - 1; y >= 0; y -= 1) {
+    if (rowCounts[y] >= minRowMass) {
+      maxY = y;
+      break;
+    }
+  }
+
+  if (minX < 0 || maxX < minX) {
+    minX = fallbackMinX;
+    maxX = fallbackMaxX;
+  }
+  if (minY < 0 || maxY < minY) {
+    minY = fallbackMinY;
+    maxY = fallbackMaxY;
   }
 
   const objectWidth = maxX - minX + 1;
   const objectHeight = maxY - minY + 1;
-  const object = document.createElement("canvas");
-  object.width = objectWidth;
-  object.height = objectHeight;
-  const objectContext = object.getContext("2d", { willReadFrequently: true });
-  if (!objectContext) throw new Error("O navegador não conseguiu recortar uma das imagens.");
+  const padding = Math.max(4, Math.round(Math.max(objectWidth, objectHeight) * 0.008));
 
-  objectContext.drawImage(source, minX, minY, objectWidth, objectHeight, 0, 0, objectWidth, objectHeight);
-
-  const objectPixels = objectContext.getImageData(0, 0, objectWidth, objectHeight);
-  const samples: Array<[number, number, number]> = [];
-  const sampleX1 = Math.round(objectWidth * 0.25);
-  const sampleX2 = Math.round(objectWidth * 0.75);
-  const sampleY1 = Math.round(objectHeight * 0.55);
-  const sampleY2 = Math.round(objectHeight * 0.85);
-
-  for (let y = sampleY1; y < sampleY2; y += 6) {
-    for (let x = sampleX1; x < sampleX2; x += 6) {
-      const offset = (y * objectWidth + x) * 4;
-      if (objectPixels.data[offset + 3] < 180) continue;
-      samples.push([
-        objectPixels.data[offset],
-        objectPixels.data[offset + 1],
-        objectPixels.data[offset + 2],
-      ]);
-    }
-  }
-
-  const median = (values: number[]) => {
-    const sorted = [...values].sort((a, b) => a - b);
-    return sorted[Math.floor(sorted.length / 2)] ?? 128;
-  };
-  const bodyColor = samples.length
-    ? {
-        red: median(samples.map((item) => item[0])),
-        green: median(samples.map((item) => item[1])),
-        blue: median(samples.map((item) => item[2])),
-      }
-    : { red: 128, green: 128, blue: 128 };
-
-  const reconstructedWidth = Math.round(objectWidth * 1.10);
   const output = document.createElement("canvas");
-  output.width = reconstructedWidth;
-  output.height = objectHeight;
+  output.width = objectWidth + padding * 2;
+  output.height = objectHeight + padding * 2;
   const outputContext = output.getContext("2d");
-  if (!outputContext) throw new Error("O navegador não conseguiu recompor uma das imagens.");
+  if (!outputContext) throw new Error("O navegador não conseguiu recortar uma das imagens.");
 
-  const radius = Math.max(16, Math.round(Math.min(reconstructedWidth, objectHeight) * 0.045));
-  outputContext.save();
-  outputContext.beginPath();
-  outputContext.roundRect(0, 0, reconstructedWidth, objectHeight, radius);
-  outputContext.clip();
-  outputContext.fillStyle = `rgb(${bodyColor.red}, ${bodyColor.green}, ${bodyColor.blue})`;
-  outputContext.fillRect(0, 0, reconstructedWidth, objectHeight);
-  outputContext.drawImage(object, 0, 0, reconstructedWidth, objectHeight);
-  outputContext.restore();
+  outputContext.drawImage(
+    source,
+    minX,
+    minY,
+    objectWidth,
+    objectHeight,
+    padding,
+    padding,
+    objectWidth,
+    objectHeight,
+  );
 
   return output;
 }
 
+function extractCommercialGroup(image: HTMLImageElement) {
+  // A imagem principal da capa preserva a apresentação comercial completa:
+  // traseira à esquerda + tela/frente à direita.
+  return extractObject(image, 0, 1);
+}
+
+function extractRearDevice(image: HTMLImageElement) {
+  // As cores adicionais entram apenas com a traseira. O padrão das imagens
+  // individuais coloca a traseira no lado esquerdo da arte.
+  return extractObject(image, 0, 0.54);
+}
+
+function visibleRatioForColorCount(count: number) {
+  if (count <= 2) return 0.50;
+  if (count === 3) return 0.40;
+  return 0.30;
+}
+
 function composeLayeredCover(images: HTMLImageElement[]) {
-  const devices = images.map(extractRearDevice);
+  if (images.length < 2) throw new Error("São necessárias pelo menos duas cores para gerar a capa coletiva.");
+
+  const mainGroup = extractCommercialGroup(images[0]);
+  const rearDevices = images.slice(1).map(extractRearDevice);
+
   const canvas = document.createElement("canvas");
   canvas.width = 1200;
   canvas.height = 1200;
@@ -156,49 +181,56 @@ function composeLayeredCover(images: HTMLImageElement[]) {
   context.fillStyle = "#ffffff";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
-  const count = devices.length;
+  const count = images.length;
+  const visibleRatio = visibleRatioForColorCount(count);
+  const mainRatio = mainGroup.width / mainGroup.height;
+  const rearRatios = rearDevices.map((device) => device.width / device.height);
 
-  // Todos os aparelhos representam o mesmo modelo, portanto devem aparecer
-  // com o MESMO tamanho aparente. A versão anterior reduzia discretamente
-  // os aparelhos de trás e isso fazia a camada posterior parecer pequena.
-  const targetHeight = count === 4 ? 880 : count === 3 ? 920 : 980;
+  // A largura total é composta pela imagem comercial completa na frente
+  // mais somente a parcela visível de cada traseira ao fundo. Assim o
+  // percentual aprovado corresponde à área realmente exposta na composição.
+  const relativeWidth = mainRatio + rearRatios.reduce(
+    (sum, ratio) => sum + ratio * visibleRatio,
+    0,
+  );
 
-  // Normalizamos também a largura. As imagens comerciais podem ter pequenos
-  // recortes diferentes entre as cores; sem normalização uma cor pode ficar
-  // visualmente muito mais estreita que outra.
-  const naturalRatios = devices
-    .map((device) => device.width / device.height)
-    .filter((ratio) => Number.isFinite(ratio) && ratio > 0);
-  const averageRatio = naturalRatios.reduce((sum, ratio) => sum + ratio, 0) / Math.max(1, naturalRatios.length);
-  const targetRatio = Math.min(0.52, Math.max(0.40, averageRatio));
-  const targetWidth = targetHeight * targetRatio;
+  const maxHeight = 980;
+  const maxWidth = 1080;
+  const targetHeight = Math.min(maxHeight, maxWidth / Math.max(relativeWidth, 0.1));
+  const mainWidth = targetHeight * mainRatio;
+  const rearWidths = rearRatios.map((ratio) => targetHeight * ratio);
+  const exposedWidths = rearWidths.map((width) => width * visibleRatio);
+  const totalWidth = mainWidth + exposedWidths.reduce((sum, width) => sum + width, 0);
 
-  const rendered = devices.map((device) => ({
-    device,
-    width: targetWidth,
-    height: targetHeight,
-  }));
-
-  // Calibração perceptual: no card final, 40% matemáticos de deslocamento
-  // estavam aparentando apenas ~15–20% do aparelho posterior. Aumentamos o
-  // avanço horizontal para 58% da largura normalizada para que a área
-  // efetivamente percebida do aparelho de trás fique próxima dos ~40%
-  // aprovados, mantendo 60% visualmente encobertos pela camada da frente.
-  const stepRatio = 0.58;
-  const step = targetWidth * stepRatio;
-  const totalWidth = targetWidth + step * (count - 1);
   const left = (canvas.width - totalWidth) / 2;
   const bottom = 1090;
+  const mainX = left + exposedWidths.reduce((sum, width) => sum + width, 0);
+  const y = bottom - targetHeight;
 
-  // Perspectiva do observador: o aparelho principal fica à frente e à
-  // direita. Os demais seguem para trás em direção à esquerda. Desenhamos
-  // do fundo para a frente para produzir a sobreposição correta.
-  for (let index = count - 1; index >= 0; index -= 1) {
-    const item = rendered[index];
-    const x = left + (count - 1 - index) * step;
-    const y = bottom - item.height;
-    context.drawImage(item.device, x, y, item.width, item.height);
+  // Calcula cada traseira a partir da imagem principal. A cor cadastrada
+  // por último fica mais ao fundo/à esquerda; a primeira cor adicional fica
+  // imediatamente atrás da principal.
+  const rearPositions: Array<{ device: HTMLCanvasElement; x: number; width: number }> = [];
+  let cursorX = mainX;
+
+  for (let index = 0; index < rearDevices.length; index += 1) {
+    cursorX -= exposedWidths[index];
+    rearPositions.push({
+      device: rearDevices[index],
+      x: cursorX,
+      width: rearWidths[index],
+    });
   }
+
+  // Desenha do fundo para a frente.
+  for (let index = rearPositions.length - 1; index >= 0; index -= 1) {
+    const item = rearPositions[index];
+    context.drawImage(item.device, item.x, y, item.width, targetHeight);
+  }
+
+  // A primeira cor é a camada principal e permanece inteira:
+  // traseira + frente/tela, à direita e acima das demais.
+  context.drawImage(mainGroup, mainX, y, mainWidth, targetHeight);
 
   return canvas;
 }
@@ -229,15 +261,14 @@ export function AdminStorefrontCover({
       setFeedback({
         status: "working",
         message: automatic
-          ? "Montando automaticamente a capa sobreposta com as cores cadastradas…"
-          : "Gerando nova capa sobreposta da vitrine…",
+          ? "Montando automaticamente a nova capa comercial com as cores cadastradas…"
+          : "Gerando nova capa comercial da vitrine…",
       });
 
-      const selected = sources.slice(0, 4);
-      const images = await Promise.all(selected.map((item) => loadImage(item.image)));
+      const images = await Promise.all(sources.map((item) => loadImage(item.image)));
       const canvas = composeLayeredCover(images);
       const blob = await canvasBlob(canvas);
-      const file = new File([blob], `capa-vitrine-sobreposta-${Date.now()}.webp`, { type: "image/webp" });
+      const file = new File([blob], `capa-vitrine-comercial-${Date.now()}.webp`, { type: "image/webp" });
       const formData = new FormData();
       formData.set("product_id", productId);
       formData.set("cover_file", file);
@@ -261,23 +292,25 @@ export function AdminStorefrontCover({
     void generate(true);
   }, [generate, imageStrategy, needsGeneration, sources.length]);
 
+  const exposure = Math.round(visibleRatioForColorCount(sources.length) * 100);
+
   return <div className="admin-image-upload" style={{ marginTop: 18 }}>
     <div>
       <strong>Capa da vitrine</strong>
       <small>
         {sources.length >= 2
-          ? `${sources.length} cores com imagem detectadas. A capa usa as traseiras em sobreposição: aparelhos no mesmo tamanho, principal à direita e demais atrás seguindo para a esquerda, com cerca de 40% visualmente exposto.`
+          ? `${sources.length} cores com imagem detectadas. A primeira cor fica inteira na frente (traseira + tela), à direita. As demais entram só com a traseira, sobrepostas para a esquerda, com cerca de ${exposure}% de cada aparelho ao fundo visível.`
           : "Com uma única cor, a própria imagem cadastrada é usada na vitrine."}
       </small>
       {sources.length >= 2 && <small style={{ marginTop: 5 }}>
-        Padrão da foto individual: aparelho em apresentação comercial (traseira + tela), com fundo claro. Na capa coletiva o sistema recorta a traseira e sobrepõe as cores, preservando as câmeras.
+        Padrão da foto individual: apresentação comercial com traseira à esquerda, tela à direita e fundo claro.
       </small>}
     </div>
 
     {currentCover && !needsGeneration
       ? <div className="admin-image-preview"><Image src={currentCover} alt="Capa atual da vitrine" fill sizes="180px"/></div>
       : sources.length > 0 && <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginTop: 8 }}>
-          {sources.slice(0, 4).map((item) => <div key={item.image} style={{ width: 68 }}>
+          {sources.map((item) => <div key={item.image} style={{ width: 68 }}>
             <div style={{ position: "relative", width: 68, height: 68, border: "1px solid #e3dfd5", borderRadius: 10, overflow: "hidden", background: "#fff" }}>
               <Image src={item.image} alt={item.color} fill sizes="68px" style={{ objectFit: "contain" }}/>
             </div>
