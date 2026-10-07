@@ -40,7 +40,7 @@ export function Installments({
           role="radio"
           aria-checked={isSelected}
           key={plan.installments}
-          onClick={()=>onSelect(plan.installments)}
+          onClick={()=>{onSelect(plan.installments);window.setTimeout(()=>setOpen(false),180)}}
         >
           <strong>{plan.installments}x de {money.format(cardTotal/plan.installments)}</strong>
           <small>Total {money.format(cardTotal)}</small>
