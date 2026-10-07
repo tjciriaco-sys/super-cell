@@ -23,7 +23,8 @@ export function ProductExperience({ variants, initialVariantId, acquirer, schedu
   const isAvailable=selected.commercial_status==="available"&&selected.price_pix!==null; const productPrice=Number(selected.price_pix??0); const hasPaidDelivery=isAvailable&&selected.pricing_mode==="accessory"&&productPrice<accessoryFreeThreshold; const deliveryFee=hasPaidDelivery?accessoryDeliveryFee:0; const pixTotal=productPrice+deliveryFee; const cardTotal=pixTotal*Number(plan?.factor??1);
   const configurationLabel=[selected.ram_gb?`${selected.ram_gb} RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
   const technicalConfigurationLabel=[selected.ram_gb?`${selected.ram_gb} GB RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
-  const isIphone=selected.brand_slug==="apple"&&/iphone/i.test(selected.product_name);\n  const effectiveConditionGrade=selected.condition==="seminovo"&&selected.brand_slug==="apple"?(selected.condition_grade??"excelente"):selected.condition_grade;
+  const isIphone=selected.brand_slug==="apple"&&/iphone/i.test(selected.product_name);
+  const effectiveConditionGrade=selected.condition==="seminovo"&&selected.brand_slug==="apple"?(selected.condition_grade??"excelente"):selected.condition_grade;
   const conditionLabel=effectiveConditionGrade?gradeContent[effectiveConditionGrade].label:null;
   const batteryLabel=selected.battery_health_minimum?`${selected.battery_health_minimum}%`:null;
   const orderProductTitle=selected.color?`${selectedProductTitle} — ${selected.color}`:selectedProductTitle;
