@@ -504,3 +504,63 @@
   .other-categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:7px}
   .other-categories button{min-height:35px;padding:4px 5px;font-size:10.5px}
 }
+
+
+/* Customer experience v14 — smart navigation, tactile CTA, custom filters and WhatsApp presence. */
+.smart-header{transition:transform .28s cubic-bezier(.22,.8,.25,1),box-shadow .28s ease;will-change:transform}
+.smart-header.is-hidden{transform:translateY(calc(-100% - 2px));box-shadow:none}
+.catalog-cta{position:relative;overflow:hidden;border:0;cursor:pointer;transition:transform .16s ease,box-shadow .2s ease,filter .2s ease}
+.catalog-cta:active,.catalog-cta.is-pressed{transform:translateY(2px) scale(.985);filter:saturate(1.08) brightness(.98);box-shadow:0 5px 16px rgba(143,95,12,.19)}
+.catalog-cta .cta-feedback{position:absolute;width:18px;height:18px;right:21%;top:50%;border-radius:50%;background:rgba(255,255,255,.55);opacity:0;transform:translate(50%,-50%) scale(.2);pointer-events:none}
+.catalog-cta.is-pressed .cta-feedback{animation:cta-pulse .48s ease-out}
+@keyframes cta-pulse{0%{opacity:.75;transform:translate(50%,-50%) scale(.2)}100%{opacity:0;transform:translate(50%,-50%) scale(7)}}
+.catalog-section{scroll-margin-top:8px}
+
+.floating-whatsapp{position:fixed;z-index:70;right:max(16px,env(safe-area-inset-right));bottom:max(18px,calc(env(safe-area-inset-bottom) + 12px));display:flex;align-items:center;gap:9px;color:white;filter:drop-shadow(0 10px 24px rgba(9,82,46,.2))}
+.floating-wa-label{display:flex;flex-direction:column;align-items:flex-end;padding:7px 11px 7px 13px;border:1px solid rgba(35,194,103,.34);border-radius:12px;background:rgba(15,26,20,.92);backdrop-filter:blur(12px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.floating-wa-label strong{font-size:11px;line-height:1.05}
+.floating-wa-label small{margin-top:2px;color:#b9d9c6;font-size:8px;line-height:1}
+.floating-wa-icon{position:relative;width:48px;height:48px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.55);border-radius:15px;background:linear-gradient(145deg,#2dd66f,#15944e);box-shadow:0 9px 24px rgba(18,149,78,.3),inset 0 1px 0 rgba(255,255,255,.35)}
+.floating-wa-icon svg{width:27px;height:27px}
+.floating-wa-orbit{position:absolute;right:-4px;width:56px;height:56px;border:1px solid rgba(37,211,102,.22);border-radius:18px;animation:wa-orbit 2.8s ease-in-out infinite;pointer-events:none}
+@keyframes wa-orbit{0%,100%{transform:scale(.92);opacity:.25}50%{transform:scale(1.08);opacity:.65}}
+
+.catalog-controls{position:relative}
+.sort-control{position:relative;min-width:0}
+.sort-trigger{width:100%;height:40px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#3c352d;cursor:pointer}
+.sort-trigger>span{color:var(--muted);font-size:11px;font-weight:800}
+.sort-trigger>strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;font-size:12px;font-weight:850}
+.sort-trigger>svg{width:15px;height:15px;transition:transform .18s ease}
+.sort-trigger.active{border-color:#d4b461;background:#fffaf0}
+.sort-trigger.active>svg{transform:rotate(180deg)}
+.sort-menu{position:absolute;z-index:32;top:calc(100% + 6px);right:0;left:0;display:grid;gap:4px;padding:6px;border:1px solid #dfd3be;border-radius:12px;background:rgba(255,253,248,.98);backdrop-filter:blur(12px);box-shadow:0 16px 34px rgba(34,24,10,.13)}
+.sort-menu button{min-height:38px;padding:8px 10px;border:0;border-radius:8px;background:transparent;color:#393128;text-align:left;font-size:11px;font-weight:780;cursor:pointer}
+.sort-menu button:hover,.sort-menu button.selected{background:linear-gradient(135deg,#fff7dc,#f8edd1);color:#694a0b}
+.filter-panel{background:linear-gradient(145deg,#fffefb,#faf7f1);box-shadow:0 10px 28px rgba(49,34,13,.04)}
+.filter-panel-head>div{display:grid;gap:2px}
+.filter-panel-head>div>small{color:var(--muted);font-size:9px;font-weight:650}
+.filter-fields-modern{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.filter-group{display:grid;gap:7px;align-content:start}
+.filter-group>span{color:#6d645a;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.045em}
+.filter-group>div{display:flex;flex-wrap:wrap;gap:5px}
+.filter-group button{min-height:34px;padding:6px 9px;border:1px solid #e4ddd2;border-radius:8px;background:white;color:#4b443c;font-size:10px;font-weight:780;cursor:pointer;transition:border-color .16s ease,background .16s ease,transform .12s ease}
+.filter-group button:active{transform:scale(.97)}
+.filter-group button.selected{border-color:#cba94d;background:linear-gradient(145deg,#fff8df,#f5e5b9);color:#654608;box-shadow:inset 0 0 0 1px rgba(203,169,77,.12)}
+
+@media(max-width:700px){
+  .smart-header{transition-duration:.24s}
+  .floating-whatsapp{right:13px;bottom:max(14px,calc(env(safe-area-inset-bottom) + 9px))}
+  .floating-wa-label{display:none}
+  .floating-wa-icon{width:48px;height:48px;border-radius:15px}
+  .catalog-controls{grid-template-columns:minmax(0,1fr) auto}
+  .sort-trigger{height:40px}
+  .sort-trigger>strong{font-size:11px}
+  .sort-menu{left:0;right:-56px}
+  .filter-panel{padding:12px}
+  .filter-fields-modern{grid-template-columns:1fr;gap:12px}
+  .filter-group>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  .filter-group button{min-height:34px;padding:5px 4px;font-size:9.5px}
+}
+@media(max-width:360px){
+  .filter-group>div{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import { Header } from "@/components/header";
 import { CatalogGrid } from "@/components/catalog-grid";
 import { SiteFooter } from "@/components/site-footer";
+import { CatalogCta } from "@/components/catalog-cta";
+import { FloatingWhatsApp } from "@/components/floating-whatsapp";
 import { getCatalog, getCommerceData } from "@/lib/data";
 
 export const revalidate = 60;
@@ -26,7 +28,7 @@ export default async function Home() {
       <div className="hero-copy">
         <h1>Comprar seu celular pode ser tão simples quanto pedir uma pizza. <span className="headline-emoji" aria-hidden="true">😊</span></h1>
         <p>Escolha o aparelho, veja o preço e o parcelamento e finalize pelo WhatsApp.</p>
-        <a className="primary-button" href="#catalogo">Escolher meu celular <span className="cta-emoji" aria-hidden="true">👇🏽</span></a>
+        <CatalogCta/>
         <div className="hero-trust"><span><ShieldCheck/> Compra assistida e disponibilidade confirmada</span></div>
       </div>
     </section>
@@ -40,5 +42,6 @@ export default async function Home() {
       <CatalogGrid variants={variants} primaryInstallments={commerce.acquirer.featured_primary} primaryFactor={Number(primary?.factor ?? 1)} accessoryDeliveryFee={Number(commerce.settings.accessory_delivery_fee??15)} accessoryFreeThreshold={Number(commerce.settings.accessory_free_delivery_threshold??100)}/>
     </Suspense>
     <SiteFooter whatsapp={whatsapp} cnpj={cnpj || undefined} location={location}/>
+    <FloatingWhatsApp number={whatsapp} message="Olá! Vim pelo catálogo da Super Cell e gostaria de tirar uma dúvida com um vendedor." />
   </main>;
 }
