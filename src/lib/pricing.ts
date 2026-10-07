@@ -8,8 +8,15 @@ export function fixedMarkup(cost: number) {
 export function automaticPixPrice(cost: number) { return cost + fixedMarkup(cost); }
 export type StandardPricingTier = { min_cost: number | string; max_cost: number | string | null; fixed_markup: number | string; active?: boolean };
 export type AccessoryPricingTier = { min_cost: number | string; max_cost: number | string; multiplier: number | string; active?: boolean };
+export const PERFUMERY_PRICING={commission:.035,delivery:15,packaging:1,targetResult:47} as const;
 export function roundAccessoryPrice(value:number){return Math.ceil(value/5)*5-.1}
-export function configuredAutomaticPrice(cost:number,mode:"standard"|"accessory",standardTiers:StandardPricingTier[],accessoryTiers:AccessoryPricingTier[]){
+export function roundPerfumeryPrice(value:number){return Math.round((Math.ceil((value-.9)-1e-9)+.9)*100)/100}
+export function perfumeryPixPrice(cost:number){
+  const {commission,delivery,packaging,targetResult}=PERFUMERY_PRICING;
+  return roundPerfumeryPrice((cost+delivery+packaging+targetResult)/(1-commission));
+}
+export function configuredAutomaticPrice(cost:number,mode:"standard"|"accessory"|"perfumery",standardTiers:StandardPricingTier[],accessoryTiers:AccessoryPricingTier[]){
+  if(mode==="perfumery")return perfumeryPixPrice(cost);
   if(mode==="accessory"){
     const tier=accessoryTiers.find((item)=>item.active!==false&&cost>=Number(item.min_cost)&&cost<=Number(item.max_cost));
     if(tier)return roundAccessoryPrice(cost*Number(tier.multiplier));
