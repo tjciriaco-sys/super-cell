@@ -34,6 +34,17 @@ const primaryCategories = [
   { slug: "iphones", label: "iPhones" },
   { slug: "androids", label: "Androids" },
 ];
+const secondaryCategories = [
+  { slug: "tablets", label: "Tablets" },
+  { slug: "smartwatches", label: "Smartwatches" },
+  { slug: "perfumaria", label: "Perfumaria" },
+  { slug: "projetores", label: "Projetores" },
+  { slug: "receptores", label: "Receptores" },
+  { slug: "cabos-carregadores", label: "Cabos e carregadores", compact: true },
+  { slug: "caixas-de-som", label: "Caixas de som" },
+  { slug: "fones-de-ouvido", label: "Fones de ouvido" },
+  { slug: "power-banks", label: "Power banks" },
+];
 
 function matchesCategory(variant: CatalogVariant, category: string) {
   if (category === "todos") return true;
@@ -41,6 +52,7 @@ function matchesCategory(variant: CatalogVariant, category: string) {
   if (category === "androids") return variant.brand_slug !== "apple" && /smartphone|celular|android/i.test(`${variant.category_slug} ${variant.category_name}`);
   if (category === "tablets") return /tablet/i.test(variant.category_slug);
   if (category === "smartwatches") return /smartwatch|relogio|relógio/i.test(`${variant.category_slug} ${variant.category_name}`);
+  if (category === "cabos-carregadores") return variant.category_slug === "cabos" || variant.category_slug === "carregadores";
   return variant.category_slug === category;
 }
 function inPriceRange(price: number | null, range: string) {
@@ -70,12 +82,10 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
   const [connectivity, setConnectivity] = useState("todos");
   const [otherOpen, setOtherOpen] = useState(false);
 
-  const availablePrimary = useMemo(() => primaryCategories.filter((item) => variants.some((variant) => matchesCategory(variant, item.slug))), [variants]);
-  const otherCategories = useMemo(() => Array.from(new Map(
-    variants
-      .filter((variant) => !matchesCategory(variant, "iphones") && !matchesCategory(variant, "androids"))
-      .map((variant) => [variant.category_slug, { slug: variant.category_slug, label: variant.category_name }]),
-  ).values()), [variants]);
+  const otherCategories = useMemo(
+    () => secondaryCategories.filter((item) => variants.some((variant) => matchesCategory(variant, item.slug))),
+    [variants],
+  );
   const defaultCategory = variants.some((variant) => matchesCategory(variant, "iphones")) ? "iphones" : variants.some((variant) => matchesCategory(variant, "androids")) ? "androids" : "todos";
   const requestedCategory = searchParams.get("categoria") ?? defaultCategory;
   const category = requestedCategory === "todos" || variants.some((variant) => matchesCategory(variant, requestedCategory)) ? requestedCategory : defaultCategory;
@@ -137,7 +147,7 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
         <button className={`category-primary-button category-primary-more ${otherCategories.some((item) => item.slug === category) ? "active" : ""}`} onClick={() => setOtherOpen((open) => !open)} aria-expanded={otherOpen} disabled={otherCategories.length === 0}><span className="category-button-label"><strong>Outros</strong><small>produtos</small></span><ChevronDown/></button>
       </div>
     </div>
-    {otherOpen && <div className="other-categories" aria-label="Outras categorias">{otherCategories.map((item) => <button key={item.slug} onClick={() => selectCategory(item.slug)}>{item.label}</button>)}</div>}
+    {otherOpen && <div className="other-categories" aria-label="Outras categorias">{otherCategories.map((item) => <button key={item.slug} className={"compact" in item && item.compact ? "compact-label" : ""} onClick={() => selectCategory(item.slug)}>{item.label}</button>)}</div>}
     <div className="catalog-controls">
       <div className="sort-control">
         <button className={`sort-trigger ${sortOpen?"active":""}`} type="button" onClick={()=>setSortOpen((open)=>!open)} aria-expanded={sortOpen}><span>Ordenar</span><strong>{sortOptions.find((item)=>item.value===sort)?.short}</strong><ChevronDown/></button>
