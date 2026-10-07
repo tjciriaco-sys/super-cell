@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { automaticPixPrice, cardTotal, configuredAutomaticPrice, fixedMarkup, roundAccessoryPrice, unitResult } from "./pricing";
+import { automaticPixPrice, cardTotal, configuredAutomaticPrice, fixedMarkup, perfumeryPixPrice, roundAccessoryPrice, roundPerfumeryPrice, unitResult } from "./pricing";
 import { calculateNextRoute } from "./logistics";
 import type { Schedule } from "./types";
 
@@ -9,6 +9,9 @@ describe("precificação Super Cell", () => {
   it("usa fator efetivo de parcelamento",()=>expect(cardTotal(1000,1.17275)).toBe(1172.75));
   it("arredonda acessórios para final comercial 4,90",()=>expect(roundAccessoryPrice(46.2)).toBe(49.9));
   it("usa faixas configuradas em vez de repetir valores no painel",()=>expect(configuredAutomaticPrice(50,"accessory",[],[{min_cost:20.01,max_cost:50,multiplier:1.65}])).toBe(84.9));
+  it("arredonda perfumaria sempre para cima no final ,90",()=>{expect(roundPerfumeryPrice(189.64)).toBe(189.9);expect(roundPerfumeryPrice(200)).toBe(200.9);expect(roundPerfumeryPrice(220.9)).toBe(220.9);expect(roundPerfumeryPrice(220.91)).toBe(221.9)});
+  it("preserva pelo menos R$ 47 de resultado na perfumaria",()=>{const price=perfumeryPixPrice(120);expect(price).toBe(189.9);expect(unitResult(price,120,.035,15,1)).toBeGreaterThanOrEqual(47)});
+  it("aplica o modo perfumery pela configuração",()=>expect(configuredAutomaticPrice(130,"perfumery",[],[])).toBe(200.9));
 });
 
 const schedules:Schedule[]=[1,2,3,4,5].flatMap((weekday)=>['10:00:00','15:00:00','18:00:00'].map((departure_time,index)=>({id:`${weekday}-${index}`,weekday,departure_time,cutoff_minutes:60,active:true}))).concat([{id:'6-0',weekday:6,departure_time:'10:00:00',cutoff_minutes:60,active:true},{id:'6-1',weekday:6,departure_time:'14:00:00',cutoff_minutes:60,active:true}]);
