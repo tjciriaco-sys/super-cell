@@ -677,3 +677,10 @@
   .order-installment-options button strong{font-size:9.5px}
   .order-installment-options button small{font-size:7px}
 }
+
+
+/* Catalog v18 — ordered secondary categories. */
+.other-categories button.compact-label{font-size:9.5px;line-height:1.05;padding-inline:4px}
+@media(max-width:700px){
+  .other-categories button.compact-label{font-size:9px;letter-spacing:-.01em}
+}
