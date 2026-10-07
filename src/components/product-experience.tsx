@@ -47,7 +47,7 @@ export function ProductExperience({ variants, initialVariantId, acquirer, schedu
         </div>}
         {isAvailable&&<><div className="main-price"><strong>{money.format(productPrice)}</strong><span>💸 no Pix</span>{selected.supplier_code&&<sup className="supplier-code">{selected.supplier_code}</sup>}</div>
         {selected.pricing_mode==="accessory"&&<div className={`accessory-delivery ${hasPaidDelivery?"paid":"free"}`} aria-label={hasPaidDelivery?`Entrega de ${money.format(deliveryFee)}`:"Entrega grátis neste item"}><span aria-hidden="true">🚚</span><strong>{hasPaidDelivery?`Entrega: ${money.format(deliveryFee)}`:"Entrega grátis"}</strong></div>}
-        <Installments price={pixTotal} plans={plans} featured={acquirer.featured_primary}/>
+        <Installments price={pixTotal} plans={plans} featured={acquirer.featured_primary} selectedInstallments={installments} onSelect={(value)=>{setInstallments(value);setPayment("Cartão")}}/>
         {selected.pricing_mode==="accessory"&&<p className="accessory-policy-note">Entrega grátis em acessórios a partir de {money.format(accessoryFreeThreshold)} ou junto com um aparelho.</p>}</>}
       </section>
     </div>
