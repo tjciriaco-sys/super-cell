@@ -20,7 +20,8 @@ export function Installments({ price, plans, featured }: { price:number; plans:I
     {open&&<div className="installment-grid" role="list" aria-label="Opções de parcelamento">
       {sorted.map((plan)=>{
         const cardTotal=price*Number(plan.factor);
-        return <div className="installment-option" role="listitem" key={plan.installments}>
+        const isFeatured=plan.installments===primary.installments;
+        return <div className={`installment-option ${isFeatured?"featured":""}`} role="listitem" aria-current={isFeatured?"true":undefined} key={plan.installments}>
           <strong>{plan.installments}x de {money.format(cardTotal/plan.installments)}</strong>
           <small>Total {money.format(cardTotal)}</small>
         </div>;
