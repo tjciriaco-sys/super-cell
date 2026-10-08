@@ -2,6 +2,8 @@
 
 Aplicação comercial mobile-first com catálogo público, venda assistida pelo WhatsApp e painel administrativo.
 
+Para retomar o projeto em um novo chat ou nova execução, leia primeiro [docs/CURRENT-CONTEXT.md](docs/CURRENT-CONTEXT.md). Esse arquivo consolida o estado atual, decisões recentes, regras críticas, infraestrutura e pontos de continuidade.
+
 O padrão obrigatório para imagens de produtos e variantes está documentado em [docs/catalog-image-standard.md](docs/catalog-image-standard.md). Toda nova importação assistida deve passar por essa validação antes da publicação.
 
 As decisões consolidadas de cadastro, publicação, variantes, seminovos, preço e interface estão em [docs/production-rules.md](docs/production-rules.md). Correções pontuais devem ser transformadas em regras reutilizáveis sempre que o comportamento puder se repetir.
