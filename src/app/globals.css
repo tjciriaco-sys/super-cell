@@ -1132,3 +1132,42 @@
   .variants-manager-head{display:grid}
   .variants-manager-head .admin-primary-link{width:100%}
 }
+
+
+/* Admin UX v7 — local filters and publication clarity. */
+.variant-filter-pills button{
+  padding:7px 10px;
+  border:1px solid #e1d9cd;
+  border-radius:999px;
+  background:#fff;
+  color:#6e655b;
+  font-size:10px;
+  font-weight:800;
+}
+.variant-filter-pills button.active{
+  background:#17130c;
+  border-color:#17130c;
+  color:#fff;
+}
+.variant-preview-link.waiting{
+  border-color:#ead39a;
+  background:#fff8df;
+  color:#7c5a17;
+}
+.admin-product-tools{display:grid;gap:9px;margin-bottom:12px}
+.admin-product-group-filter{display:flex;flex-wrap:wrap;gap:6px}
+.admin-product-group-filter button{
+  min-height:34px;
+  padding:0 12px;
+  border:1px solid #e1d9cd;
+  border-radius:999px;
+  background:#fff;
+  color:#6e655b;
+  font-size:10px;
+  font-weight:850;
+}
+.admin-product-group-filter button.active{
+  background:#17130c;
+  border-color:#17130c;
+  color:#fff;
+}
