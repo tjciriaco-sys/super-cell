@@ -31,8 +31,8 @@ const priceOptions=[
 const conditionOptions=[{value:"todos",label:"Todas"},{value:"novo",label:"Novo · Lacrado"},{value:"seminovo",label:"Seminovo"}];
 const connectivityOptions=[{value:"todos",label:"Todas"},{value:"4G",label:"4G"},{value:"5G",label:"5G"}];
 const primaryCategories = [
-  { slug: "iphones", label: "iPhones" },
   { slug: "androids", label: "Androids" },
+  { slug: "iphones", label: "iPhones" },
 ];
 const secondaryCategories = [
   { slug: "tablets", label: "Tablets" },
@@ -86,7 +86,7 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
     () => secondaryCategories.filter((item) => variants.some((variant) => matchesCategory(variant, item.slug))),
     [variants],
   );
-  const defaultCategory = variants.some((variant) => matchesCategory(variant, "iphones")) ? "iphones" : variants.some((variant) => matchesCategory(variant, "androids")) ? "androids" : "todos";
+  const defaultCategory = variants.some((variant) => matchesCategory(variant, "androids")) ? "androids" : variants.some((variant) => matchesCategory(variant, "iphones")) ? "iphones" : "todos";
   const requestedCategory = searchParams.get("categoria") ?? defaultCategory;
   const category = requestedCategory === "todos" || variants.some((variant) => matchesCategory(variant, requestedCategory)) ? requestedCategory : defaultCategory;
   const storageOptions = useMemo(() => Array.from(new Set(variants.map((variant) => variant.storage_gb).filter((value): value is number => Boolean(value)))).sort((a, b) => a - b), [variants]);
