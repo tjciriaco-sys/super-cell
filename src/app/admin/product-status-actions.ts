@@ -64,7 +64,7 @@ export async function saveCatalogStatusWithFeedback(
     return{
       status:"success",
       message:catalogStatus==="ready"
-        ? "QA aprovado. Somente as variantes marcadas como disponíveis poderão aparecer na vitrine."
+        ? "Revisão aprovada. As variantes disponíveis já podem aparecer na vitrine."
         : "Produto movido para rascunho e ocultado da vitrine.",
     };
   }catch(error){

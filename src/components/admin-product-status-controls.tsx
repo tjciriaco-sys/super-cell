@@ -38,7 +38,7 @@ export function AdminProductStatusControls({
       <label>Status do catálogo
         <select name="catalog_status" defaultValue={catalogStatus} disabled={pending}>
           <option value="draft">Rascunho — oculto da vitrine</option>
-          <option value="ready">QA aprovado — pode aparecer</option>
+          <option value="ready">Revisado e aprovado — pode aparecer</option>
         </select>
       </label>
       <button type="submit" disabled={pending} aria-busy={pending}>
