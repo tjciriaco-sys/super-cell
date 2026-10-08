@@ -1171,3 +1171,69 @@
   border-color:#17130c;
   color:#fff;
 }
+
+
+/* Order share UX v1 — direct link to the quick-order sheet. */
+.order-share-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+}
+.order-share-actions>button{
+  min-height:38px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:0 10px;
+  border:1px solid #e4ddd2;
+  border-radius:11px;
+  background:#fff;
+  color:#4f473e;
+  font-size:10px;
+  font-weight:800;
+}
+.order-share-actions>button svg{width:15px;height:15px}
+.order-share-actions>button:not(.order-close):active{transform:scale(.98)}
+.order-share-actions .order-close{
+  width:42px;
+  min-width:42px;
+  padding:0;
+  border-color:transparent;
+  border-radius:50%;
+  background:#f7f3ec;
+  color:#17130f;
+}
+.order-share-actions .order-close svg{width:23px;height:23px}
+.order-link-warning{
+  margin-top:14px;
+  display:grid;
+  gap:4px;
+  padding:13px 15px;
+  border:1px solid #ead39a;
+  border-radius:14px;
+  background:#fff9e8;
+  color:#6f5118;
+}
+.order-link-warning strong{font-size:13px}
+.order-link-warning span{font-size:11px;line-height:1.4}
+
+@media(max-width:700px){
+  .order-sheet .sheet-head{
+    align-items:flex-start;
+    gap:8px;
+  }
+  .order-share-actions{
+    display:grid;
+    grid-template-columns:auto auto 42px;
+    gap:5px;
+  }
+  .order-share-actions>button{
+    min-height:36px;
+    padding:0 8px;
+  }
+  .order-share-actions>button span{
+    display:none;
+  }
+}
