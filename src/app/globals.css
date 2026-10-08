@@ -1237,3 +1237,30 @@
     display:none;
   }
 }
+
+
+/* Super Cell Admin 2.0 · foundation · scoped to the administrative shell */
+.admin-v2{--admin-v2-ink:#211b13;--admin-v2-muted:#766f64;--admin-v2-gold:#94702c;--admin-v2-border:#e6dfd3}
+.admin-v2 .admin-sidebar nav a.is-current{color:var(--admin-v2-ink);font-weight:800;background:#eee8db}
+.admin-v2 .admin-sidebar nav a:focus-visible,.admin-v2 .admin-mobile-nav a:focus-visible,.admin-v2 .admin-mobile-nav button:focus-visible,.admin-v2 .admin-more-sheet a:focus-visible,.admin-v2 .admin-more-sheet button:focus-visible{outline:2px solid var(--admin-v2-gold);outline-offset:3px}
+.admin-v2 .admin-mobile-nav a.is-current,.admin-v2 .admin-mobile-nav button.is-current{color:#cfaa62}
+.admin-v2 .admin-mobile-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:0;border:0;background:transparent;color:inherit;font:inherit}
+.admin-v2 .admin-mobile-nav button svg{width:21px;height:21px}
+.admin-v2 .admin-mobile-nav button span{font-size:inherit}
+.admin-v2 .admin-more-backdrop,.admin-v2 .admin-more-sheet{display:none}
+@media(max-width:850px){
+  .admin-v2 .admin-main{padding-bottom:110px}
+  .admin-v2 .admin-more-backdrop{display:block;position:fixed;inset:0;z-index:92;background:#17130d88}
+  .admin-v2 .admin-more-sheet{display:block;position:fixed;bottom:75px;left:10px;right:10px;z-index:94;padding:16px;background:#faf8f4;border:1px solid var(--admin-v2-border);border-radius:20px;box-shadow:0 12px 38px #18120a30;max-height:min(72vh,620px);overflow-y:auto}
+  .admin-v2 .admin-more-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .admin-v2 .admin-more-head>div{display:grid;gap:3px}
+  .admin-v2 .admin-more-head strong{font-size:17px;color:var(--admin-v2-ink)}
+  .admin-v2 .admin-more-head small{font-size:11px;color:var(--admin-v2-muted)}
+  .admin-v2 .admin-more-head button{display:grid;place-items:center;width:36px;height:36px;border:1px solid var(--admin-v2-border);border-radius:11px;background:white}
+  .admin-v2 .admin-more-sheet nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .admin-v2 .admin-more-sheet nav a{display:flex;align-items:center;gap:9px;min-width:0;padding:12px 10px;background:white;border:1px solid var(--admin-v2-border);border-radius:12px;color:var(--admin-v2-ink);font-size:12px;text-decoration:none;font-weight:700}
+  .admin-v2 .admin-more-sheet nav a svg{flex-shrink:0;width:17px;height:17px;color:var(--admin-v2-gold)}
+  .admin-v2 .admin-more-sheet nav a.is-current{border-color:#bb9c61;background:#f6efe1}
+  .admin-v2 .admin-more-user{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding-top:12px;border-top:1px solid var(--admin-v2-border);font-size:12px;color:var(--admin-v2-muted)}
+  .admin-v2 .admin-more-user button{display:flex;align-items:center;gap:5px;padding:8px 12px;border:1px solid var(--admin-v2-border);border-radius:10px;background:#fff;color:var(--admin-v2-ink)}
+}
