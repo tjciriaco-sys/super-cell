@@ -21,6 +21,7 @@ export default async function Home() {
 
   return <main>
     <Header instagramUrl={instagramUrl || undefined}/>
+    <div className="home-intro">
     <section className="hero shell">
       <div className="hero-store-visual" aria-label="Operação Super Cell, do atendimento à entrega">
         <Image src="/supercell-store-hero.jpg" alt="Loja Super Cell com aparelhos, equipe de atendimento, separação de pedidos e entregadores" width={1536} height={523} priority sizes="(max-width: 700px) calc(100vw - 24px), 1180px"/>
@@ -37,6 +38,7 @@ export default async function Home() {
       <div><MapPinned/><span><strong>Mais de 50 cidades do RN</strong><small>Uma operação preparada para chegar até você</small></span></div>
       <div><CreditCard/><span><strong>Pix ou até 18x</strong><small>Preço e parcelas apresentados com clareza</small></span></div>
     </section>
+    </div>
     <Suspense fallback={<div className="catalog-loading shell" aria-live="polite">Carregando catálogo…</div>}>
       <CatalogGrid variants={variants} primaryInstallments={commerce.acquirer.featured_primary} primaryFactor={Number(primary?.factor ?? 1)} accessoryDeliveryFee={Number(commerce.settings.accessory_delivery_fee??15)} accessoryFreeThreshold={Number(commerce.settings.accessory_free_delivery_threshold??100)}/>
     </Suspense>
