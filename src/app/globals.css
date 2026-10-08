@@ -726,11 +726,3 @@
 @media(max-width:700px){
   .home-intro .benefits>div+div{border-top:0;border-left:0}
 }
-
-
-/* Home v22 — eliminate overlapping card shadows in the mobile benefits grid. */
-@media(max-width:700px){
-  .home-intro .benefits>div{
-    box-shadow:none;
-  }
-}
