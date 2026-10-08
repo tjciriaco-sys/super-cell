@@ -6,6 +6,7 @@ import { money } from "@/lib/utils";
 import { configuredAutomaticPrice } from "@/lib/pricing";
 import { toggleProduct } from "@/app/admin/actions";
 import { AdminProductSearch } from "@/components/admin-product-search";
+import { AdminSubmitButton } from "@/components/admin-submit-button";
 
 function normalizeSearch(value: string) {
   return value
@@ -55,7 +56,7 @@ export default async function ProductsPage() {
               <td>{cost ? money.format(cost) : "—"}</td>
               <td>{money.format(Number(v.manual_price ?? auto))}</td>
               <td>{v.manual_price ? <span className="manual-tag">Sim</span> : "Não"}</td>
-              <td>{index === 0 && <form action={toggleProduct}><input type="hidden" name="id" value={p.id}/><input type="hidden" name="active" value={String(p.active)}/><button>{p.active ? "Desativar" : "Ativar"}</button></form>}</td>
+              <td>{index === 0 && <form action={toggleProduct}><input type="hidden" name="id" value={p.id}/><input type="hidden" name="active" value={String(p.active)}/><AdminSubmitButton pendingLabel={p.active?"Desativando…":"Ativando…"}>{p.active ? "Desativar" : "Ativar"}</AdminSubmitButton></form>}</td>
             </tr>;
           }))}</tbody>
         </table>
