@@ -11,7 +11,7 @@ Toda melhoria aprovada deve seguir esta ordem de preferência:
 ## Entrada de produtos
 
 - Todo produto novo nasce como `draft` e fica invisível na vitrine.
-- A publicação exige promoção explícita para `ready` após QA.
+- A publicação exige promoção explícita para `ready` após revisão final do cadastro. Na interface, usar “Revisado e aprovado — pode aparecer”; evitar o termo técnico “QA”.
 - O banco impede a promoção sem variante ativa, oferta disponível, custo positivo e imagem válida.
 - Produto inativo ou variante sem oferta disponível não aparece ao consumidor.
 - Uma combinação de modelo, RAM, armazenamento, cor e condição corresponde a uma variante real; fornecedores concorrentes entram como ofertas da mesma variante.
@@ -27,7 +27,7 @@ Toda melhoria aprovada deve seguir esta ordem de preferência:
 ## Seminovos
 
 - Seminovo é permitido comercialmente para iPhones; Android seminovo exige decisão comercial explícita.
-- Novo iPhone seminovo herda: condição Excelente, bateria mínima de 85% e garantia de 3 meses.
+- Dados de seminovo pertencem à variante. Bateria pode variar por unidade e não deve ser usada como trava global de publicação; classificação, originalidade, abertura e garantia são editáveis no painel.
 - Exceções de condição, originalidade, abertura e bateria pertencem à variante e são editáveis no painel.
 - Condições diferentes com preços diferentes são variantes distintas.
 
@@ -42,9 +42,13 @@ Toda melhoria aprovada deve seguir esta ordem de preferência:
 ## Interface comercial
 
 - Categorias são compartilháveis por URL e novas categorias secundárias entram em “Outras”.
+- Na home, Androids é a prioridade atual: aparece antes de iPhones e é selecionado por padrão quando houver produtos Android disponíveis.
 - “Novo · Lacrado” deriva da condição do produto; condição do seminovo deriva da variante.
 - Armazenamento/RAM devem aparecer no card e na página sempre que conhecidos.
 - O CTA principal deve informar que o pedido será enviado pelo WhatsApp.
+- O formulário de pedido deve possuir link compartilhável da variante no formato `?variante=<id>&pedido=1`, com ações de copiar e compartilhar.
+- A mensagem de pedido deve incluir explicitamente a cor e não repetir slug/referência comercial sem necessidade.
+- O texto de compartilhamento deve manter duas quebras de linha antes da URL para preservar a hierarquia visual no WhatsApp.
 - Valores, parcelamento, entrega e mensagem do WhatsApp devem derivar da variante selecionada.
 
 ## Critério de conclusão
