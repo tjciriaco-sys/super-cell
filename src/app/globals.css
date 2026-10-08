@@ -706,3 +706,17 @@
   .hero .hero-copy{padding-bottom:17px}
   .benefits{margin-top:0}
 }
+
+
+/* Home v20 — continuous mobile gradient from hero through benefits. */
+@media(max-width:700px){
+  .home-intro{
+    display:flow-root;
+    background:
+      radial-gradient(circle at 88% 28%,rgba(236,194,99,.13),transparent 34%),
+      radial-gradient(circle at 12% 58%,rgba(189,219,250,.12),transparent 38%),
+      linear-gradient(180deg,#fff 0%,#fbfdff 42%,#fffaf1 72%,#fffdf8 88%,#fff 100%);
+  }
+  .home-intro .hero{background:transparent}
+  .home-intro .benefits{background:transparent}
+}
