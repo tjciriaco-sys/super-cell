@@ -48,7 +48,7 @@ export default async function ProductsPage() {
             const variantLabel = [v.ram_gb ? `${v.ram_gb} GB` : null, v.storage_gb ? `${v.storage_gb} GB` : null, v.color].filter(Boolean).join(" · ");
             const searchText = normalizeSearch([p.name, p.brand?.name, p.category?.name, p.condition, p.connectivity, v.sku, variantLabel, v.condition_grade].filter(Boolean).join(" "));
 
-            const group=p.category?.slug==="iphone"||p.brand?.slug==="apple"?"iphone":p.category?.slug==="smartphones"?"android":"other";
+            const group=p.category?.slug==="iphone"?"iphone":p.category?.slug==="smartphones"?"android":"other";
             return <tr key={v.id} data-admin-product-row data-search={searchText} data-group={group}>
               <td><div className="row-actions"><Link href={`/admin/produtos/${p.id}`} aria-label={`Editar ${p.name}`}><Pencil/></Link></div></td>
               <td>{index === 0 && <div><strong>{p.name}</strong><small>{p.brand?.name} · {p.category?.name}</small></div>}</td>
