@@ -1,4 +1,4 @@
-import { CreditCard, HandCoins, MapPinned, ShieldCheck, Truck } from "lucide-react";
+import { CreditCard, HandCoins, MapPinned, Truck } from "lucide-react";
 import Image from "next/image";
 import { Suspense } from "react";
 import { Header } from "@/components/header";
@@ -29,7 +29,6 @@ export default async function Home() {
         <h1>Comprar seu celular pode ser tão simples quanto pedir uma pizza. <span className="headline-emoji" aria-hidden="true">😊</span></h1>
         <p>Escolha o aparelho, veja o preço e o parcelamento e finalize pelo WhatsApp.</p>
         <CatalogCta/>
-        <div className="hero-trust"><span><ShieldCheck/> Compra assistida e disponibilidade confirmada</span></div>
       </div>
     </section>
     <section id="diferenciais" className="benefits shell" aria-label="Diferenciais da Super Cell">
