@@ -6,6 +6,16 @@ O padrão obrigatório para imagens de produtos e variantes está documentado em
 
 As decisões consolidadas de cadastro, publicação, variantes, seminovos, preço e interface estão em [docs/production-rules.md](docs/production-rules.md). Correções pontuais devem ser transformadas em regras reutilizáveis sempre que o comportamento puder se repetir.
 
+
+## Continuidade do projeto
+
+Ao retomar a Super Cell em um novo chat ou ambiente, ler primeiro:
+
+- [SUPER-CELL-HANDOFF.md](SUPER-CELL-HANDOFF.md) — estado atual consolidado do produto, arquitetura, regras e fluxos.
+- [docs/SESSION-CONTEXT-2026-10-08.md](docs/SESSION-CONTEXT-2026-10-08.md) — contexto detalhado das implementações e decisões recentes.
+- [docs/DEVELOPMENT-WORKFLOW.md](docs/DEVELOPMENT-WORKFLOW.md) — método Plugin First e ciclo GitHub → Preview → produção.
+- [docs/production-rules.md](docs/production-rules.md) — regras permanentes de produção.
+
 ## Getting Started
 
 First, run the development server:
