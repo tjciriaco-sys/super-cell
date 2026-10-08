@@ -828,3 +828,203 @@
   .variant-availability-control{grid-template-columns:1fr}
   .variant-availability-control>button{width:100%}
 }
+
+
+/* Admin UX v5 — clear variant boundaries and fast actions. */
+.variant-admin-list{gap:22px}
+.variant-admin-card{
+  overflow:hidden;
+  padding:0 15px 15px;
+  border:1px solid #ddd3c5;
+  box-shadow:0 9px 24px rgba(54,38,16,.045);
+}
+.variant-section-head{
+  margin:0 -15px 14px;
+  padding:12px 15px 11px;
+  border-bottom:1px solid #dcccae;
+  background:linear-gradient(135deg,#fffaf0 0%,#f7efe0 100%);
+}
+.variant-kicker{
+  margin-bottom:5px;
+  color:#956d1c;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.variant-section-main{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.variant-section-title{display:grid;gap:2px;min-width:0}
+.variant-section-title>strong{font-size:16px;line-height:1.22}
+.variant-section-title>small{color:var(--muted);font-size:10px;line-height:1.25;text-transform:capitalize}
+.variant-section-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.variant-status-pill,.variant-preview-link{
+  min-height:29px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:0 9px;
+  border-radius:999px;
+  font-size:9.5px;
+  font-weight:850;
+  white-space:nowrap;
+}
+.variant-status-pill.available{background:#e7f6ee;color:#287353}
+.variant-status-pill.restocking{background:#fff2d7;color:#855f16}
+.variant-status-pill.hidden{background:#efefef;color:#69645d}
+.variant-preview-link{border:1px solid #d9c99e;background:#fff;color:#6e5115;text-decoration:none}
+.variant-preview-link svg{width:13px;height:13px}
+.variant-preview-link.disabled{border-color:#e4dfd7;color:#a39a8f;background:#f8f6f2}
+.variant-color-inline{
+  display:flex;
+  align-items:end;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:9px;
+  padding-top:8px;
+  border-top:1px solid rgba(166,132,61,.18);
+}
+.variant-color-inline>span{font-size:11px;color:#6c6258}
+.variant-color-inline>button{
+  min-height:30px;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:0 9px;
+  border:1px solid #d8cba9;
+  border-radius:8px;
+  background:#fff;
+  color:#725517;
+  font-size:10px;
+  font-weight:850;
+}
+.variant-color-inline>button svg{width:13px;height:13px}
+.variant-color-inline label{display:grid;gap:4px;font-size:9px;font-weight:850;color:#6e655d}
+.variant-color-inline label input:not([type="color"]){width:180px;height:34px;border:1px solid var(--line);border-radius:8px;padding:0 9px;background:#fff}
+.variant-color-inline .color-code-edit input{width:44px;height:34px;border:1px solid var(--line);border-radius:8px;padding:3px;background:#fff}
+.variant-color-inline>button.save{border-color:#16120d;background:#16120d;color:#fff}
+.variant-color-inline>button.cancel{color:#6d655b}
+.variant-workflow-block{margin-top:14px;padding-top:13px;border-top:1px solid #eee8df}
+.variant-workflow-title{
+  margin-bottom:8px;
+  color:#715216;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.075em;
+  text-transform:uppercase;
+}
+.variant-workflow-block .variant-availability-control,
+.variant-workflow-block .admin-image-upload{margin-top:0}
+.variant-offers{padding-top:11px;border-top:1px solid #eee8df}
+.variant-admin-card .used-admin-settings{margin-top:0}
+.variant-admin-card .finance-preview{margin:0 0 10px}
+
+/* Product image lightbox — stays inside the storefront. */
+.product-image-button{
+  width:100%;
+  display:block;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:inherit;
+  cursor:zoom-in;
+  text-align:inherit;
+}
+.product-image-button .product-image-wrap{width:100%}
+.product-image-hint{
+  position:absolute;
+  right:10px;
+  bottom:10px;
+  z-index:2;
+  padding:5px 8px;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:999px;
+  background:rgba(24,20,15,.68);
+  color:#fff;
+  font-size:9px;
+  font-weight:800;
+  backdrop-filter:blur(8px);
+  pointer-events:none;
+}
+.image-lightbox{
+  position:fixed;
+  z-index:180;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:14px;
+  background:rgba(10,9,8,.78);
+  backdrop-filter:blur(12px);
+}
+.image-lightbox-panel{
+  width:min(94vw,820px);
+  height:min(90dvh,900px);
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:20px;
+  background:#f7f5f1;
+  box-shadow:0 28px 80px rgba(0,0,0,.38);
+}
+.image-lightbox-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:9px 10px 9px 14px;
+  border-bottom:1px solid #e5ded4;
+  background:#fff;
+}
+.image-lightbox-toolbar>span{color:#716960;font-size:10px;font-weight:750}
+.image-lightbox-toolbar>div{display:flex;gap:5px}
+.image-lightbox-toolbar button{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:1px solid #e0d9cf;
+  border-radius:9px;
+  background:#fff;
+  color:#2e2923;
+}
+.image-lightbox-toolbar button.close{border-color:#d1c6b5;background:#f7f2e9}
+.image-lightbox-toolbar svg{width:17px;height:17px}
+.image-lightbox-stage{
+  position:relative;
+  overflow:auto;
+  display:grid;
+  place-items:center;
+  min-height:0;
+  background:linear-gradient(180deg,#f8f7f4,#eee9e1);
+  overscroll-behavior:contain;
+  touch-action:pan-x pan-y pinch-zoom;
+}
+.image-lightbox-image{
+  position:relative;
+  width:min(78dvh,92vw);
+  aspect-ratio:1/1;
+  transform-origin:center;
+  transition:transform .16s ease;
+}
+.image-lightbox-image .product-image-large{padding:18px}
+
+@media(max-width:760px){
+  .variant-admin-list{gap:20px}
+  .variant-admin-card{padding:0 12px 12px;border-radius:16px}
+  .variant-section-head{margin:0 -12px 13px;padding:11px 12px}
+  .variant-section-main{display:grid}
+  .variant-section-title>strong{font-size:15px}
+  .variant-section-actions{justify-content:flex-start}
+  .variant-preview-link{min-height:31px}
+  .variant-color-inline label:first-of-type{flex:1 1 150px}
+  .variant-color-inline label input:not([type="color"]){width:100%}
+  .variant-workflow-block{margin-top:12px;padding-top:11px}
+  .image-lightbox{padding:0}
+  .image-lightbox-panel{width:100vw;height:100dvh;border:0;border-radius:0}
+  .image-lightbox-toolbar{padding-top:max(9px,env(safe-area-inset-top))}
+  .image-lightbox-toolbar>span{font-size:9px}
+  .image-lightbox-image{width:94vw}
+  .product-image-hint{right:7px;bottom:7px;padding:4px 6px;font-size:8px}
+}
