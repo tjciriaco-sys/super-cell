@@ -1,105 +1,121 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, ArrowRight, Check, ImagePlus, LoaderCircle, PackagePlus } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ArrowRight, Check, ImagePlus, LoaderCircle, PackagePlus, Smartphone, Boxes, Apple } from "lucide-react";
 import { createProductFromWizard, type ProductCreateState } from "@/app/admin/product-create-actions";
+import { AdminChoiceSelect } from "@/components/admin-choice-select";
 
-type Option = { id: string; name: string; slug?: string | null; code?: string | null };
+type Option={id:string;name:string;slug?:string|null;code?:string|null};
+type ProductType="iphone"|"android"|"other";
+const initialState:ProductCreateState={status:"idle",message:""};
+const steps=["Tipo","Produto","Variante","Comercial","Foto e revisão"];
 
-const initialState: ProductCreateState = { status: "idle", message: "" };
-const steps = ["Produto", "Configuração", "Comercial", "Foto e revisão"];
+export function AdminNewProductWizard({brands,categories,suppliers}:{brands:Option[];categories:Option[];suppliers:Option[]}){
+  const [step,setStep]=useState(0);
+  const [productType,setProductType]=useState<ProductType>("iphone");
+  const [condition,setCondition]=useState<"novo"|"seminovo">("novo");
+  const [brandId,setBrandId]=useState("");
+  const [categoryId,setCategoryId]=useState("");
+  const [connectivity,setConnectivity]=useState("5G");
+  const [grade,setGrade]=useState("excelente");
+  const [original,setOriginal]=useState("true");
+  const [opened,setOpened]=useState("true");
+  const [status,setStatus]=useState("available");
+  const [preview,setPreview]=useState<string|null>(null);
+  const [fileName,setFileName]=useState("");
+  const [state,action,pending]=useActionState(createProductFromWizard,initialState);
 
-export function AdminNewProductWizard({ brands, categories, suppliers }: { brands: Option[]; categories: Option[]; suppliers: Option[] }) {
-  const [step, setStep] = useState(0);
-  const [condition, setCondition] = useState<"novo" | "seminovo">("novo");
-  const [preview, setPreview] = useState<string | null>(null);
-  const [fileName, setFileName] = useState("");
-  const [state, action, pending] = useActionState(createProductFromWizard, initialState);
+  const apple=brands.find((item)=>item.slug==="apple");
+  const iphoneCategory=categories.find((item)=>item.slug==="iphone");
+  const smartphoneCategory=categories.find((item)=>item.slug==="smartphones");
 
-  const move = (next: number) => {
-    setStep(Math.max(0, Math.min(steps.length - 1, next)));
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const effectiveBrandId=productType==="iphone"?(apple?.id??""):brandId;
+  const effectiveCategoryId=productType==="iphone"?(iphoneCategory?.id??""):productType==="android"?(smartphoneCategory?.id??""):categoryId;
 
-  const cardStyle = { display: "grid", gap: 16 } as const;
-  const twoCols = { display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: 12 } as const;
-  const noteStyle = { margin: 0, color: "#777168", fontSize: 13, lineHeight: 1.45 } as const;
+  const brandOptions=useMemo(()=>brands.filter((item)=>item.slug!=="apple").map((item)=>({value:item.id,label:item.name})),[brands]);
+  const otherCategoryOptions=useMemo(()=>categories.filter((item)=>!["iphone","smartphones"].includes(item.slug??"")).map((item)=>({value:item.id,label:item.name})),[categories]);
+  const supplierOptions=useMemo(()=>suppliers.map((item)=>({value:item.id,label:`${item.code?item.code+" · ":""}${item.name}`})),[suppliers]);
 
-  return <form action={action} className="admin-card" style={{display:"grid",gap:18}}>
-    <div style={{display:"flex",justifyContent:"space-between",gap:12,alignItems:"flex-start"}}>
-      <div>
-        <span className="eyebrow">Cadastro guiado</span>
-        <h1 style={{margin:"4px 0 6px",fontSize:"clamp(34px,9vw,54px)",lineHeight:.96}}>Novo produto</h1>
-        <p style={noteStyle}>Etapa {step + 1} de {steps.length} · {steps[step]}</p>
-      </div>
+  function move(next:number){
+    setStep(Math.max(0,Math.min(steps.length-1,next)));
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  return <form action={action} className="admin-card guided-wizard">
+    <input type="hidden" name="brand_id" value={effectiveBrandId}/>
+    <input type="hidden" name="category_id" value={effectiveCategoryId}/>
+    <div className="guided-wizard-head">
+      <div><span className="eyebrow">Cadastro guiado</span><h1>Novo produto</h1><p>Etapa {step+1} de {steps.length} · {steps[step]}</p></div>
       <Link className="admin-outline" href="/admin/produtos" aria-label="Voltar para produtos"><ArrowLeft/></Link>
     </div>
 
-    <div style={{display:"grid",gridTemplateColumns:`repeat(${steps.length},1fr)`,gap:6}} aria-label="Progresso do cadastro">
-      {steps.map((label,index)=><button key={label} type="button" onClick={()=>move(index)} style={{border:"1px solid #ded8cd",borderRadius:12,padding:"9px 5px",background:index===step?"#17130c":index<step?"#f5ecd5":"#fff",color:index===step?"#fff":"#766b59",fontSize:10,fontWeight:800,lineHeight:1.15}}>{index<step?<Check size={13} style={{margin:"0 auto 3px"}}/>:<span style={{display:"block",marginBottom:3}}>{index+1}</span>}{label}</button>)}
-    </div>
+    <div className="guided-progress">{steps.map((label,index)=><button type="button" key={label} className={index===step?"active":index<step?"done":""} onClick={()=>move(index)}>{index<step?<Check/>:<span>{index+1}</span>}<strong>{label}</strong></button>)}</div>
 
-    <fieldset hidden={step!==0} style={{border:0,padding:0,margin:0,...cardStyle}}>
-      <div><strong style={{fontSize:22}}>1. Identificação</strong><p style={noteStyle}>Defina o que é o produto. O restante do cadastro se adapta a estas escolhas.</p></div>
-      <div className="price-form" style={cardStyle}>
-        <label>Marca<select name="brand_id" defaultValue=""><option value="" disabled>Selecione a marca</option>{brands.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-        <label>Categoria<select name="category_id" defaultValue=""><option value="" disabled>Selecione a categoria</option>{categories.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-        <label>Modelo<input name="model" placeholder="Ex.: iPhone 15 Pro Max" autoComplete="off"/></label>
-        <div style={twoCols}>
-          <label>Condição<select name="condition" value={condition} onChange={event=>setCondition(event.target.value as "novo"|"seminovo")}><option value="novo">Novo · Lacrado</option><option value="seminovo">Seminovo</option></select></label>
-          <label>Conectividade<select name="connectivity" defaultValue="5G"><option value="">Não se aplica</option><option value="4G">4G</option><option value="5G">5G</option></select></label>
+    <fieldset hidden={step!==0} className="guided-step">
+      <div className="guided-step-title"><strong>1. Tipo de produto</strong><p>Comece pela família comercial. O cadastro se adapta a partir daqui.</p></div>
+      <div className="product-type-grid">
+        <button type="button" className={productType==="iphone"?"active":""} onClick={()=>setProductType("iphone")}><Apple/><strong>iPhone</strong><span>Apple já definida</span></button>
+        <button type="button" className={productType==="android"?"active":""} onClick={()=>setProductType("android")}><Smartphone/><strong>Android</strong><span>Escolha a marca depois</span></button>
+        <button type="button" className={productType==="other"?"active":""} onClick={()=>setProductType("other")}><Boxes/><strong>Outros produtos</strong><span>Tablets, perfumes e acessórios</span></button>
+      </div>
+      {productType==="android"&&<AdminChoiceSelect name="_brand_visual" label="Marca do Android" value={brandId} onChange={setBrandId} placeholder="Selecione a marca" options={brandOptions}/>}
+      {productType==="other"&&<div className="guided-fields"><AdminChoiceSelect name="_category_visual" label="Categoria" value={categoryId} onChange={setCategoryId} placeholder="Selecione a categoria" options={otherCategoryOptions}/><AdminChoiceSelect name="_brand_visual" label="Marca" value={brandId} onChange={setBrandId} placeholder="Selecione a marca" options={brands.map((item)=>({value:item.id,label:item.name}))}/></div>}
+    </fieldset>
+
+    <fieldset hidden={step!==1} className="guided-step">
+      <div className="guided-step-title"><strong>2. Produto</strong><p>Defina o modelo. As informações comuns às variantes ficam aqui.</p></div>
+      <div className="guided-fields">
+        <label className="guided-input-label">Modelo<input name="model" placeholder={productType==="iphone"?"Ex.: iPhone 18 Pro Max":"Ex.: Galaxy S27 Ultra"} autoComplete="off"/></label>
+        <div className="guided-two">
+          <AdminChoiceSelect name="condition" label="Condição" value={condition} onChange={(value)=>setCondition(value as "novo"|"seminovo")} options={[{value:"novo",label:"Novo · Lacrado"},{value:"seminovo",label:"Seminovo"}]}/>
+          <AdminChoiceSelect name="connectivity" label="Conectividade" value={connectivity} onChange={setConnectivity} options={[{value:"5G",label:"5G"},{value:"4G",label:"4G"},{value:"",label:"Não se aplica"}]}/>
         </div>
-        <label>Descrição comercial <small style={{fontWeight:400,color:"#8c857b"}}>(opcional)</small><textarea name="description" rows={4} placeholder="Resumo curto para a página do produto" style={{width:"100%",border:"1px solid #ded8cd",borderRadius:14,padding:14,font: "inherit",resize:"vertical"}}/></label>
+        <label className="guided-input-label">Descrição comercial <small>(opcional)</small><textarea name="description" rows={4} placeholder="Resumo curto para a página do produto"/></label>
       </div>
     </fieldset>
 
-    <fieldset hidden={step!==1} style={{border:0,padding:0,margin:0,...cardStyle}}>
-      <div><strong style={{fontSize:22}}>2. Configuração</strong><p style={noteStyle}>Cadastre a variante que está entrando no estoque. Outras variantes podem ser adicionadas depois.</p></div>
-      <div className="price-form" style={cardStyle}>
-        <div style={twoCols}><label>Armazenamento (GB)<input name="storage_gb" type="number" min="0" placeholder="128"/></label><label>RAM (GB)<input name="ram_gb" type="number" min="0" placeholder="8"/></label></div>
-        <div style={twoCols}><label>Cor comercial<input name="color" placeholder="Preto"/></label><label>Cor visual<input name="color_hex" type="color" defaultValue="#1f2020"/></label></div>
-        <label>Configuração do SIM <small style={{fontWeight:400,color:"#8c857b"}}>(opcional)</small><input name="sim_configuration" placeholder="Ex.: físico + eSIM"/></label>
-        <label>SKU interno <small style={{fontWeight:400,color:"#8c857b"}}>(opcional)</small><input name="sku" placeholder="Se vazio, o sistema gera automaticamente"/></label>
+    <fieldset hidden={step!==2} className="guided-step">
+      <div className="guided-step-title"><strong>3. Primeira variante</strong><p>Cadastre a primeira unidade comercial. Outras variantes podem ser adicionadas depois sem recriar o produto.</p></div>
+      <div className="guided-fields">
+        <div className="guided-two"><label className="guided-input-label">Armazenamento (GB)<input name="storage_gb" type="number" min="0" placeholder="128"/></label><label className="guided-input-label">RAM (GB)<input name="ram_gb" type="number" min="0" placeholder="8"/></label></div>
+        <div className="guided-two"><label className="guided-input-label">Cor comercial<input name="color" placeholder="Grafite"/></label><label className="guided-input-label">Cor visual<input name="color_hex" type="color" defaultValue="#1f2020"/></label></div>
+        <label className="guided-input-label">Configuração do SIM <small>(opcional)</small><input name="sim_configuration" placeholder="Ex.: físico + eSIM"/></label>
+        <label className="guided-input-label">SKU interno <small>(opcional)</small><input name="sku" placeholder="Se vazio, o sistema gera automaticamente"/></label>
 
-        {condition === "seminovo" && <div style={{display:"grid",gap:14,padding:16,border:"1px solid #e4d09a",borderRadius:18,background:"#fffaf0"}}>
-          <strong style={{fontSize:18,color:"#7b5b16"}}>Condição do seminovo</strong>
-          <div style={twoCols}><label>Classificação<select name="condition_grade" defaultValue="excelente"><option value="excelente">Excelente</option><option value="muito_bom">Muito bom</option><option value="bom">Bom</option></select></label><label>Saúde da bateria (%)<input name="battery_health_minimum" type="number" min="1" max="100" placeholder="Ex.: 92"/></label></div>
-          <div style={twoCols}><label>Componentes originais?<select name="original_components" defaultValue="true"><option value="true">Sim</option><option value="false">Não</option></select></label><label>Nunca foi aberto?<select name="never_opened" defaultValue="true"><option value="true">Sim</option><option value="false">Não</option></select></label></div>
-          <label>Garantia Super Cell (meses)<input name="warranty_months" type="number" min="0" max="60" defaultValue="3"/></label>
-          <label>Observações da condição<input name="condition_details" maxLength={500} placeholder="Ex.: marcas leves na lateral"/></label>
-          <p style={noteStyle}>A bateria é individual por unidade. Se não souber o percentual, deixe em branco e o produto continuará em rascunho até você completar.</p>
+        {condition==="seminovo"&&<div className="used-guided-panel">
+          <div><strong>Condição desta unidade</strong><p>Bateria e estado são individuais por variante.</p></div>
+          <div className="guided-two"><AdminChoiceSelect name="condition_grade" label="Classificação" value={grade} onChange={setGrade} options={[{value:"excelente",label:"Excelente"},{value:"muito_bom",label:"Muito bom"},{value:"bom",label:"Bom"}]}/><label className="guided-input-label">Saúde da bateria (%)<input name="battery_health_minimum" type="number" min="1" max="100" placeholder="Ex.: 90"/></label></div>
+          <div className="guided-two"><AdminChoiceSelect name="original_components" label="Componentes originais?" value={original} onChange={setOriginal} options={[{value:"true",label:"Sim"},{value:"false",label:"Não"}]}/><AdminChoiceSelect name="never_opened" label="Nunca foi aberto?" value={opened} onChange={setOpened} options={[{value:"true",label:"Sim"},{value:"false",label:"Não"}]}/></div>
+          <label className="guided-input-label">Garantia Super Cell (meses)<input name="warranty_months" type="number" min="0" max="60" defaultValue="3"/></label>
+          <label className="guided-input-label">Observações da condição<input name="condition_details" maxLength={500} placeholder="Ex.: marcas leves na lateral"/></label>
         </div>}
       </div>
     </fieldset>
 
-    <fieldset hidden={step!==2} style={{border:0,padding:0,margin:0,...cardStyle}}>
-      <div><strong style={{fontSize:22}}>3. Comercial</strong><p style={noteStyle}>Vincule a origem e o custo. O preço automático seguirá as faixas oficiais da Super Cell.</p></div>
-      <div className="price-form" style={cardStyle}>
-        <label>Fornecedor<select name="supplier_id" defaultValue=""><option value="" disabled>Selecione o fornecedor</option>{suppliers.map(item=><option key={item.id} value={item.id}>{item.code ? `${item.code} · ` : ""}{item.name}</option>)}</select></label>
-        <div style={twoCols}><label>Custo do fornecedor (R$)<input name="cost" type="number" min="0.01" step="0.01" placeholder="1460,00"/></label><label>Código externo <small style={{fontWeight:400,color:"#8c857b"}}>(opcional)</small><input name="external_code" placeholder="Código do fornecedor"/></label></div>
-        <label>Preço Pix manual <small style={{fontWeight:400,color:"#8c857b"}}>(opcional)</small><input name="manual_price" type="number" min="0.01" step="0.01" placeholder="Deixe vazio para usar preço automático"/></label>
-        <label>Situação comercial<select name="commercial_status" defaultValue="available"><option value="available">Disponível</option><option value="coming_soon">Em breve</option><option value="restocking">Aguardando reposição</option></select></label>
-        <p style={noteStyle}>Mesmo quando estiver disponível, o novo produto nasce como <strong>rascunho</strong>. Você revisa a tela final e decide quando publicar.</p>
+    <fieldset hidden={step!==3} className="guided-step">
+      <div className="guided-step-title"><strong>4. Comercial</strong><p>Vincule a origem, custo e disponibilidade da primeira variante.</p></div>
+      <div className="guided-fields">
+        <AdminChoiceSelect name="supplier_id" label="Fornecedor" placeholder="Selecione o fornecedor" options={supplierOptions}/>
+        <div className="guided-two"><label className="guided-input-label">Custo do fornecedor (R$)<input name="cost" type="number" min="0.01" step="0.01" placeholder="1460,00"/></label><label className="guided-input-label">Código externo <small>(opcional)</small><input name="external_code" placeholder="Código do fornecedor"/></label></div>
+        <label className="guided-input-label">Preço Pix manual <small>(opcional)</small><input name="manual_price" type="number" min="0.01" step="0.01" placeholder="Deixe vazio para usar preço automático"/></label>
+        <AdminChoiceSelect name="commercial_status" label="Disponibilidade da variante" value={status} onChange={setStatus} options={[{value:"available",label:"Disponível — aparece após QA"},{value:"restocking",label:"Aguardando reposição — não aparece"},{value:"hidden",label:"Oculta — não aparece"}]}/>
+        <div className="guided-summary-box"><strong>Publicação segura</strong><span>O produto sempre nasce como rascunho. Depois da revisão, você decide quando aprovar o QA.</span></div>
       </div>
     </fieldset>
 
-    <fieldset hidden={step!==3} style={{border:0,padding:0,margin:0,...cardStyle}}>
-      <div><strong style={{fontSize:22}}>4. Foto e revisão</strong><p style={noteStyle}>Adicione a imagem agora ou deixe para a tela de edição. Ao concluir, abriremos o produto para sua revisão final.</p></div>
-      <div style={{display:"grid",gap:14,padding:16,border:"1px solid #e1dbd0",borderRadius:18,background:"#fbfaf7"}}>
-        <div style={{width:"100%",maxWidth:280,aspectRatio:"1/1",position:"relative",borderRadius:16,overflow:"hidden",border:"1px solid #e1dbd0",background:"#fff",display:"grid",placeItems:"center",color:"#938b80"}}>{preview?<Image src={preview} alt="Prévia do novo produto" fill unoptimized style={{objectFit:"contain",padding:12}}/>:<span style={{display:"grid",placeItems:"center",gap:8,textAlign:"center"}}><ImagePlus/><small>Imagem opcional nesta etapa</small></span>}</div>
+    <fieldset hidden={step!==4} className="guided-step">
+      <div className="guided-step-title"><strong>5. Foto e revisão</strong><p>Adicione a foto real da primeira variante e conclua o cadastro.</p></div>
+      <div className="guided-photo">
+        <div className="guided-photo-preview">{preview?<Image src={preview} alt="Prévia do novo produto" fill unoptimized style={{objectFit:"contain",padding:12}}/>:<span><ImagePlus/><small>Imagem opcional nesta etapa</small></span>}</div>
         <label className="admin-file-picker"><ImagePlus/> Selecionar imagem<input name="image_file" type="file" accept="image/jpeg,image/png,image/webp" disabled={pending} onChange={event=>{const file=event.target.files?.[0];if(!file)return;setFileName(file.name);const reader=new FileReader();reader.onload=()=>setPreview(String(reader.result));reader.readAsDataURL(file);}}/></label>
-        {fileName&&<small style={{color:"#746f67"}}>Arquivo: {fileName}</small>}
+        {fileName&&<small>Arquivo: {fileName}</small>}
       </div>
-      <div style={{display:"grid",gap:8,padding:15,borderRadius:16,background:"#f6efdf",color:"#6d531f"}}><strong style={{display:"flex",alignItems:"center",gap:7}}><PackagePlus size={18}/> O que acontece ao concluir?</strong><span style={{fontSize:13,lineHeight:1.45}}>O sistema cria produto, variante e oferta do fornecedor, aplica a foto se você selecionou uma e abre a página de edição. O item permanece oculto da vitrine até você marcar “QA aprovado”.</span></div>
+      <div className="guided-summary-box"><strong><PackagePlus/> Ao concluir</strong><span>Produto, primeira variante e oferta são criados juntos. Depois abriremos a nova central de gestão do modelo.</span></div>
     </fieldset>
 
-    {state.status === "error" && <div role="alert" style={{display:"flex",gap:8,alignItems:"flex-start",padding:12,borderRadius:14,background:"#fff1ef",color:"#934038",fontSize:13,lineHeight:1.4}}><AlertTriangle size={18}/><span>{state.message}</span></div>}
-
-    <div style={{display:"flex",gap:10,justifyContent:"space-between",paddingTop:4}}>
-      <button type="button" onClick={()=>move(step-1)} disabled={step===0||pending} className="admin-outline" style={{opacity:step===0?.35:1}}><ArrowLeft/> Voltar</button>
-      {step<steps.length-1?<button type="button" onClick={()=>move(step+1)} className="admin-image-save">Avançar <ArrowRight/></button>:<button type="submit" className="admin-image-save" disabled={pending}>{pending?<><LoaderCircle className="spin"/> Cadastrando…</>:<><PackagePlus/> Criar produto</>}</button>}
-    </div>
+    {state.status==="error"&&<div className="guided-error" role="alert"><AlertTriangle/><span>{state.message}</span></div>}
+    <div className="guided-actions"><button type="button" className="admin-outline" onClick={()=>move(step-1)} disabled={step===0||pending}><ArrowLeft/> Voltar</button>{step<steps.length-1?<button type="button" className="admin-image-save" onClick={()=>move(step+1)}>Avançar <ArrowRight/></button>:<button type="submit" className="admin-image-save" disabled={pending}>{pending?<><LoaderCircle className="spin"/> Cadastrando…</>:<><PackagePlus/> Criar produto</>}</button>}</div>
   </form>;
 }
