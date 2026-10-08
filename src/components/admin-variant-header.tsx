@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 
 export function AdminVariantHeader({
   variantId, productName, index, total, ramGb, storageGb, color, colorHex, sku,
-  conditionGrade, battery, pricingModeLabel, isManualPrice, commercialStatus, publicHref,
+  conditionGrade, battery, pricingModeLabel, isManualPrice, commercialStatus, catalogReady, publicHref,
 }:{
   variantId:string; productName:string; index:number; total:number;
   ramGb:number|null; storageGb:number|null; color:string|null; colorHex:string|null;
   sku:string; conditionGrade:string|null; battery:number|null; pricingModeLabel:string;
-  isManualPrice:boolean; commercialStatus:"available"|"restocking"|"hidden"; publicHref:string|null;
+  isManualPrice:boolean; commercialStatus:"available"|"restocking"|"hidden"; catalogReady:boolean; publicHref:string|null;
 }){
   const router=useRouter();
   const [editing,setEditing]=useState(false);
@@ -45,7 +45,7 @@ export function AdminVariantHeader({
       <div className="variant-section-actions">
         <span className={"variant-status-pill "+commercialStatus}>{statusLabel}</span>
         <span className={isManualPrice?"manual-tag":"status on"}>{isManualPrice?"Preço manual":pricingModeLabel}</span>
-        {publicHref?<Link className="variant-preview-link" href={publicHref} target="_blank"><Eye/> Ver na vitrine</Link>:<span className="variant-preview-link disabled"><EyeOff/> Fora da vitrine</span>}
+        {publicHref?<Link className="variant-preview-link" href={publicHref} target="_blank"><Eye/> Ver na vitrine</Link>:commercialStatus==="available"&&!catalogReady?<span className="variant-preview-link waiting"><EyeOff/> Aguardando revisão</span>:<span className="variant-preview-link disabled"><EyeOff/> Fora da vitrine</span>}
       </div>
     </div>
 
