@@ -1021,10 +1021,15 @@
   .variant-color-inline label:first-of-type{flex:1 1 150px}
   .variant-color-inline label input:not([type="color"]){width:100%}
   .variant-workflow-block{margin-top:12px;padding-top:11px}
-  .image-lightbox{padding:0}
-  .image-lightbox-panel{width:100vw;height:100dvh;border:0;border-radius:0}
-  .image-lightbox-toolbar{padding-top:max(9px,env(safe-area-inset-top))}
+  .image-lightbox{padding:18px 12px;background:rgba(10,9,8,.58)}
+  .image-lightbox-panel{
+    width:min(94vw,680px);
+    height:min(88dvh,820px);
+    border:1px solid rgba(255,255,255,.3);
+    border-radius:22px;
+    box-shadow:0 24px 70px rgba(0,0,0,.34);
+  }
+  .image-lightbox-toolbar{padding-top:10px}
   .image-lightbox-toolbar>span{font-size:9px}
-  .image-lightbox-image{width:94vw}
-  .product-image-hint{right:7px;bottom:7px;padding:4px 6px;font-size:8px}
+  .image-lightbox-image{width:min(86vw,70dvh)}
 }

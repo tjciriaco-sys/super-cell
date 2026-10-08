@@ -25,7 +25,6 @@ export function ProductImage({ src, alt, priority = false }: { src?: string; alt
     <button type="button" className="product-image-button" onClick={()=>setOpen(true)} aria-label="Ampliar imagem do produto">
       <div className="product-image-wrap">
         <Image src={src} alt={alt} fill sizes="(max-width: 640px) 44vw, (max-width: 1100px) 30vw, 260px" priority={priority} className="product-image"/>
-        <span className="product-image-hint">Toque para ampliar</span>
       </div>
     </button>
     {open&&<div className="image-lightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada do produto" onClick={()=>setOpen(false)}>
