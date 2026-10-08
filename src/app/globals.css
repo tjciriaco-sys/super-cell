@@ -722,7 +722,7 @@
 }
 
 
-/* Home v21 — remove residual seam between benefit cards on mobile. */
+/* Home v21 — remove residual seams between benefit cards on mobile. */
 @media(max-width:700px){
-  .home-intro .benefits>div+div{border-top:0}
+  .home-intro .benefits>div+div{border-top:0;border-left:0}
 }
