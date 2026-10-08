@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AdminNewVariantWizard } from "@/components/admin-new-variant-wizard";
