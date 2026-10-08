@@ -698,3 +698,11 @@
   .pricing-category-select{max-width:none}
   .pricing-category-summary{grid-template-columns:1fr}
 }
+
+
+/* Home v19 — preserve CTA breathing room and the hero gradient after removing the trust line. */
+@media(max-width:700px){
+  .hero{margin-bottom:0;border-bottom-color:transparent}
+  .hero .hero-copy{padding-bottom:17px}
+  .benefits{margin-top:0}
+}
