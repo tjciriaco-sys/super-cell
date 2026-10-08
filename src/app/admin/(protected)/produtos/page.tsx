@@ -20,7 +20,7 @@ export default async function ProductsPage() {
   const [{ data }, { data: standardTiers }, { data: accessoryTiers }] = await Promise.all([
     supabase
       .from("products")
-      .select("id,name,slug,condition,connectivity,active,catalog_status,brand:brands(name),category:categories(name,pricing_mode),product_variants(id,sku,ram_gb,storage_gb,color,condition_grade,manual_price,supplier_offers(cost,available))")
+      .select("id,name,slug,condition,connectivity,active,catalog_status,brand:brands(name,slug),category:categories(name,slug,pricing_mode),product_variants(id,sku,ram_gb,storage_gb,color,condition_grade,manual_price,supplier_offers(cost,available))")
       .order("name"),
     supabase.from("pricing_tiers").select("*").eq("active", true).order("sort_order"),
     supabase.from("accessory_pricing_tiers").select("*").eq("active", true).order("sort_order"),
@@ -48,7 +48,8 @@ export default async function ProductsPage() {
             const variantLabel = [v.ram_gb ? `${v.ram_gb} GB` : null, v.storage_gb ? `${v.storage_gb} GB` : null, v.color].filter(Boolean).join(" · ");
             const searchText = normalizeSearch([p.name, p.brand?.name, p.category?.name, p.condition, p.connectivity, v.sku, variantLabel, v.condition_grade].filter(Boolean).join(" "));
 
-            return <tr key={v.id} data-admin-product-row data-search={searchText}>
+            const group=p.category?.slug==="iphone"||p.brand?.slug==="apple"?"iphone":p.category?.slug==="smartphones"?"android":"other";
+            return <tr key={v.id} data-admin-product-row data-search={searchText} data-group={group}>
               <td><div className="row-actions"><Link href={`/admin/produtos/${p.id}`} aria-label={`Editar ${p.name}`}><Pencil/></Link></div></td>
               <td>{index === 0 && <div><strong>{p.name}</strong><small>{p.brand?.name} · {p.category?.name}</small></div>}</td>
               <td><strong>{variantLabel}</strong><small>{v.sku}{v.condition_grade ? ` · ${v.condition_grade.replace("_", " ")}` : ""}</small></td>
