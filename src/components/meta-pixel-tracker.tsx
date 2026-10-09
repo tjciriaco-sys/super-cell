@@ -18,10 +18,13 @@ function initializeMetaPixel() {
     const current = fbq as typeof fbq & { callMethod?: (...values:unknown[])=>void; queue?:unknown[][] };
     if (current.callMethod) current.callMethod(...args);
     else current.queue?.push(args);
-  } as ((...args: unknown[]) => void) & { queue?:unknown[][]; loaded?:boolean; version?:string; callMethod?: (...values:unknown[])=>void };
+  } as ((...args: unknown[]) => void) & { queue?:unknown[][]; loaded?:boolean; version?:string; disablePushState?:boolean; callMethod?: (...values:unknown[])=>void };
   fbq.queue = [];
   fbq.loaded = true;
   fbq.version = "2.0";
+  // Meta also hooks browser history and emits implicit PageViews for URL changes.
+  // Our Next.js router tracks real pathname transitions explicitly below.
+  fbq.disablePushState = true;
   window.fbq = fbq;
   window._fbq = fbq;
   fbq("set", "autoConfig", false, PIXEL_ID);
