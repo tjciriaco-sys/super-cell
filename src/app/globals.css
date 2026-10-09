@@ -1435,9 +1435,9 @@
 .catalog-search-wrap .search-field{width:100%;padding-right:85px}
 .catalog-search-wrap .search-field input{min-width:0;background:transparent}
 .catalog-search-wrap .search-field input::-webkit-search-cancel-button{-webkit-appearance:none}
-.catalog-search-clear{position:absolute;right:48px;top:11px;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:9px;background:#f5f1e9;color:#705b31;cursor:pointer}
+.catalog-search-clear{position:absolute;right:8px;top:12px;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:9px;background:#f5f1e9;color:#705b31;cursor:pointer}
 .catalog-search-feedback{display:block;margin:5px 2px 0;color:#706b63;font-size:11px;line-height:1.4}
 
-.catalog-search-submit{position:absolute;right:8px;top:7px;width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(196,155,66,.5);border-radius:11px;background:linear-gradient(135deg,#edd9a0,#d7ad52);color:#3c321f;cursor:pointer}
+.catalog-search-submit{position:absolute;right:45px;top:7px;width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(196,155,66,.5);border-radius:11px;background:linear-gradient(135deg,#edd9a0,#d7ad52);color:#3c321f;cursor:pointer}
 .catalog-search-submit:disabled{opacity:.45;cursor:default}
 .catalog-search-submit:focus-visible,.catalog-search-clear:focus-visible{outline:2px solid #ae8330;outline-offset:2px}
