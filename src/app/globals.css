@@ -1429,3 +1429,11 @@
 .floating-whatsapp:focus-visible{outline:3px solid #d8a83e;outline-offset:5px;border-radius:18px}
 @media(max-width:700px){.floating-wa-icon{width:56px;height:56px;border-radius:17px}.floating-wa-orbit{width:64px;height:64px}}
 @media(prefers-reduced-motion:reduce){.floating-wa-orbit{animation:none}}
+
+/* Catalog search: unobtrusive mobile affordances. */
+.catalog-search-wrap{position:relative;flex:1;min-width:0}
+.catalog-search-wrap .search-field{width:100%;padding-right:42px}
+.catalog-search-wrap .search-field input{min-width:0;background:transparent}
+.catalog-search-wrap .search-field input::-webkit-search-cancel-button{-webkit-appearance:none}
+.catalog-search-clear{position:absolute;right:10px;top:11px;width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:9px;background:#f5f1e9;color:#705b31;cursor:pointer}
+.catalog-search-feedback{display:block;margin:5px 2px 0;color:#706b63;font-size:11px;line-height:1.4}
