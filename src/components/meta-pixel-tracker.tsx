@@ -56,10 +56,16 @@ export function MetaPixelTracker() {
     const onCatalog = () => window.fbq?.("trackCustom", "CatalogOpen");
     const onContact = () => window.fbq?.("track", "Contact");
     const onCheckout = () => window.fbq?.("track", "InitiateCheckout");
+    const onSearch = (event: Event) => {
+      const term = (event as CustomEvent<{ search_string: string }>).detail?.search_string;
+      if (typeof term === "string" && term.trim().length >= 3) window.fbq?.("track", "Search", { search_string: term });
+    };
+    window.addEventListener("supercell:search", onSearch);
     window.addEventListener("supercell:catalog-enter", onCatalog);
     window.addEventListener("supercell:contact", onContact);
     window.addEventListener("supercell:checkout-start", onCheckout);
     return () => {
+      window.removeEventListener("supercell:search", onSearch);
       window.removeEventListener("supercell:catalog-enter", onCatalog);
       window.removeEventListener("supercell:contact", onContact);
       window.removeEventListener("supercell:checkout-start", onCheckout);
