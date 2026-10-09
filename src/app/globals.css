@@ -1336,3 +1336,28 @@
  .admin-v2 .catalog-admin-item-bottom>div:last-child strong{font-size:14px}
  .admin-v2 .catalog-admin-pill{font-size:9px;padding:4px 6px}
 }
+
+
+/* Admin 2.0 — compact product-model overview; scoped to administrative shell */
+.admin-v2 .product-dashboard{padding:16px;margin-bottom:12px}
+.admin-v2 .product-dashboard>.card-title{padding-bottom:8px;margin-bottom:10px}
+.admin-v2 .product-dashboard>.card-title>div{display:block}
+.admin-v2 .product-dashboard-grid{gap:7px}
+.admin-v2 .product-dashboard-grid>div{display:flex;flex-direction:column;justify-content:flex-start;gap:3px;padding:9px 11px;border-radius:11px;min-height:0}
+.admin-v2 .product-dashboard-grid span{font-size:10px;line-height:1.2}
+.admin-v2 .product-dashboard-grid strong{font-size:21px;line-height:1.1}
+.admin-v2 .product-dashboard-grid small{font-size:10px;line-height:1.25}
+@media(max-width:849px){
+ .admin-v2 .product-admin-heading{gap:10px;margin-bottom:12px}
+ .admin-v2 .product-admin-heading h1{font-size:clamp(25px,7vw,34px);line-height:1.13;letter-spacing:-.03em}
+ .admin-v2 .product-admin-heading p{font-size:12px;line-height:1.5;margin-top:6px}
+ .admin-v2 .product-admin-heading .admin-primary-link{min-height:44px}
+ .admin-v2 .product-dashboard{padding:12px 13px;border-radius:15px}
+ .admin-v2 .product-dashboard>.card-title{padding-bottom:6px;margin-bottom:8px}
+ .admin-v2 .product-dashboard>.card-title strong{font-size:15px;line-height:1.25}
+ .admin-v2 .product-dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .admin-v2 .product-dashboard-grid>div{padding:9px 10px;gap:2px;min-width:0}
+ .admin-v2 .product-dashboard-grid span{font-size:9px}
+ .admin-v2 .product-dashboard-grid strong{font-size:20px}
+ .admin-v2 .product-dashboard-grid small{font-size:10px;overflow-wrap:anywhere}
+}
