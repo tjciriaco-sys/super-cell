@@ -24,6 +24,7 @@ function initializeMetaPixel() {
   fbq.version = "2.0";
   window.fbq = fbq;
   window._fbq = fbq;
+  fbq("set", "autoConfig", false, PIXEL_ID);
   fbq("init", PIXEL_ID);
   const script = document.createElement("script");
   script.async = true;
@@ -53,8 +54,16 @@ export function MetaPixelTracker() {
   useEffect(() => {
     if (!loaded || consent !== "accepted" || isAdminRoute) return;
     const onCatalog = () => window.fbq?.("trackCustom", "CatalogOpen");
+    const onContact = () => window.fbq?.("track", "Contact");
+    const onCheckout = () => window.fbq?.("track", "InitiateCheckout");
     window.addEventListener("supercell:catalog-enter", onCatalog);
-    return () => window.removeEventListener("supercell:catalog-enter", onCatalog);
+    window.addEventListener("supercell:contact", onContact);
+    window.addEventListener("supercell:checkout-start", onCheckout);
+    return () => {
+      window.removeEventListener("supercell:catalog-enter", onCatalog);
+      window.removeEventListener("supercell:contact", onContact);
+      window.removeEventListener("supercell:checkout-start", onCheckout);
+    };
   }, [loaded,consent,isAdminRoute]);
   function choose(value:Exclude<Consent,null>) {
     window.localStorage.setItem(CONSENT_KEY, value);
