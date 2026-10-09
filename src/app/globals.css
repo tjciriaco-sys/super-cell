@@ -1410,3 +1410,14 @@
  .admin-operation-footer{grid-template-columns:1fr;padding:13px}
  .admin-operation-footer>div+div{border-top:1px solid #eae4da;padding-top:10px}
 }
+
+
+/* Privacy-first site measurement consent */
+.tracking-consent{position:fixed;z-index:120;left:16px;bottom:max(16px,env(safe-area-inset-bottom));max-width:420px;width:calc(100% - 32px);display:grid;gap:12px;padding:16px;border:1px solid #dac795;border-radius:16px;background:#fffdf8;color:#25201a;box-shadow:0 12px 48px rgba(34,23,5,.2)}
+.tracking-consent strong{font-size:14px}
+.tracking-consent p{font-size:12px;line-height:1.5;color:#62594c;margin:5px 0 0}
+.tracking-consent-actions{display:flex;gap:8px}
+.tracking-consent-actions button{flex:1;min-height:44px;border-radius:10px;border:1px solid #d9cba5;background:white;color:#342d22;font-size:12px;font-weight:700;cursor:pointer}
+.tracking-consent-actions button:last-child{background:#222019;color:#fff;border-color:#222019}
+.tracking-consent-actions button:focus-visible{outline:3px solid #d5ae4f;outline-offset:2px}
+@media(max-width:700px){.tracking-consent{bottom:max(82px,calc(env(safe-area-inset-bottom) + 74px));padding:14px}}
