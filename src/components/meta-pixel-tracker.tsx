@@ -53,6 +53,13 @@ export function MetaPixelTracker() {
     // Only track when the actual route changes, not when an effect is replayed.
     if (lastTrackedPath.current === pathname) return;
     lastTrackedPath.current = pathname;
+    // Guard against duplicate tracker mounts for the same route in Preview.
+    // A later real navigation to this route is still tracked.
+    const trackerWindow = window as Window & { __supercellLastPageView?: { path: string; at: number } };
+    const previous = trackerWindow.__supercellLastPageView;
+    const now = Date.now();
+    if (previous?.path === pathname && now - previous.at < 1500) return;
+    trackerWindow.__supercellLastPageView = { path: pathname, at: now };
     window.fbq?.("track", "PageView");
     if (pathname.startsWith("/produto/")) window.fbq?.("track", "ViewContent", { content_type: "product" });
   }, [pathname,loaded,consent,isAdminRoute]);
