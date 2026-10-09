@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BadgeDollarSign, ChevronDown, ChevronRight, ListFilter, Search, X } from "lucide-react";
@@ -72,7 +72,9 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => searchParams.get("busca") ?? "");
+  const lastTrackedSearch = useRef((searchParams.get("busca") ?? "").trim().toLocaleLowerCase("pt-BR"));
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [sort, setSort] = useState<SortMode>("price_desc");
   const [sortOpen, setSortOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -92,10 +94,40 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
   const storageOptions = useMemo(() => Array.from(new Set(variants.map((variant) => variant.storage_gb).filter((value): value is number => Boolean(value)))).sort((a, b) => a - b), [variants]);
   const activeFilterCount = [priceRange, condition, storage, connectivity].filter((value) => value !== "todos").length;
   const normalizedQuery = query.toLocaleLowerCase("pt-BR").trim();
+  const confirmSearch = () => {
+    const term = query.trim().replace(/\s+/g, " ").slice(0, 80);
+    if (term.length < 3) return;
+    const key = term.toLocaleLowerCase("pt-BR");
+    if (key !== lastTrackedSearch.current) {
+      window.dispatchEvent(new CustomEvent("supercell:search", { detail: { search_string: term } }));
+      lastTrackedSearch.current = key;
+    }
+    searchInputRef.current?.blur();
+  };
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      if (query.trim()) params.set("busca", query.trim());
+      else params.delete("busca");
+      const next = `${window.location.pathname}${params.size ? `?${params}` : ""}${window.location.hash}`;
+      window.history.replaceState(window.history.state, "", next);
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [query]);
+  useEffect(() => {
+    const term = query.trim().replace(/\s+/g, " ").slice(0, 80);
+    const key = term.toLocaleLowerCase("pt-BR");
+    if (term.length < 3 || key === lastTrackedSearch.current) return;
+    const timer = window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("supercell:search", { detail: { search_string: term } }));
+      lastTrackedSearch.current = key;
+    }, 5000);
+    return () => window.clearTimeout(timer);
+  }, [query]);
 
   const filteredVariants = useMemo(() => variants.filter((variant) => {
     const text = `${variant.product_name} ${variant.model} ${variant.brand_name} ${variant.category_name} ${variant.ram_gb ?? ""} ${variant.storage_gb ?? ""} ${variant.color ?? ""} ${variant.connectivity ?? ""} ${variant.condition_grade ? gradeLabels[variant.condition_grade] : ""}`.toLocaleLowerCase("pt-BR");
-    return matchesCategory(variant, category) && (!normalizedQuery || text.includes(normalizedQuery))
+    return (normalizedQuery || matchesCategory(variant, category)) && (!normalizedQuery || text.includes(normalizedQuery))
       && inPriceRange(variant.price_pix === null ? null : Number(variant.price_pix), priceRange) && (condition === "todos" || variant.condition === condition)
       && (storage === "todos" || String(variant.storage_gb) === storage) && (connectivity === "todos" || variant.connectivity === connectivity);
   }), [variants, category, normalizedQuery, priceRange, condition, storage, connectivity]);
@@ -141,7 +173,7 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
   return <section id="catalogo" className="catalog-section shell">
     <div className="section-heading"><div><span className="eyebrow">📱 Escolha com segurança</span><h2>Encontre seu próximo aparelho</h2></div><span className="catalog-total-badge" aria-label="Mais de 100 opções no catálogo"><strong>100+</strong><small>opções no catálogo</small></span></div>
     <div className="catalog-tools">
-      <label className="search-field"><Search size={20}/><span className="sr-only">Buscar produtos</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="O que você procura?"/></label>
+      <div className="catalog-search-wrap"><label className="search-field"><Search size={20}/><span className="sr-only">Buscar produtos</span><input ref={searchInputRef} type="search" enterKeyHint="search" autoComplete="off" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={(event) => {if (event.key === "Enter") {event.preventDefault();confirmSearch();}}} placeholder="Buscar modelo, marca ou memória…" aria-describedby="catalog-search-feedback"/></label>{query && <button type="button" className="catalog-search-clear" aria-label="Limpar pesquisa" onClick={() => {setQuery(""); lastTrackedSearch.current = ""; searchInputRef.current?.focus();}}><X size={16}/></button>}<button type="button" className="catalog-search-submit" aria-label="Confirmar pesquisa" onClick={confirmSearch} disabled={query.trim().length < 3}><Search size={19}/></button><small id="catalog-search-feedback" className="catalog-search-feedback" aria-live="polite">{query.trim() ? `${products.length} ${products.length === 1 ? "opção encontrada" : "opções encontradas"} em todo o catálogo` : "Encontre aparelhos de todas as categorias"}</small></div>
       <div className="category-primary-grid" role="group" aria-label="Categorias principais">
         {primaryCategories.map((item) => <button key={item.slug} className={`category-primary-button ${category === item.slug ? "active" : ""}`} onClick={() => selectCategory(item.slug)} aria-pressed={category === item.slug}>{item.label}</button>)}
         <button className={`category-primary-button category-primary-more ${otherCategories.some((item) => item.slug === category) ? "active" : ""}`} onClick={() => setOtherOpen((open) => !open)} aria-expanded={otherOpen} disabled={otherCategories.length === 0}><span className="category-button-label"><strong>Outros</strong><small>produtos</small></span><ChevronDown/></button>
