@@ -7,5 +7,5 @@ function WhatsAppMark(){
 }
 export function FloatingWhatsApp({number,message}:{number:string;message:string}){
   if(!number)return null;
-  return <a className="floating-whatsapp" href={whatsappUrl(number,message)} target="_blank" rel="noreferrer" aria-label="Falar agora com a Super Cell pelo WhatsApp"><span className="floating-wa-label"><strong>Falar agora</strong><small>WhatsApp Super Cell</small></span><span className="floating-wa-orbit" aria-hidden="true"/><span className="floating-wa-icon"><WhatsAppMark/></span></a>;
+  return <a className="floating-whatsapp" onClick={()=>window.dispatchEvent(new Event("supercell:contact"))} href={whatsappUrl(number,message)} target="_blank" rel="noreferrer" aria-label="Falar agora com a Super Cell pelo WhatsApp"><span className="floating-wa-label"><strong>Falar agora</strong><small>WhatsApp Super Cell</small></span><span className="floating-wa-orbit" aria-hidden="true"/><span className="floating-wa-icon"><WhatsAppMark/></span></a>;
 }
