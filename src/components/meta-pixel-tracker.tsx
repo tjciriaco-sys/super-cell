@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 declare global {
@@ -37,7 +37,6 @@ export function MetaPixelTracker() {
   const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/auth");
   const [consent, setConsent] = useState<Consent>(null);
   const [loaded, setLoaded] = useState(false);
-  const lastTrackedPath = useRef<string | null>(null);
   useEffect(() => {
     const saved = window.localStorage.getItem(CONSENT_KEY);
     if (saved === "accepted" || saved === "rejected") setConsent(saved);
@@ -49,17 +48,11 @@ export function MetaPixelTracker() {
   }, [consent,isAdminRoute]);
   useEffect(() => {
     if (!loaded || consent !== "accepted" || isAdminRoute) return;
-    // React Strict Mode can run effects twice during development/Preview.
-    // Only track when the actual route changes, not when an effect is replayed.
-    if (lastTrackedPath.current === pathname) return;
-    lastTrackedPath.current = pathname;
-    // Guard against duplicate tracker mounts for the same route in Preview.
-    // A later real navigation to this route is still tracked.
-    const trackerWindow = window as Window & { __supercellLastPageView?: { path: string; at: number } };
-    const previous = trackerWindow.__supercellLastPageView;
-    const now = Date.now();
-    if (previous?.path === pathname && now - previous.at < 1500) return;
-    trackerWindow.__supercellLastPageView = { path: pathname, at: now };
+    // A page view follows a pathname transition, never a query/hash update,
+    // state change, or remount of this tracker within the same document.
+    const trackerWindow = window as Window & { __supercellTrackedPath?: string };
+    if (trackerWindow.__supercellTrackedPath === pathname) return;
+    trackerWindow.__supercellTrackedPath = pathname;
     window.fbq?.("track", "PageView");
     if (pathname.startsWith("/produto/")) window.fbq?.("track", "ViewContent", { content_type: "product" });
   }, [pathname,loaded,consent,isAdminRoute]);
