@@ -100,7 +100,7 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
     const timer = window.setTimeout(() => {
       window.dispatchEvent(new CustomEvent("supercell:search", { detail: { search_string: term } }));
       lastTrackedSearch.current = key;
-    }, 1000);
+    }, 5000);
     return () => window.clearTimeout(timer);
   }, [query]);
 
