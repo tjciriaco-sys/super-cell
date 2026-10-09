@@ -1361,3 +1361,52 @@
  .admin-v2 .product-dashboard-grid strong{font-size:20px}
  .admin-v2 .product-dashboard-grid small{font-size:10px;overflow-wrap:anywhere}
 }
+
+
+/* Super Cell Admin 2.0 — operational overview */
+.admin-operations{display:grid;gap:14px}
+.admin-operation-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.admin-operation-stat{display:grid;align-content:start;gap:5px;min-width:0;padding:15px;border:1px solid #e7dfd4;border-radius:14px;background:#fff;color:#251f18;text-decoration:none}
+.admin-operation-stat>svg{width:19px;height:19px;color:#977737}
+.admin-operation-stat>span{font-size:11px;color:#756a5c}
+.admin-operation-stat>strong{font-size:26px;line-height:1.1;font-weight:800}
+.admin-operation-stat>small{display:flex;align-items:center;justify-content:space-between;gap:4px;color:#817568;font-size:10px}
+.admin-operation-stat>small svg{width:14px;height:14px;flex-shrink:0}
+.admin-operation-alerts{margin-bottom:0}
+.admin-operation-section-title,.admin-operation-section-title>div{display:flex;align-items:center;gap:10px}
+.admin-operation-section-title{justify-content:space-between;padding-bottom:12px;border-bottom:1px solid #eae4da}
+.admin-operation-section-title>div>svg{width:19px;height:19px;color:#a07a38}
+.admin-operation-section-title>div>div{display:grid;gap:3px}
+.admin-operation-section-title strong{font-size:15px}
+.admin-operation-section-title small,.admin-operation-section-title>span{font-size:11px;color:#817569}
+.admin-operation-tasks{display:grid}
+.admin-operation-tasks>a,.admin-operation-image-issues>a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;color:#251e16;text-decoration:none;border-bottom:1px solid #f0ebe3}
+.admin-operation-tasks>a>span,.admin-operation-image-issues>a>span{display:grid;gap:4px}
+.admin-operation-tasks a strong{font-size:12px}
+.admin-operation-tasks a small{font-size:11px;color:#82776a}
+.admin-operation-tasks a>svg{width:16px;height:16px;flex-shrink:0;color:#957a4a}
+.admin-operation-image-issues{padding:12px 0}
+.admin-operation-image-issues>div{display:flex;align-items:center;gap:9px}
+.admin-operation-image-issues>div>svg{width:18px;height:18px;color:#96793f}
+.admin-operation-image-issues>div>span{display:grid;gap:3px}
+.admin-operation-image-issues>div strong{font-size:12px}
+.admin-operation-image-issues>div small,.admin-operation-image-issues>small{font-size:11px;color:#82776a}
+.admin-operation-image-issues>a{padding:9px 0 9px 27px}
+.admin-operation-footer{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0}
+.admin-operation-footer>div{display:flex;align-items:center;gap:9px;min-width:0}
+.admin-operation-footer svg{width:16px;height:16px;flex-shrink:0;color:#977737}
+.admin-operation-footer span{font-size:11px;color:#7c7265}
+.admin-operation-footer strong{font-size:12px;overflow-wrap:anywhere}
+.admin-operation-footer a{margin-left:auto}
+@media(max-width:849px){
+ .admin-operations{gap:10px}
+ .admin-operation-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .admin-operation-stat{padding:11px 12px;gap:3px;border-radius:12px}
+ .admin-operation-stat>svg{width:17px;height:17px}
+ .admin-operation-stat>span{font-size:10px}
+ .admin-operation-stat>strong{font-size:23px}
+ .admin-operation-stat>small{font-size:10px}
+ .admin-operation-alerts{padding:13px}
+ .admin-operation-footer{grid-template-columns:1fr;padding:13px}
+ .admin-operation-footer>div+div{border-top:1px solid #eae4da;padding-top:10px}
+}
