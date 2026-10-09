@@ -24,6 +24,7 @@ function initializeMetaPixel() {
   fbq.version = "2.0";
   window.fbq = fbq;
   window._fbq = fbq;
+  fbq("set", "autoConfig", false, PIXEL_ID);
   fbq("init", PIXEL_ID);
   const script = document.createElement("script");
   script.async = true;
