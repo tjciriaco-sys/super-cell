@@ -1,3 +1,4 @@
+"use client";
 function whatsappUrl(number:string,message:string){
   const digits=number.replace(/\D/g,"");
   return digits?`https://wa.me/${digits}?text=${encodeURIComponent(message)}`:"#";
