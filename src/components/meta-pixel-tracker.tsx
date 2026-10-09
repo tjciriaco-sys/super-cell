@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 declare global {
@@ -37,6 +37,7 @@ export function MetaPixelTracker() {
   const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/auth");
   const [consent, setConsent] = useState<Consent>(null);
   const [loaded, setLoaded] = useState(false);
+  const lastTrackedPath = useRef<string | null>(null);
   useEffect(() => {
     const saved = window.localStorage.getItem(CONSENT_KEY);
     if (saved === "accepted" || saved === "rejected") setConsent(saved);
@@ -48,6 +49,10 @@ export function MetaPixelTracker() {
   }, [consent,isAdminRoute]);
   useEffect(() => {
     if (!loaded || consent !== "accepted" || isAdminRoute) return;
+    // React Strict Mode can run effects twice during development/Preview.
+    // Only track when the actual route changes, not when an effect is replayed.
+    if (lastTrackedPath.current === pathname) return;
+    lastTrackedPath.current = pathname;
     window.fbq?.("track", "PageView");
     if (pathname.startsWith("/produto/")) window.fbq?.("track", "ViewContent", { content_type: "product" });
   }, [pathname,loaded,consent,isAdminRoute]);
