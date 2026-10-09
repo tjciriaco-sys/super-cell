@@ -119,8 +119,9 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
     const key = term.toLocaleLowerCase("pt-BR");
     if (term.length < 3 || key === lastTrackedSearch.current) return;
     const timer = window.setTimeout(() => {
-      window.dispatchEvent(new CustomEvent("supercell:search", { detail: { search_string: term } }));
+      if (lastTrackedSearch.current === key) return;
       lastTrackedSearch.current = key;
+      window.dispatchEvent(new CustomEvent("supercell:search", { detail: { search_string: term } }));
     }, 5000);
     return () => window.clearTimeout(timer);
   }, [query]);
