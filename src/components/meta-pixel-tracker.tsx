@@ -18,7 +18,7 @@ function initializeMetaPixel() {
     const current = fbq as typeof fbq & { callMethod?: (...values:unknown[])=>void; queue?:unknown[][] };
     if (current.callMethod) current.callMethod(...args);
     else current.queue?.push(args);
-  } as typeof window.fbq & { queue?:unknown[][]; loaded?:boolean; version?:string };
+  } as ((...args: unknown[]) => void) & { queue?:unknown[][]; loaded?:boolean; version?:string; callMethod?: (...values:unknown[])=>void };
   fbq.queue = [];
   fbq.loaded = true;
   fbq.version = "2.0";
