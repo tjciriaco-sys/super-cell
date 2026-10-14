@@ -1,0 +1,19 @@
+# Padrão obrigatório — importação e publicação de produtos Super Cell
+
+Aplica-se a qualquer entrada por catálogo online (ex.: Guanacel F1-A), listas WhatsApp (ex.: iPhones F1-B, Ramoncel F2), novos fornecedores e cadastro administrativo.
+
+## Fluxo obrigatório
+1. Ler a fonte atual com conector apropriado, preservando código externo, nome, cor, RAM física, armazenamento, versão, custo, imagem, data e URL de origem. Nunca presumir que o HTML simples contenha todos os itens: validar paginação/cobertura.
+2. Comparar com produtos, product_variants e supplier_offers do Supabase. Chave comercial: modelo/versão de rede + RAM física + armazenamento + cor + condição. Vincular oferta a variante existente e não duplicar produto. Respeitar fornecedores fixados e seleção automática de menor custo.
+3. Conferir fontes técnicas: fabricante oficial em primeiro lugar, complementado por TudoCelular e outras fontes confiáveis. Cruzar chipset, tela (tamanho, tecnologia, resolução, Hz), RAM física, armazenamento, câmeras, bateria, potência de recarga, rede, SIM/eSIM, NFC, sistema e proteção. Não confundir RAM expandida com física nem inferir especificações desconhecidas. Registrar ambiguidade e solicitar confirmação do fornecedor para SKU/região específica.
+4. Antes de publicar, garantir descrição de benefícios clara e específica, destaques curtos e ficha técnica completa em português. A descrição comercial NÃO pode dizer 'preço confirmado', 'preço a confirmar', 'oferta confirmada' nem fazer referência ao processo interno de importação. Disponibilidade/preço são definidos pela oferta visível e regras de negócio.
+5. Formato obrigatório: products.highlights = objeto plano de pares chave/valor textual em português. products.specifications = objeto com grupos (ex.: 'Tela','Desempenho','Câmeras','Bateria','Conectividade','Sistema') cujo valor é OUTRO OBJETO de pares atributo/valor textual. NUNCA salvar strings, arrays ou valores soltos como grupos da ficha. Exemplo: {"Tela":{"Tamanho":"6,67 polegadas","Tecnologia":"AMOLED","Taxa de atualização":"120 Hz"}}. Sempre mostrar tamanho e tecnologia em destaques e ficha detalhada, com dados coerentes. Dados de cada variante permanecem em product_variants. Para RAM e capacidade divergentes entre variantes, evitar texto universal enganoso e preferir campos da variante.
+6. Revisar título, condição, memória, cor, imagens de variantes, imagem de capa, custo e preço Pix calculado. Não mexer em regras de precificação, fornecedor escolhido, status, arte aprovada ou parcelamento sem necessidade.
+7. Validar consultas na public_catalog e a renderização REAL da página mobile (360–430 px): cards 'Principais destaques', descrição, ficha técnica expandida, imagens, variantes, preço Pix, parcelamento, CTAs e ausência de overflow ou linhas numeradas por caractere. Sem teste visual real não declarar interface validada.
+8. Apenas então publicar (catalog_status ready e status comercial apropriado) e comunicar relatório: adicionados, atualizados, não localizados, inconsistências, fontes e validação visual. Em caso de dúvida técnica grave, manter sem publicar essa variante e reportar o impedimento específico; não deixar pendências evitáveis sem pesquisa.
+
+## Regra para usados
+Saúde de bateria de 85% é referência, não proibição automática. Exceções abaixo de 85% são permitidas e devem trazer porcentagem real e estado da unidade com transparência. Nunca assumir histórico de abertura, originalidade, garantia ou configuração SIM de uma unidade sem prova.
+
+## Prevenção de regressões
+Renderizador da ficha técnica deve aceitar grupos de objetos e tratar tipos inesperados com segurança; strings jamais podem ser percorridas por Object.entries para gerar índices de caracteres. Testar ambos: grupo completo e valor plano legado. Não publicar alterações de layout sem build/testes e inspeção mobile em preview; sincronizar documentação no repositório com qualquer mudança de formato.
