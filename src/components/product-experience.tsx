@@ -17,6 +17,16 @@ const normalizeSpecificationKey=(key:string)=>technicalLabel(key).normalize("NFD
 const orderGroup=(key:string)=>{const k=normalizeSpecificationKey(key);if(k==="memoria"||k==="memoria ram")return 1;if(k==="storage")return 2;if(k==="processor"||k==="chipset")return 3;if(k==="camera"||k==="camera traseira"||k==="camera frontal")return 5;if(k==="battery")return 6;if(k==="connectivity")return 7;const i=specificationOrder.findIndex(x=>normalizeSpecificationKey(x)===k);return i<0?100:i};
 function orderedTechnicalEntries<T>(value:Record<string,T>|null|undefined):Array<[string,T]>{return (Object.entries(value??{}) as Array<[string,T]>).sort(([a],[b])=>orderGroup(a)-orderGroup(b)||a.localeCompare(b,"pt-BR"))}
 
+function advertisedRam(variant:CatalogVariant):{total:number;physical:number;virtual:number}|null{
+  const metadata=variant.specifications?.["Memória anunciada"];
+  if(!metadata||typeof metadata!=="object")return null;
+  const physical=Number(metadata["RAM física (GB)"]);
+  const virtual=Number(metadata["Expansão virtual (GB)"]);
+  const total=Number(metadata["RAM anunciada (GB)"]);
+  if(!Number.isInteger(physical)||!Number.isInteger(virtual)||!Number.isInteger(total)||virtual<=0||physical<=0||total!==physical+virtual||variant.ram_gb!==physical)return null;
+  return {total,physical,virtual};
+}
+
 function performanceHighlights(variant:CatalogVariant):Array<[string,string]>{
   const original=orderedTechnicalEntries(variant.highlights);
   // Only smartphones/tablets: other categories retain their own card arrangement.
@@ -33,7 +43,8 @@ function performanceHighlights(variant:CatalogVariant):Array<[string,string]>{
     read(spec as Record<string,unknown>,["Processador","Processor"])||
     read(variant.highlights,["Processador","Processor"])||
     rawPerformance.split(" · ")[0].trim();
-  const ram=variant.ram_gb?variant.ram_gb+" GB RAM":"";
+  const advertised=advertisedRam(variant);
+  const ram=advertised?advertised.total+" GB RAM":variant.ram_gb?variant.ram_gb+" GB RAM":"";
   const storage=variant.storage_gb?variant.storage_gb+" GB":"";
   // Never invent missing properties or claim extended/virtual memory as physical RAM.
   const parts=[processor,ram,storage].filter(Boolean);
@@ -50,7 +61,7 @@ function variantSpecifications(variant:CatalogVariant):Record<string,Record<stri
   const memoryKeys=new Set(["ram","memoria","memoria ram","armazenamento","storage","rom"]);
   for(const [group,raw] of Object.entries(source)){
     const normalized=normalizeSpecificationKey(group);
-    if(memoryKeys.has(normalized))continue;
+    if(memoryKeys.has(normalized)||normalized==="memoria anunciada")continue;
     if(raw && typeof raw==="object"&&!Array.isArray(raw)){
       const fields:Record<string,string>={};
       for(const [key,value] of Object.entries(raw)){
@@ -64,7 +75,9 @@ function variantSpecifications(variant:CatalogVariant):Record<string,Record<stri
     }
   }
   const performance=result["Desempenho"]??{};
-  if(variant.ram_gb!==null&&variant.ram_gb>0)performance["RAM"]=variant.ram_gb+" GB";
+  const advertised=advertisedRam(variant);
+  if(advertised){performance["RAM"]=advertised.total+" GB no total";performance["Composição da RAM"]=advertised.physical+" GB físicos + "+advertised.virtual+" GB de expansão virtual";}
+  else if(variant.ram_gb!==null&&variant.ram_gb>0)performance["RAM"]=variant.ram_gb+" GB";
   if(variant.storage_gb!==null&&variant.storage_gb>0)performance["Armazenamento"]=variant.storage_gb+" GB";
   if(Object.keys(performance).length)result["Desempenho"]=performance;
   return result;
