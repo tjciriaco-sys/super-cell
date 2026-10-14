@@ -29,3 +29,16 @@ Os cards principais e a ficha técnica detalhada devem mostrar exclusivamente os
 
 ## Exceção de RAM comercial combinada
 Quando a fonte anunciar de modo comprovado RAM física somada a expansão virtual, registrar RAM física em `product_variants.ram_gb`. Na ficha `specifications`, usar grupo interno `Memória anunciada` com campos `RAM física (GB)`, `Expansão virtual (GB)`, `RAM anunciada (GB)`. Exibir o total comercial no destaque Desempenho e detalhar na ficha: total, RAM física e expansão virtual. Somente aplicar se RAM física corresponder à variante e a soma coincidir com total anunciado; caso contrário não usar expansão. Exemplo comprovado: REDMI 15C, 8 físicos + 8 virtuais = 16 GB anunciados. Não extrapolar essa exceção a outros modelos. Validar exibição mobile.
+
+## Detecção obrigatória durante importação e enriquecimento — RAM expandida (13/10/2026)
+
+Esta verificação faz parte do fluxo NORMAL de toda importação de catálogo online, lista de WhatsApp e cadastro de lançamento, sem solicitação adicional do gestor. Não é uma exceção manual exclusiva do REDMI 15C.
+
+1. Para cada oferta/variante, capturar RAM anunciada pelo fornecedor, código, armazenamento, versão e eventual indicação de "RAM Plus", "Extended RAM", "expansão", "8+8", "até 16 GB" etc. Tratar o número comercial como `ram_anunciada_gb` provisório, NÃO como RAM física.
+2. Na pesquisa de enriquecimento, identificar a RAM física e a expansão virtual permitida *para o SKU/mercado/configuração anunciados* usando fabricante oficial prioritariamente e fonte técnica secundária. Não deduzir que 16 = 8+8 sem confirmação; diferentes versões podem usar somas diferentes.
+3. Modelo lógico do importador: `ram_fisica_gb`, `ram_virtual_gb`, `ram_anunciada_gb`, `ram_tipo_anuncio` ("fisica" ou "fisica_mais_virtual"), `ram_fonte_verificacao` e `ram_status_verificacao`. Estes são campos de trabalho/validação; não pressupor colunas existentes no banco.
+4. Quando houver composição verificada e `ram_anunciada_gb = ram_fisica_gb + ram_virtual_gb`, salvar a RAM FÍSICA em `product_variants.ram_gb` e persistir `specifications["Memória anunciada"]` com `RAM física (GB)`, `Expansão virtual (GB)` e `RAM anunciada (GB)`. O card principal exibe o TOTAL anunciado; a ficha expandida informa explicitamente o total e a composição física + virtual. Se não houver expansão anunciada/verificada, exibir somente a RAM física confirmada.
+5. Quando os números divergirem, a fonte for insuficiente ou o anúncio for ambíguo, marcar variante como pendente de conferência, não publicar informações especulativas e reportar objetivamente a dúvida. A simples presença de "16 GB" não autoriza converter em 8+8.
+6. Verificar no preview mobile que título, variante, desempenho e ficha técnica não se contradizem. Registrar contagem de casos detectados, confirmados, bloqueados e respectivos links de fontes no relatório de importação.
+
+A detecção e o enriquecimento acima são **etapas obrigatórias do agente/importador**. A renderização automática já possui suporte quando os metadados corretos estão cadastrados; ela por si só NÃO pesquisa fontes nem infere a composição. Caso se implemente importador de execução autônoma, codificar explicitamente este fluxo e testes antes de chamar o processo de totalmente automático.
