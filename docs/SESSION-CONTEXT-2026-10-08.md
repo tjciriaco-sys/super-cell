@@ -290,3 +290,40 @@ Antes de qualquer nova implementação:
 - a URL do compartilhamento precisa ficar visualmente separada por duas quebras de linha.
 - zoom existe só na página do produto.
 - não regredir o degradê e as bordas dos cards da home.
+
+
+---
+
+## Atualização de continuidade — 14/10/2026 (conversa de implementação)
+
+Este complemento registra o fechamento dos dois chats recentes de implementação. Os registros anteriores deste documento e do handoff continuam válidos, sujeitos à conferência com a main e produção atuais.
+
+### Decisões de produto e UX consolidadas
+- Administração: modelo e variantes separados; criação de nova variante e duplicação; disponibilidade sempre visível, demais seções (imagem, condição, preço, ofertas) recolhíveis; filtros de variantes Todas/Disponíveis/Reposição devem filtrar de fato; visão do modelo com contagens e status comercial.
+- Fluxo de cadastro novo: categoria principal iPhones/Androids/Outros antes de marca, etapas de identificação/configuração/comercial/foto e revisão, campos de seminovos e seletores coerentes com design do Admin. Evitar erro de validação “Invalid input: expected string, received null”.
+- Publicação do modelo (rascunho/publicado) é independente da disponibilidade da variante. Uma variante disponível não torna automaticamente visível um modelo em rascunho. O painel deve explicar essa distinção; evitar rótulo técnico “QA aprovado”.
+- Admin de produtos deve oferecer filtro por iPhones, Androids e Outros, além da pesquisa textual.
+- Catálogo público: Androids primeiro e selecionado inicialmente; iPhones segundo. Preservar opção de outras categorias.
+- Zoom/lightbox da imagem apenas na página do produto; clique na imagem do card da home deve navegar diretamente ao produto, sem tentativa de zoom.
+- Pedido rápido: mini formulário para WhatsApp, pagamento na entrega, escolha Pix/cartão, campos do cliente, endereço, referência e observações. Mensagem enviada ao vendedor com emojis e dados completos, incluindo COR; evitar linha redundante de referência/slug do produto.
+- Link direto de pedido: URL do produto com variante e parâmetro pedido=1 abre formulário automaticamente. Botões de copiar e compartilhar permitem que vendedor/cliente envie link a terceiro. Preservar prévia rica do WhatsApp quando possível.
+
+### PENDÊNCIA CONFIRMADA POR TESTE REAL — formatação do link de pedido compartilhado
+Em 08/10/2026 foi mesclado o PR #28, commit `2ee04364dde9b39ab8406409672e0cdacca89961`, alterando `src/components/product-experience.tsx`, função `shareOrderLink`. A alteração tentou deixar os três emojis 👇👇👇 na mesma linha do CTA e adicionar duas quebras antes do URL.
+
+**Resultado observado no WhatsApp pelo usuário:** o texto recebido ainda exibe os emojis na linha imediatamente anterior ao link, mas o link começa na mesma linha dos emojis; portanto, a correção **NÃO foi validada como resolvida**. Screenshot do usuário confirma. Não marcar como concluída só porque o commit foi publicado.
+
+**Causa provável a verificar:** o código usa `navigator.share({text: shareText, url: orderLink})`. O compartilhamento nativo pode juntar `text` e `url` com sua própria separação, ignorando as quebras finais do texto. Simplesmente adicionar `\\n\\n` no final de `shareText` pode não resolver.
+
+**Critério de aceite:** WhatsApp deve mostrar `*Clique aqui para finalizar seu pedido:* 👇👇👇`, depois uma linha em branco e então URL iniciando sozinho na linha seguinte, sem ficar colado aos dedos. Considerar incluir URL dentro do próprio `text` com `\\n\\n` entre CTA e link, e não passar `url` separado, preservando a prévia rica do produto quando possível. Testar o fluxo nativo Android/WhatsApp e fallback de cópia, sem regressão do link `pedido=1`. Confirmar a formatação por envio real antes de encerrar.
+
+### Infraestrutura e execução
+- Repositório: `tjciriaco-sys/super-cell`, branch `main`; domínio `https://catalogo.supercellrn.com`.
+- Vercel projeto `prj_wRkmMrU4AvADjSW1vjGsqDcafjy7`; equipe `team_EZU9CToKIbcO6z4YxiFQc2EJ`.
+- Supabase `rgbrdtstbaulxhzievkh`.
+- Fluxo Plugin First: investigar no repositório, branch pequena, preview/build, PR, merge, produção, validação. Não pedir ao usuário para colar código em Work/CLI quando os plugins estão disponíveis.
+- Estado temporal: commit acima foi mesclado; o último status de deploy consultado era BUILDING, portanto conferir o estado atual da Vercel antes de afirmar publicação final.
+- Não editar produção para resolver apenas a documentação; este registro é um checkpoint de contexto, não uma correção funcional.
+
+### Primeiro passo do próximo chat
+Ler `SUPER-CELL-HANDOFF.md`, `docs/SESSION-CONTEXT-2026-10-08.md`, `docs/DEVELOPMENT-WORKFLOW.md`, `docs/production-rules.md`; conferir código e deploy atuais. Prioridade imediata: corrigir a separação entre os três emojis e o link no compartilhamento WhatsApp, com teste real. 
