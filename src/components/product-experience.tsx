@@ -15,7 +15,7 @@ function specificationRows(raw:unknown):Array<[string,string]>{if(raw===null||ra
 const specificationOrder=["tela","ram","armazenamento","processador","desempenho","câmeras","bateria","conectividade","sistema","proteção","recursos","identificação"];
 const normalizeSpecificationKey=(key:string)=>technicalLabel(key).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const orderGroup=(key:string)=>{const k=normalizeSpecificationKey(key);if(k==="memoria"||k==="memoria ram")return 1;if(k==="storage")return 2;if(k==="processor"||k==="chipset")return 3;if(k==="camera"||k==="camera traseira"||k==="camera frontal")return 5;if(k==="battery")return 6;if(k==="connectivity")return 7;const i=specificationOrder.findIndex(x=>normalizeSpecificationKey(x)===k);return i<0?100:i};
-function orderedTechnicalEntries(value:Record<string,unknown>|null|undefined){return Object.entries(value??{}).sort(([a],[b])=>orderGroup(a)-orderGroup(b)||a.localeCompare(b,"pt-BR"))}
+function orderedTechnicalEntries<T>(value:Record<string,T>|null|undefined):Array<[string,T]>{return (Object.entries(value??{}) as Array<[string,T]>).sort(([a],[b])=>orderGroup(a)-orderGroup(b)||a.localeCompare(b,"pt-BR"))}
 
 function waUrl(number:string,message:string){return `https://wa.me/${number.replace(/\D/g,"")}?text=${encodeURIComponent(message)}`}
 const gradeContent={
