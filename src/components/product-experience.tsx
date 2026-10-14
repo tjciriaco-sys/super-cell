@@ -33,8 +33,8 @@ function performanceHighlights(variant:CatalogVariant):Array<[string,string]>{
     read(spec as Record<string,unknown>,["Processador","Processor"])||
     read(variant.highlights,["Processador","Processor"])||
     rawPerformance.split(" · ")[0].trim();
-  const ram=variant.ram_gb?variant.ram_gb+" GB RAM":read(performanceGroup,["RAM"]);
-  const storage=variant.storage_gb?variant.storage_gb+" GB":read(performanceGroup,["Armazenamento","Storage"]);
+  const ram=variant.ram_gb?variant.ram_gb+" GB RAM":"";
+  const storage=variant.storage_gb?variant.storage_gb+" GB":"";
   // Never invent missing properties or claim extended/virtual memory as physical RAM.
   const parts=[processor,ram,storage].filter(Boolean);
   if(parts.length===0)return original;
