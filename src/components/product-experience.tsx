@@ -59,7 +59,7 @@ function variantSpecifications(variant:CatalogVariant):Record<string,Record<stri
         else if(typeof value==="string"&& !/RAM|memoria|armazenamento/i.test(key))fields[key]=value;
       }
       if(Object.keys(fields).length)result[technicalLabel(group)]=fields;
-    }else if(typeof raw==="string"&&!/conforme variante|conforme versao|expansao virtual|memoria virtual/i.test(raw.normalize("NFD").replace(/[\u0300-\u036f]/g,""))){
+    }else if(typeof raw==="string"){
       result[technicalLabel(group)]={"Informação":raw};
     }
   }
