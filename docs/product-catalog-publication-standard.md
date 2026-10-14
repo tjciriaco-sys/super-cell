@@ -45,3 +45,12 @@ A detecção e o enriquecimento acima são **etapas obrigatórias do agente/impo
 
 ## Consistência da RAM comercial em toda a experiência
 Quando existir RAM total anunciada validada (`Memória anunciada`), usar o TOTAL em todos os elementos comerciais relativos à variante: campo Configuração imediatamente abaixo do título, card principal Desempenho, etiquetas/identificação comercial, resumo do pedido, mensagens e links de compartilhamento e WhatsApp. Não misturar 8 GB no topo e 16 GB no destaque. Exibir a decomposição física + virtual apenas na ficha técnica completa, de forma objetiva e transparente. Conservar `product_variants.ram_gb` como RAM física para integridade dos dados. Testar o REDMI 15C (16 anunciados = 8 físicos + 8 virtuais) em toda a jornada antes de concluir o cadastro.
+
+## Conectividade obrigatória: rede móvel e NFC
+Para todo smartphone importado ou enriquecido, a seção **Conectividade** da ficha técnica deve incluir sempre:
+- **Rede móvel:** 4G ou 5G (e, quando pertinente, a compatibilidade 4G de modelos 5G), comprovada para a versão comercial exata.
+- **NFC:** **Sim** ou **Não**, verificado para o SKU, região/mercado e variante efetivamente comercializados.
+
+O importador/agente deve pesquisar NFC na página oficial da fabricante referente à versão e, se necessário, cruzar com ficha técnica especializada e declaração do fornecedor. **Ausência de menção a NFC jamais equivale a "Não"**. Quando a resposta depender da região ou não puder ser comprovada, classificar internamente como **pendente de verificação** e consultar o fornecedor antes de declarar a ficha concluída/publicar a nova variante. Não inventar valores nem exibir textos vagos como "varia conforme mercado" no produto final.
+
+Os destaques comerciais também devem manter rede e NFC coerentes com a ficha detalhada, por exemplo `Conectividade: 5G · NFC: Sim` ou `4G · NFC: Não`. Campos `products.connectivity` e `specifications.Conectividade` devem concordar. Conferir na variante em `public_catalog` e no preview mobile. Em lote de auditoria dos produtos já publicados, separar os casos de NFC comprovado dos que exigem validação de SKU, sem substituir silenciosamente desconhecidos por "Não".
