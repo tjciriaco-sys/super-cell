@@ -96,8 +96,9 @@ export function ProductExperience({ variants, initialVariantId, initialOrderOpen
   const [orderOpen,setOrderOpen]=useState(initialOrderOpen&&!requestedVariantMissing),[specOpen,setSpecOpen]=useState(false),[payment,setPayment]=useState<"Pix"|"Cartão">("Pix"),[installments,setInstallments]=useState(acquirer.featured_primary),[installmentPickerOpen,setInstallmentPickerOpen]=useState(false),[interestBusy,setInterestBusy]=useState(false),[copyState,setCopyState]=useState<"idle"|"copied">("idle");
   const plans=[...(acquirer.installment_plans??[])].filter((p)=>p.active).sort((a,b)=>a.installments-b.installments); const plan=plans.find((p)=>p.installments===installments)??plans[0];
   const isAvailable=selected.commercial_status==="available"&&selected.price_pix!==null; const productPrice=Number(selected.price_pix??0); const hasPaidDelivery=isAvailable&&selected.pricing_mode==="accessory"&&productPrice<accessoryFreeThreshold; const deliveryFee=hasPaidDelivery?accessoryDeliveryFee:0; const pixTotal=productPrice+deliveryFee; const cardTotal=pixTotal*Number(plan?.factor??1);
-  const configurationLabel=[selected.ram_gb?`${selected.ram_gb} RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
-  const technicalConfigurationLabel=[selected.ram_gb?`${selected.ram_gb} GB RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
+  const displayedRamGb=advertisedRam(selected)?.total??selected.ram_gb;
+  const configurationLabel=[displayedRamGb?`${displayedRamGb} RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
+  const technicalConfigurationLabel=[displayedRamGb?`${displayedRamGb} GB RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
   const isIphone=selected.brand_slug==="apple"&&/iphone/i.test(selected.product_name);
   const effectiveConditionGrade=selected.condition==="seminovo"&&selected.brand_slug==="apple"?(selected.condition_grade??"excelente"):selected.condition_grade;
   const conditionLabel=effectiveConditionGrade?gradeContent[effectiveConditionGrade].label:null;
