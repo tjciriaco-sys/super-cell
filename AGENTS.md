@@ -7,3 +7,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Super Cell — catálogo e publicação
+
+Antes de importar ou atualizar qualquer aparelho, seguir integralmente [docs/product-catalog-publication-standard.md](docs/product-catalog-publication-standard.md). Pesquisa técnica, estrutura JSON consistente, verificação por variante, validação mobile real e relatório de publicação são etapas obrigatórias. Não publicar fichas incompletas por omissão nem declarar validação visual sem testá-la.
