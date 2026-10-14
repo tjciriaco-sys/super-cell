@@ -17,3 +17,6 @@ Saúde de bateria de 85% é referência, não proibição automática. Exceçõe
 
 ## Prevenção de regressões
 Renderizador da ficha técnica deve aceitar grupos de objetos e tratar tipos inesperados com segurança; strings jamais podem ser percorridas por Object.entries para gerar índices de caracteres. Testar ambos: grupo completo e valor plano legado. Não publicar alterações de layout sem build/testes e inspeção mobile em preview; sincronizar documentação no repositório com qualquer mudança de formato.
+
+## Ordem visual obrigatória dos cartões
+A ordem deve ser definida pelo componente, nunca pela ordem das propriedades JSON recebidas do Supabase. Padrão: **Tela → RAM → Armazenamento → Processador → Desempenho → Câmeras → Bateria → Conectividade → Sistema → Proteção → Recursos → Identificação**. Aplicar a `highlights` e `specifications`, aceitar aliases em português/inglês e manter campos não reconhecidos depois dos conhecidos, em ordem alfabética. Grupos ausentes são simplesmente omitidos, sem cartões vazios. Validar a mesma sequência em aparelhos diferentes, incluindo Xiaomi 14T e POCO C81 Pro, em mobile.
