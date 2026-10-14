@@ -39,7 +39,7 @@ function performanceHighlights(variant:CatalogVariant):Array<[string,string]>{
   const parts=[processor,ram,storage].filter(Boolean);
   if(parts.length===0)return original;
   const filtered=original.filter(([key])=>!["desempenho","performance","processador","processor","ram","memoria ram","armazenamento","storage"].includes(normalizeSpecificationKey(key)));
-  return [...filtered,["Desempenho",parts.join(" · ")]].sort(([a],[b])=>orderGroup(a)-orderGroup(b)||a.localeCompare(b,"pt-BR"));
+  return ([...filtered,["Desempenho",parts.join(" · ")] as [string,string]]).sort(([a],[b])=>orderGroup(a)-orderGroup(b)||a.localeCompare(b,"pt-BR"));
 }
 
 function waUrl(number:string,message:string){return `https://wa.me/${number.replace(/\D/g,"")}?text=${encodeURIComponent(message)}`}
