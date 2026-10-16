@@ -1,14 +1,8 @@
+import "server-only";
 import { createClient } from "@supabase/supabase-js";
-import {
-  buildPersonalizedCatalogUrl,
-  derivePersonalizedToken,
-  hashPersonalizedToken,
-} from "./personalized-catalog-link";
+import { buildPersonalizedCatalogUrl, derivePersonalizedToken, hashPersonalizedToken } from "./personalized-catalog-link";
 
-/**
- * Backend-only provisioner. Not exposed as an HTTP route until authenticated
- * DataCrazy integration is configured and the migration is homologated.
- */
+/** Server-side only. No public route or CRM write until homologation. */
 export async function provisionCatalogLink(crmLeadId: string): Promise<string> {
   const secret = process.env.SC_LINK_HMAC_SECRET;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -23,18 +17,27 @@ export async function provisionCatalogLink(crmLeadId: string): Promise<string> {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  // Idempotent per lead, including concurrent requests. Never expose this
-  // backend key or the CRM lead ID in browser code.
-  const { data, error } = await db
-    .from("sc_personalized_links")
-    .upsert(
-      { crm_provider: "datacrazy", crm_lead_id: crmLeadId, token_hash: tokenHash },
-      { onConflict: "crm_provider,crm_lead_id" },
-    )
+  // Never UPSERT existing records: that could accidentally undo revocation or
+  // reassign a link after changing the HMAC key. Unique constraint protects
+  // against parallel requests for the same lead.
+  const lookup = () => db.from("sc_personalized_links")
     .select("token_hash,revoked_at")
-    .single();
-  if (error || !data || data.token_hash !== tokenHash || data.revoked_at) {
-    throw new Error("Unable to provision personalized catalog link");
+    .eq("crm_provider", "datacrazy")
+    .eq("crm_lead_id", crmLeadId)
+    .maybeSingle();
+  let { data, error } = await lookup();
+  if (error) throw new Error("Cannot read personalized link");
+  if (!data) {
+    const inserted = await db.from("sc_personalized_links")
+      .insert({ crm_provider: "datacrazy", crm_lead_id: crmLeadId, token_hash: tokenHash });
+    if (inserted.error && inserted.error.code !== "23505") {
+      throw new Error("Cannot create personalized link");
+    }
+    ({ data, error } = await lookup());
+    if (error || !data) throw new Error("Cannot resolve personalized link");
+  }
+  if (data.revoked_at || data.token_hash !== tokenHash) {
+    throw new Error("Link revoked or secret rotation requires migration");
   }
   return buildPersonalizedCatalogUrl(token, site);
 }
