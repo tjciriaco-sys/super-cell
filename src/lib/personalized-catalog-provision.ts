@@ -1,4 +1,3 @@
-import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { buildPersonalizedCatalogUrl, derivePersonalizedToken, hashPersonalizedToken } from "./personalized-catalog-link";
 
