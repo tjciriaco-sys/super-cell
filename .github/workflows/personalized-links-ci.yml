@@ -21,5 +21,5 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npx vitest run src/lib/personalized-catalog-link.test.ts src/lib/personalized-catalog-provision.test.ts
+      - run: npx vitest run src/lib/personalized-catalog-link.test.ts src/lib/personalized-catalog-provision.test.ts src/app/api/integrations/datacrazy/catalog-link/route.test.ts
       - run: npx tsc --noEmit
