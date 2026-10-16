@@ -62,3 +62,11 @@ Somente considerar concluído quando o link individual surgir corretamente na me
 - **Pendência crítica:** forma exata de atualizar somente o campo adicional do lead sem substituir os demais. Documentação `PATCH /leads/{id}` usa exemplo pouco específico para `additionalFields`. Bloquear gravação real até resolver.
 - **Pendência de identidade:** um link individual identifica o token enviado, não necessariamente a pessoa que o abriu; links encaminhados a terceiros exigem tratamento distinto.
 - **Privacidade:** tokens devem ser tratados como identificadores pseudônimos; cookies, retenção e comunicação de eventos dependem das bases legais e configurações de consentimento.
+
+## Homologação no Supabase atual — 15/10/2026
+
+Autorizado pelo operador utilizar **estrutura isolada no banco atual**, sem tocar dados anteriores. Migração `sc_personalized_links_isolated` aplicada com sucesso no projeto `rgbrdtstbaulxhzievkh`, criando somente `public.sc_personalized_links` e seu índice. Nenhuma tabela antiga foi modificada. O arquivo SQL em `supabase/migrations/20261015_sc_personalized_links_PENDING.sql` corresponde à estrutura preparada, mas o sufixo PENDING do nome agora é histórico.
+
+Validações por SQL transacional e `ROLLBACK`: inserção de dois leads fictícios, rejeição de lead repetido, rejeição de token repetido e marcação de revogação funcionaram. Consulta posterior: `remaining_rows=0`; RLS ativado; zero policies públicas.
+
+**Ainda não homologado:** envio HTTP do DataCrazy, armazenamento de segredos HMAC e Bearer, acesso ao endpoint implantado, emissão de link para lead real e mensagem de WhatsApp. Não ativar automações de produção antes do teste específico.
