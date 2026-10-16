@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, createHmac, randomBytes } from "node:crypto";
 
 /** Token com 256 bits de entropia, somente para emissão em backend confiável. */
 export function generatePersonalizedToken(): string {
@@ -23,4 +23,21 @@ export function buildPersonalizedCatalogUrl(token: string, origin: string): stri
   const url = new URL("/", base);
   url.searchParams.set("sc_ref", token);
   return url.toString();
+}
+
+/**
+ * Stable URL for a given CRM lead, with an HMAC key kept ONLY in the backend.
+ * Without the secret, the token cannot be derived from a lead identifier.
+ * Uses a distinct domain label to avoid HMAC cross-purpose reuse.
+ */
+export function derivePersonalizedToken(crmLeadId: string, secret: string): string {
+  if (!crmLeadId || crmLeadId.length > 128 || !/^[a-zA-Z0-9_-]+$/.test(crmLeadId)) {
+    throw new Error("Invalid CRM lead id");
+  }
+  if (Buffer.byteLength(secret, "utf8") < 32) {
+    throw new Error("Invalid secret length");
+  }
+  return createHmac("sha256", secret)
+    .update("supercell:datacrazy:catalog:v1\0" + crmLeadId, "utf8")
+    .digest("base64url");
 }
