@@ -1,0 +1,25 @@
+name: Personalized links checks
+on:
+  pull_request:
+    paths:
+      - 'src/lib/personalized-catalog-*'
+      - '.github/workflows/personalized-links-ci.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  push:
+    branches: [feat/datacrazy-personalized-links]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx vitest run src/lib/personalized-catalog-link.test.ts src/lib/personalized-catalog-provision.test.ts
+      - run: npx tsc --noEmit
