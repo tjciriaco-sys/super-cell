@@ -45,3 +45,20 @@ Cada lead recebe uma URL individual para o catálogo, reaproveitada quando a mes
 ## Critério de conclusão
 
 Somente considerar concluído quando o link individual surgir corretamente na mensagem ao cliente, o mesmo lead reutilizar o mesmo link, as visitas forem registradas com consentimento apropriado e **nenhuma** alteração for observada na distribuição de vendedores ou no envio dos demais textos.
+
+## Implementação preparada na PR #38 (sem publicação)
+
+- `src/lib/personalized-catalog-link.ts`: gera tokens opacos e **deriva deterministicamente** o token de um lead usando `HMAC-SHA256` e `SC_LINK_HMAC_SECRET`. Isso permite recuperar o mesmo link sem armazenar o token em texto claro. Não trocar a chave após ativação sem plano de migração/reemissão.
+- `src/lib/personalized-catalog-provision.ts`: serviço **somente backend**, ainda não chamado por endpoint, que realiza upsert idempotente por `(crm_provider, crm_lead_id)` e recusa token revogado.
+- `src/lib/personalized-catalog-link.test.ts`: testes de formato, estabilidade, URLs e rejeição de valores inseguros; execução automatizada ainda pendente.
+- `supabase/migrations/20261015_sc_personalized_links_PENDING.sql`: SQL preparado mas **não aplicado**. Possui RLS ativado, nenhuma policy pública e revogação de acesso anônimo.
+
+### Dependências seguras para futura homologação
+
+- Criar `SC_LINK_HMAC_SECRET` (ao menos 32 bytes de segredo de alta entropia) **fora do repositório**; preservar para permitir a reemissão do mesmo link.
+- Backend precisa de `NEXT_PUBLIC_SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` armazenada somente nas variáveis de ambiente do servidor; nunca em bundles públicos.
+- Validar migração em branch/staging e executar testes `npm test` / `npm run build` antes de ativar. PR não comprova build enquanto não houver CI verde.
+- Reservar campo `SC - Link Personalizado` no lead: nenhuma chamada à API do CRM está habilitada no código atual.
+- **Pendência crítica:** forma exata de atualizar somente o campo adicional do lead sem substituir os demais. Documentação `PATCH /leads/{id}` usa exemplo pouco específico para `additionalFields`. Bloquear gravação real até resolver.
+- **Pendência de identidade:** um link individual identifica o token enviado, não necessariamente a pessoa que o abriu; links encaminhados a terceiros exigem tratamento distinto.
+- **Privacidade:** tokens devem ser tratados como identificadores pseudônimos; cookies, retenção e comunicação de eventos dependem das bases legais e configurações de consentimento.
