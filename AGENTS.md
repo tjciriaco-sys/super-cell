@@ -11,3 +11,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## Super Cell — catálogo e publicação
 
 Antes de importar ou atualizar qualquer aparelho, seguir integralmente [docs/product-catalog-publication-standard.md](docs/product-catalog-publication-standard.md). Pesquisa técnica, estrutura JSON consistente, verificação por variante, validação mobile real e relatório de publicação são etapas obrigatórias. Não publicar fichas incompletas por omissão nem declarar validação visual sem testá-la.
+
+Para toda importação de produtos, ler também [docs/catalog-image-standard.md](docs/catalog-image-standard.md). A IA é responsável por buscar, normalizar, enviar a foto WebP ao Supabase Storage e confirmar a exibição antes da publicação. Não gravar links de imagens de terceiros na vitrine nem solicitar upload manual ao gestor.
