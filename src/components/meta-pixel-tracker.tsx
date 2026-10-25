@@ -18,10 +18,13 @@ function initializeMetaPixel() {
     const current = fbq as typeof fbq & { callMethod?: (...values:unknown[])=>void; queue?:unknown[][] };
     if (current.callMethod) current.callMethod(...args);
     else current.queue?.push(args);
-  } as ((...args: unknown[]) => void) & { queue?:unknown[][]; loaded?:boolean; version?:string; callMethod?: (...values:unknown[])=>void };
+  } as ((...args: unknown[]) => void) & { queue?:unknown[][]; loaded?:boolean; version?:string; disablePushState?:boolean; callMethod?: (...values:unknown[])=>void };
   fbq.queue = [];
   fbq.loaded = true;
   fbq.version = "2.0";
+  // Meta also hooks browser history and emits implicit PageViews for URL changes.
+  // Our Next.js router tracks real pathname transitions explicitly below.
+  fbq.disablePushState = true;
   window.fbq = fbq;
   window._fbq = fbq;
   fbq("set", "autoConfig", false, PIXEL_ID);
@@ -48,6 +51,11 @@ export function MetaPixelTracker() {
   }, [consent,isAdminRoute]);
   useEffect(() => {
     if (!loaded || consent !== "accepted" || isAdminRoute) return;
+    // A page view follows a pathname transition, never a query/hash update,
+    // state change, or remount of this tracker within the same document.
+    const trackerWindow = window as Window & { __supercellTrackedPath?: string };
+    if (trackerWindow.__supercellTrackedPath === pathname) return;
+    trackerWindow.__supercellTrackedPath = pathname;
     window.fbq?.("track", "PageView");
     if (pathname.startsWith("/produto/")) window.fbq?.("track", "ViewContent", { content_type: "product" });
   }, [pathname,loaded,consent,isAdminRoute]);
@@ -56,10 +64,16 @@ export function MetaPixelTracker() {
     const onCatalog = () => window.fbq?.("trackCustom", "CatalogOpen");
     const onContact = () => window.fbq?.("track", "Contact");
     const onCheckout = () => window.fbq?.("track", "InitiateCheckout");
+    const onSearch = (event: Event) => {
+      const term = (event as CustomEvent<{ search_string: string }>).detail?.search_string;
+      if (typeof term === "string" && term.trim().length >= 3) window.fbq?.("track", "Search", { search_string: term });
+    };
+    window.addEventListener("supercell:search", onSearch);
     window.addEventListener("supercell:catalog-enter", onCatalog);
     window.addEventListener("supercell:contact", onContact);
     window.addEventListener("supercell:checkout-start", onCheckout);
     return () => {
+      window.removeEventListener("supercell:search", onSearch);
       window.removeEventListener("supercell:catalog-enter", onCatalog);
       window.removeEventListener("supercell:contact", onContact);
       window.removeEventListener("supercell:checkout-start", onCheckout);

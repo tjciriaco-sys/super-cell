@@ -11,7 +11,7 @@ export function CatalogCta(){
       if(target){
         const top=target.getBoundingClientRect().top+window.scrollY-8;
         window.scrollTo({top:Math.max(0,top),behavior:"smooth"});
-        window.history.replaceState(null,"","#catalogo");
+        window.history.replaceState(window.history.state,"",`${window.location.pathname}${window.location.search}#catalogo`);
       }
     },70);
     window.setTimeout(()=>setPressed(false),520);
