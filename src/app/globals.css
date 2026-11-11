@@ -1431,3 +1431,9 @@
 .floating-whatsapp:focus-visible{outline:3px solid #d8a83e;outline-offset:5px;border-radius:18px}
 @media(max-width:700px){.floating-wa-icon{width:56px;height:56px;border-radius:17px}.floating-wa-orbit{width:64px;height:64px}}
 @media(prefers-reduced-motion:reduce){.floating-wa-orbit{animation:none}}
+
+/* Keep long catalog product names inside the mobile decision column. */
+@media(max-width:820px){
+  .product-primary .product-decision{min-width:0}
+  .product-primary .product-decision h1{white-space:normal;overflow-wrap:anywhere}
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "code": "000052",
+    "path": "products/guanacel-20261111/other-000052.webp",
+    "sha256": "ab719af9c8dbc4b68fb940d92b21c59fec591fc61f69c4c4f287597f93aba4b6",
+    "bytes": 54212,
+    "source": "https://storage.googleapis.com/nexapp-flutter.appspot.com/production/products/66f5f69b4edb3b2e2aaac0f36fa9ca76"
+  },
+  {
+    "code": ";000007",
+    "path": "products/guanacel-20261111/other-000007.webp",
+    "sha256": "53ff52e6f9f282612a46e7bf29c55e7fe71a45e2a4041adb665e9d8800ba097b",
+    "bytes": 28308,
+    "source": "https://storage.googleapis.com/nexapp-flutter.appspot.com/production/products/6bb155b80241bd9539a6ce9f8abef55e"
+  },
+  {
+    "code": "000132",
+    "path": "products/guanacel-20261111/other-000132.webp",
+    "sha256": "0d4785d95f2ab72e5e10141d1d8e8d01cfb7f382064cba0e0f2764b23277a691",
+    "bytes": 27920,
+    "source": "https://storage.googleapis.com/nexapp-flutter.appspot.com/production/products/f426848b63aeef7d5a7eb15b204d61f2"
+  },
+  {
+    "code": "000167",
+    "path": "products/guanacel-20261111/other-000167.webp",
+    "sha256": "402c7ca318db61de6576da680d58178d0edf35783edd7267533215a06400e3d7",
+    "bytes": 16832,
+    "source": "https://i02.appmifile.com/937_operator_sg/26/05/2025/1ab25f938ca2a12e8f749a05ccc7f9f8.jpg",
+    "note": "Imagem oficial de grupo inclui verde; foto do fornecedor era roxa"
+  },
+  {
+    "code": "000059",
+    "path": "products/guanacel-20261111/other-000059.webp",
+    "sha256": "8ec332e6385250120a51aed37ccc8c31026209d138a2dd3337c614fd882099cb",
+    "bytes": 18310,
+    "source": "https://i02.appmifile.com/788_operator_sg/04/09/2025/e4cee5114cb66379c6b26a9419dffa75.png",
+    "note": "Recortes oficiais cinza frente e verso; fonte fornecedor usava ilustração de geração anterior"
+  },
+  {
+    "code": "000077",
+    "path": "products/guanacel-20261111/other-000077.webp",
+    "sha256": "e25453a4331c62596ef9152946e51539c68e2138b1fa63adbb95547facb0e035",
+    "bytes": 40856,
+    "source": "https://storage.googleapis.com/nexapp-flutter.appspot.com/production/products/bd0622e62836dd1724c6e73815a52c76"
+  },
+  {
+    "code": "000076",
+    "path": "products/guanacel-20261111/other-000076.webp",
+    "sha256": "99da789e4d953b4fcd241927e5987545b11b07f2617527b2ba5c7057dbed1a94",
+    "bytes": 23954,
+    "source": "https://storage.googleapis.com/nexapp-flutter.appspot.com/production/products/29a39d38512373dd40795aa0492493ad"
+  },
+  {
+    "code": "000079",
+    "path": "products/guanacel-20261111/other-000079.webp",
+    "sha256": "89debcafce4b17b4d7d465b6acbafa649e6990a9028d26e58df1e3a1c917bff1",
+    "bytes": 25142,
+    "source": "https://storage.googleapis.com/nexapp-flutter.appspot.com/production/products/c83652867d34ae08fb579048ac4c446c"
+  }
+]
