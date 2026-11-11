@@ -47,3 +47,11 @@ Inspeção mobile em 360, 390 e 430 px. Corrigida quebra da configuração no iP
 M7 Pro verde: https://www.mi.com/uk/product/poco-m7-pro-5g/specs/ ; imagem https://i02.appmifile.com/357_operator_sg/09/06/2025/9d909531e8822cf3040d766a8c5803cc.png . Recorte (790,0,1010,640) da composição original, sem alteração de cor.
 
 A pendência do anúncio 12 Pro/Pro Max é de identificação do fornecedor, não de upload ou implementação. O lote permanece review por essa única referência.
+
+## Resolução posterior — unidade de 93%
+Tiago autorizou expressamente classificar a referência RDI c1474b23-7309-4f6d-8489-830cea2490fa como iPhone 12 Pro Max 128 GB, com bateria 93%, considerando o preço igual às outras unidades. A decisão do gestor resolve o bloqueio operacional; título e descrição originais da fonte continuam preservados no registro de origem, sem atribuir a confirmação ao fornecedor.
+
+Unidade publicada com foto WebP própria já hospedada, ficha técnica do Pro Max e preço calculado de R$2.347,00 Pix (custo R$2.200,00, confirmado na fonte ao vivo). RAM física 6 GB, armazenamento 128 GB, bateria 93%; sem inferir cor, grau, garantia, originalidade ou histórico de abertura. As três unidades Pro Max anteriores não foram alteradas. Total iPhones: 16; celulares: 36.
+
+Página verificada ao vivo em 390 px: https://catalogo.supercellrn.com/produto/iphone-12-pro-max-seminovo-128-f1-rdi-20261111-72be7311?variante=1247bec1-133d-5843-8dc4-5e71b5d3fb48
+Confirma título Pro Max, configuração 6/128, bateria 93%, preço e foto. Operações reversíveis em iphone-93-publication.sql; identificação e autorização em iphone-93-resolution.json. pending.json vazio indica que a ambiguidade de modelo deste lote foi resolvida; pendências de SKU legado permanecem descritas no complemento de tablets.

@@ -1,0 +1,27 @@
+{
+  "name": "Apple iPhone 12 Pro Pro Max (128 GB)🔋93%",
+  "cost_brl": 2200,
+  "position": 7,
+  "reference_uuid": "72be7311-43b9-4f48-9f70-81616dda6476",
+  "vendor_image_reference": "https://assets.rediredi.com/items/images/bdf173de-6ffb-4186-9e99-30fa171140b9_72be7311-43b9-4f48-9f70-81616dda6476.jpeg?s=small&f=webp",
+  "product_url": "https://guanacell2025.rdi.store/products/c1474b23-7309-4f6d-8489-830cea2490fa/Apple-iPhone-12-Pro-Pro-Max--128-GB93",
+  "rdi_product_id": "c1474b23-7309-4f6d-8489-830cea2490fa",
+  "color_evidence": "title only; absent remains null",
+  "image_usage": "same supplier cover, explicitly authorized by Tiago 11/11/2026",
+  "reason": "Título Pro Pro Max e descrição iPhone 12 Pro contraditórios; confirmar modelo exato.",
+  "status": "published",
+  "resolved_model": "iPhone 12 Pro Max",
+  "storage_gb": 128,
+  "battery_health_minimum": 93,
+  "authorization": "Tiago determinou publicar como Pro Max, considerando preço igual às demais unidades. Isto é decisão do gestor, sem afirmar confirmação independente do fornecedor.",
+  "date": "2026-11-11",
+  "product_id": "ca886675-3662-597b-925a-a41ca8d71503",
+  "variant_id": "1247bec1-133d-5843-8dc4-5e71b5d3fb48",
+  "price_pix": 2347,
+  "url": "https://catalogo.supercellrn.com/produto/iphone-12-pro-max-seminovo-128-f1-rdi-20261111-72be7311?variante=1247bec1-133d-5843-8dc4-5e71b5d3fb48",
+  "readback": {
+    "available": true,
+    "stored_webp": true,
+    "source_cost": 2200
+  }
+}
