@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { BadgeDollarSign, ChevronDown, ChevronRight, ListFilter, Search, X } from "lucide-react";
 import type { CatalogVariant } from "@/lib/types";
-import { money, productDisplayName } from "@/lib/utils";
+import { money, productDisplayName, commercialRamGb } from "@/lib/utils";
 import { ProductImage } from "@/components/product-image";
 
 type ProductGroup = {
@@ -116,7 +116,7 @@ export function CatalogGrid({ variants, primaryInstallments, primaryFactor, acce
       supplierCode: variant.supplier_code,
       image: variant.images?.[0] ?? variant.storefront_image ?? undefined,
       badges: variant.badges,
-      variant: [variant.ram_gb ? `${variant.ram_gb} GB` : null, variant.storage_gb ? `${variant.storage_gb} GB` : null].filter(Boolean).join(" + "),
+      variant: [commercialRamGb(variant) ? `${commercialRamGb(variant)} GB` : null, variant.storage_gb ? `${variant.storage_gb} GB` : null].filter(Boolean).join(" + "),
       colors: variant.color ? [variant.color] : [],
       commercialStatus: variant.commercial_status,
       batteryHealth: variant.condition === "seminovo" ? variant.battery_health_minimum : null,

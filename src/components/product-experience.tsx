@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { BadgeCheck, BadgeDollarSign, Check, ChevronDown, CirclePlay, Copy, CreditCard, MessageCircle, PackageCheck, Share2, ShieldCheck, Sparkles, Wrench, X } from "lucide-react";
 import type { Acquirer, CatalogVariant, LogisticsException, Schedule } from "@/lib/types";
-import { money, productDisplayName } from "@/lib/utils";
+import { money, productDisplayName, advertisedRam } from "@/lib/utils";
 import { ProductImage } from "@/components/product-image";
 import { Installments } from "@/components/installments";
 import { LogisticsCard } from "@/components/logistics-card";
@@ -16,16 +16,6 @@ const specificationOrder=["tela","ram","armazenamento","processador","desempenho
 const normalizeSpecificationKey=(key:string)=>technicalLabel(key).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
 const orderGroup=(key:string)=>{const k=normalizeSpecificationKey(key);if(k==="memoria"||k==="memoria ram")return 1;if(k==="storage")return 2;if(k==="processor"||k==="chipset")return 3;if(k==="camera"||k==="camera traseira"||k==="camera frontal")return 5;if(k==="battery")return 6;if(k==="connectivity")return 7;const i=specificationOrder.findIndex(x=>normalizeSpecificationKey(x)===k);return i<0?100:i};
 function orderedTechnicalEntries<T>(value:Record<string,T>|null|undefined):Array<[string,T]>{return (Object.entries(value??{}) as Array<[string,T]>).sort(([a],[b])=>orderGroup(a)-orderGroup(b)||a.localeCompare(b,"pt-BR"))}
-
-function advertisedRam(variant:CatalogVariant):{total:number;physical:number;virtual:number}|null{
-  const metadata=variant.specifications?.["Memória anunciada"];
-  if(!metadata||typeof metadata!=="object")return null;
-  const physical=Number(metadata["RAM física (GB)"]);
-  const virtual=Number(metadata["Expansão virtual (GB)"]);
-  const total=Number(metadata["RAM anunciada (GB)"]);
-  if(!Number.isInteger(physical)||!Number.isInteger(virtual)||!Number.isInteger(total)||virtual<=0||physical<=0||total!==physical+virtual||variant.ram_gb!==physical)return null;
-  return {total,physical,virtual};
-}
 
 function performanceHighlights(variant:CatalogVariant):Array<[string,string]>{
   const original=orderedTechnicalEntries(variant.highlights);
@@ -100,7 +90,7 @@ export function ProductExperience({ variants, initialVariantId, initialOrderOpen
   const configurationLabel=[displayedRamGb?`${displayedRamGb} RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
   const technicalConfigurationLabel=[displayedRamGb?`${displayedRamGb} GB RAM`:null,selected.storage_gb?`${selected.storage_gb} GB`:null].filter(Boolean).join(" + ");
   const isIphone=selected.brand_slug==="apple"&&/iphone/i.test(selected.product_name);
-  const effectiveConditionGrade=selected.condition==="seminovo"&&selected.brand_slug==="apple"?(selected.condition_grade??"excelente"):selected.condition_grade;
+  const effectiveConditionGrade=selected.condition_grade;
   const conditionLabel=effectiveConditionGrade?gradeContent[effectiveConditionGrade].label:null;
   const batteryLabel=selected.battery_health_minimum?`${selected.battery_health_minimum}%`:null;
   const orderProductTitle=selectedProductTitle;
