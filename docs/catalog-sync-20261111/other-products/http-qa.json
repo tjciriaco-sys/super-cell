@@ -1,0 +1,114 @@
+[
+  {
+    "variant_id": "30bba306-750c-46e6-ac41-0e982eaeac04",
+    "name": "Receptor Alphaplay Plus",
+    "url": "https://catalogo.supercellrn.com/produto/receptor-alphaplay-plus?variante=30bba306-750c-46e6-ac41-0e982eaeac04",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "527.00",
+    "valid": true
+  },
+  {
+    "variant_id": "1d5b802e-6845-41f8-9544-37b5f7e762c5",
+    "name": "REDMI Pad 2",
+    "url": "https://catalogo.supercellrn.com/produto/redmi-pad-2?variante=1d5b802e-6845-41f8-9544-37b5f7e762c5",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1257.00",
+    "valid": true
+  },
+  {
+    "variant_id": "0fa1ef17-b165-49f8-be0b-db6794b5decd",
+    "name": "REDMI Pad 2",
+    "url": "https://catalogo.supercellrn.com/produto/redmi-pad-2?variante=0fa1ef17-b165-49f8-be0b-db6794b5decd",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1377.00",
+    "valid": true
+  },
+  {
+    "variant_id": "a5ca1208-3371-46f2-b3fa-c756b12ee25d",
+    "name": "REDMI Pad 2",
+    "url": "https://catalogo.supercellrn.com/produto/redmi-pad-2?variante=a5ca1208-3371-46f2-b3fa-c756b12ee25d",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1377.00",
+    "valid": true
+  },
+  {
+    "variant_id": "11d20dc7-41ea-4a4a-a833-486ffd36de33",
+    "name": "Redmi Pad 2 Pro",
+    "url": "https://catalogo.supercellrn.com/produto/redmi-pad-2-pro?variante=11d20dc7-41ea-4a4a-a833-486ffd36de33",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1697.00",
+    "valid": true
+  },
+  {
+    "variant_id": "02a16f52-c6b1-4ced-bcbf-a5cdceebe92b",
+    "name": "Smartwatch KW20 Ultra 2 com 5 pulseiras",
+    "url": "https://catalogo.supercellrn.com/produto/smartwatch-kw20-ultra-2-5-pulseiras?variante=02a16f52-c6b1-4ced-bcbf-a5cdceebe92b",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "197.00",
+    "valid": true
+  },
+  {
+    "variant_id": "667b5df8-8e9e-4e9a-9ec0-3b203512838e",
+    "name": "Smartwatch W10 Série 10 46 mm",
+    "url": "https://catalogo.supercellrn.com/produto/smartwatch-w10-serie-10-46mm?variante=667b5df8-8e9e-4e9a-9ec0-3b203512838e",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "187.00",
+    "valid": true
+  },
+  {
+    "variant_id": "1ec2ee41-b46e-4ae6-8444-53bcfcad73d0",
+    "name": "Smartwatch WS10-2 Ultra com 7 pulseiras",
+    "url": "https://catalogo.supercellrn.com/produto/smartwatch-ws10-2-ultra-7-pulseiras?variante=1ec2ee41-b46e-4ae6-8444-53bcfcad73d0",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "187.00",
+    "valid": true
+  }
+]
