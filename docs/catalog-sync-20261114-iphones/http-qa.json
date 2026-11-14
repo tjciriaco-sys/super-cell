@@ -1,0 +1,362 @@
+[
+  {
+    "variant_id": "957a2c4a-5c51-5b03-b6d5-9f1e4a8d3253",
+    "name": "iPhone 12 · Bateria 90%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-12-seminovo-128-f1-rdi-20261111-5fa39679?variante=957a2c4a-5c51-5b03-b6d5-9f1e4a8d3253",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1717.00",
+    "battery": 90,
+    "valid": true
+  },
+  {
+    "variant_id": "d264ce8d-c830-5e5e-8854-2a0849db0062",
+    "name": "iPhone 12 · Bateria 93%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-12-seminovo-128-f1-rdi-20261111-e76619e7?variante=d264ce8d-c830-5e5e-8854-2a0849db0062",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1717.00",
+    "battery": 93,
+    "valid": true
+  },
+  {
+    "variant_id": "2f6bce57-e6fc-5705-92b8-ee23903bc80f",
+    "name": "iPhone 12 · Bateria 96%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-12-seminovo-128-f1-rdi-20261111-35df0d4f?variante=2f6bce57-e6fc-5705-92b8-ee23903bc80f",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1717.00",
+    "battery": 96,
+    "valid": true
+  },
+  {
+    "variant_id": "a49105ab-473f-5bdf-bacc-4f5d8e3e9714",
+    "name": "iPhone 12 Pro · Bateria 90%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-12-pro-seminovo-128-f1-rdi-20261111-4da91cfd?variante=a49105ab-473f-5bdf-bacc-4f5d8e3e9714",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1947.00",
+    "battery": 90,
+    "valid": true
+  },
+  {
+    "variant_id": "a598b30e-827f-53c6-8293-7a87f3991482",
+    "name": "iPhone 12 Pro Max · Bateria 88%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-12-pro-max-seminovo-128-f1-rdi-20261111-25ba2164?variante=a598b30e-827f-53c6-8293-7a87f3991482",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2347.00",
+    "battery": 88,
+    "valid": true
+  },
+  {
+    "variant_id": "4d6ad196-16c4-55ea-b4f9-dc0ae34d4486",
+    "name": "iPhone 12 Pro Max · Bateria 91%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-12-pro-max-seminovo-128-f1-rdi-20261111-f879e8b3?variante=4d6ad196-16c4-55ea-b4f9-dc0ae34d4486",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2347.00",
+    "battery": 91,
+    "valid": true
+  },
+  {
+    "variant_id": "1247bec1-133d-5843-8dc4-5e71b5d3fb48",
+    "name": "iPhone 12 Pro Max · Bateria 93%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-12-pro-max-seminovo-128-f1-rdi-20261111-72be7311?variante=1247bec1-133d-5843-8dc4-5e71b5d3fb48",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2347.00",
+    "battery": 93,
+    "valid": true
+  },
+  {
+    "variant_id": "5c9f61dd-0190-5b76-be06-40ac2b6bbc24",
+    "name": "iPhone 13 · Bateria 85%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-13-seminovo-128-f1-rdi-20261114-9bf82aed?variante=5c9f61dd-0190-5b76-be06-40ac2b6bbc24",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2047.00",
+    "battery": 85,
+    "valid": true
+  },
+  {
+    "variant_id": "b4ba5dfd-87dc-5d20-8e11-742d1b653744",
+    "name": "iPhone 13 · Bateria 90%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-13-seminovo-128-f1-rdi-20261114-96f752fb?variante=b4ba5dfd-87dc-5d20-8e11-742d1b653744",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2047.00",
+    "battery": 90,
+    "valid": true
+  },
+  {
+    "variant_id": "dd1c270c-ba2e-5859-9340-11bddc730f44",
+    "name": "iPhone 13 · Bateria 95%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-13-seminovo-128-f1-rdi-20261114-69c250e1?variante=dd1c270c-ba2e-5859-9340-11bddc730f44",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "1997.00",
+    "battery": 95,
+    "valid": true
+  },
+  {
+    "variant_id": "a5f4b3bc-5b63-50c8-a912-3618766bdf8b",
+    "name": "iPhone 13 Pro · Bateria 88%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-13-pro-seminovo-128-f1-rdi-20261114-827c76d5?variante=a5f4b3bc-5b63-50c8-a912-3618766bdf8b",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2637.00",
+    "battery": 88,
+    "valid": true
+  },
+  {
+    "variant_id": "77b9c0b6-e007-50af-ad1b-e9aa4b540dd6",
+    "name": "iPhone 13 Pro · Bateria 92%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-13-pro-seminovo-128-f1-rdi-20261111-8e047974?variante=77b9c0b6-e007-50af-ad1b-e9aa4b540dd6",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2632.00",
+    "battery": 92,
+    "valid": true
+  },
+  {
+    "variant_id": "62401c5f-c122-544a-99c6-1ed810b5e23d",
+    "name": "iPhone 13 Pro Max · Bateria 92%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-13-pro-max-seminovo-128-f1-rdi-20261114-4b82fc81?variante=62401c5f-c122-544a-99c6-1ed810b5e23d",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2847.00",
+    "battery": 92,
+    "valid": true
+  },
+  {
+    "variant_id": "6875f6fb-aeeb-507b-8fc4-752adbee60cc",
+    "name": "iPhone 14 · Bateria 83%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-14-seminovo-128-f1-rdi-20261111-69b4742a?variante=6875f6fb-aeeb-507b-8fc4-752adbee60cc",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2247.00",
+    "battery": 83,
+    "valid": true
+  },
+  {
+    "variant_id": "6452864e-5d97-5bac-a926-c31d38996f9d",
+    "name": "iPhone 14 · Bateria 85%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-14-seminovo-128-f1-rdi-20261114-7f9ca1f5?variante=6452864e-5d97-5bac-a926-c31d38996f9d",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2247.00",
+    "battery": 85,
+    "valid": true
+  },
+  {
+    "variant_id": "92dacb79-dde5-50a6-b545-2a528c2b1af6",
+    "name": "iPhone 14 Pro · Bateria 87%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-14-pro-seminovo-128-f1-rdi-20261114-d9aaeec8?variante=92dacb79-dde5-50a6-b545-2a528c2b1af6",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "3047.00",
+    "battery": 87,
+    "valid": true
+  },
+  {
+    "variant_id": "8ec01403-7557-5576-9315-d7e1fce3a57d",
+    "name": "iPhone 14 Pro Max · Bateria 85%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-14-pro-max-seminovo-256-f1-rdi-20261114-18d5a4c0?variante=8ec01403-7557-5576-9315-d7e1fce3a57d",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "3577.00",
+    "battery": 85,
+    "valid": true
+  },
+  {
+    "variant_id": "6e534a4b-98b3-53ab-bd09-732be26043d9",
+    "name": "iPhone 14 Pro Max · Bateria 91%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-14-pro-max-seminovo-256-f1-rdi-20261114-f5a1a903?variante=6e534a4b-98b3-53ab-bd09-732be26043d9",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "3587.00",
+    "battery": 91,
+    "valid": true
+  },
+  {
+    "variant_id": "d151fef6-9b67-520f-ab29-71626d9d7e91",
+    "name": "iPhone 14 Pro Max · Bateria 98%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-14-pro-max-seminovo-256-f1-rdi-20261114-19fe3fe4?variante=d151fef6-9b67-520f-ab29-71626d9d7e91",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "3577.00",
+    "battery": 98,
+    "valid": true
+  },
+  {
+    "variant_id": "2ff1f8d8-2a0b-5f75-ae93-592736ae3e06",
+    "name": "iPhone 14 Pro Max · Bateria 99%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-14-pro-max-seminovo-128-f1-rdi-20261111-d960dbdd?variante=2ff1f8d8-2a0b-5f75-ae93-592736ae3e06",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "3357.00",
+    "battery": 99,
+    "valid": true
+  },
+  {
+    "variant_id": "dbdb712b-82ec-51ef-a74e-40b650ed7f80",
+    "name": "iPhone 15 · Bateria 93%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-15-seminovo-128-f1-rdi-20261114-ecfacd96?variante=dbdb712b-82ec-51ef-a74e-40b650ed7f80",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "2897.00",
+    "battery": 93,
+    "valid": true
+  },
+  {
+    "variant_id": "7b403eba-70c8-5435-8626-9385f126c9d0",
+    "name": "iPhone 15 Pro · Bateria 90%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-15-pro-seminovo-128-f1-rdi-20261111-b65c4a1b?variante=7b403eba-70c8-5435-8626-9385f126c9d0",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "3497.00",
+    "battery": 90,
+    "valid": true
+  },
+  {
+    "variant_id": "eb08589e-2c10-5b64-ad94-f202e38696af",
+    "name": "iPhone 15 Pro Max · Bateria 89%",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-15-pro-max-seminovo-256-f1-rdi-20261114-a2cebea5?variante=eb08589e-2c10-5b64-ad94-f202e38696af",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "4257.00",
+    "battery": 89,
+    "valid": true
+  },
+  {
+    "variant_id": "ea221fd9-32ae-5a36-bbee-29d824cf60c5",
+    "name": "iPhone 18 Pro Max",
+    "url": "https://catalogo.supercellrn.com/produto/iphone-18-pro-max-novo-256-f1-rdi-20261111-0b94a4c1?variante=ea221fd9-32ae-5a36-bbee-29d824cf60c5",
+    "page_status": 200,
+    "image_status": 200,
+    "mime": "image/webp",
+    "dimensions": [
+      900,
+      900
+    ],
+    "price_pix": "9497.00",
+    "battery": null,
+    "valid": true
+  }
+]
