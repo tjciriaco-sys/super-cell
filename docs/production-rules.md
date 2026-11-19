@@ -8,6 +8,10 @@ Toda melhoria aprovada deve seguir esta ordem de preferência:
 4. teste automatizado para cálculos e decisões críticas;
 5. correção pontual somente quando o fato pertence exclusivamente àquele SKU.
 
+## Exceção Guanacel — publicação automática autorizada em 19/11/2026
+
+Para os três catálogos oficiais Guanacel (Androids/eletrônicos, iPhones, perfumes), novos itens verificados devem ser cadastrados e publicados diretamente em produção, sem aguardar homologação individual do gestor. Se WebP própria não puder ser armazenada, aceitar temporariamente a foto real do anúncio do fornecedor; registrar a origem e pendência técnica de internalização. Se a foto faltar, preferir placeholder fiel em vez de inventar imagem de outro modelo. É exceção comercial restrita às ofertas F1/F4 cuja origem oficial foi conferida: identidade, variante, custo, preço e estoque continuam obrigatórios; regras dos demais fornecedores não mudam. Nenhuma autorização para alteração de layout/código, preços manuais, custos adicionais ou infraestrutura está implícita.
+
 ## Entrada de produtos
 
 - Todo produto novo nasce como `draft` e fica invisível na vitrine.
