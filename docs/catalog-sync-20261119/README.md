@@ -86,3 +86,22 @@ Agendada tarefa ChatGPT **“Sincronizar catálogos Guanacel”**, todos os dias
 1. Preparar e hospedar imagens WebP próprias dos três perfumes novos, revisar fichas e publicar após validar o padrão de imagens — itens já cadastrados mas não na vitrine.
 2. Conservar nomes históricos divergentes de alguns perfumes na base; eventual ajuste de nomes exige revisão de identidade comercial, não deveria ser feito silenciosamente apenas por atualização de preço.
 3. Automação é um agendamento confirmado, não prova de que os futuros jobs conseguirão autenticar/gravar dados; inspecionar o relatório/erros em cada execução.
+
+
+## Complemento de 19/11/2026 — três perfumes publicados sem homologação individual
+
+Após a atualização inicial, o gestor autorizou permanentemente publicação automática dos itens oficiais Guanacel. O bloqueio estrito por foto WebP foi alterado somente para ofertas com origem comprovada F1/F4, conforme migração 20261119150000_guanacel_autopublish_official_sources.sql. Não foram alteradas faixas de precificação, preços manuais, identidade dos fornecedores nem conteúdo da aplicação. A mudança permite temporariamente a foto original do fornecedor, quando a imagem ainda não estiver hospedada no Storage próprio; esse débito técnico ficou sinalizado em supplier_offers.raw_data.
+
+Os três produtos que estavam em draft passaram a ready, e o banco retornou public_catalog.available=true em todos:
+
+| Código F4 | Produto | Custo Guanacel | Pix Supercell | Foto |
+| --- | --- | ---: | ---: | --- |
+| 000083 | OPERA ROUGE | R$ 100,00 | R$ 169,90 | fornecedor, temporária |
+| 000084 | NASHAMA | R$ 160,00 | R$ 231,90 | fornecedor, temporária |
+| 000085 | ANGEL ISABELL | R$ 195,00 | R$ 267,90 | fornecedor, temporária |
+
+Readback independente: as páginas https://catalogo.supercellrn.com/produto/perf-000083-opera-rouge , https://catalogo.supercellrn.com/produto/perf-000084-nashama e https://catalogo.supercellrn.com/produto/perf-000085-angel-isabell exibem nomes, preços Pix, parcelamento e CTA para pedidos via WhatsApp. O relatório permanece explícito sobre a dependência temporária das fotos NEX; não foi feita afirmação de WebP próprio para estes itens.
+
+A rotina ChatGPT às 08:00 America/Fortaleza, ID 6afefae58f008191ba75726dc13698c0, foi revisada para aplicar o novo contrato de publicação direta sem aprovações individuais. A autorização se restringe a produtos e disponibilidade dos três catálogos oficiais; mudanças estruturais de UI, demais fornecedores, políticas financeiras ou infraestrutura permanecem sob as aprovações usuais.
+
+Reversão seletiva se houver problema comercial: colocar em draft o produto afetado e conservar os registros históricos; para reverter a política global, restaurar as definições anteriores de internal.validate_product_for_publication, internal.enforce_new_catalog_product_images e internal.enforce_new_variant_images somente após avaliar outros produtos publicados sob a exceção. Nunca apagar ofertas/histórico para fazer rollback.
