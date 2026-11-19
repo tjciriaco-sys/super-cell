@@ -1,6 +1,16 @@
-# Guanacel — duas fontes canônicas de celulares Supercell RN
+# Guanacel — três catálogos oficiais da Supercell RN
 
 **Decisão comercial:** 11/11/2026. **Fornecedor exclusivo de celulares:** Guanacel (F1). Esta regra vigora para todas as próximas solicitações de atualização do catálogo, sem precisar recolher os links novamente.
+
+## Regra nova e prioritária — 19/11/2026
+
+O gestor autorizou cadastro e publicação automática em produção de novos produtos e variantes verificados dos três catálogos Guanacel, SEM solicitar homologação individual. A prioridade é não perder vendas por atraso de cadastro. Preferir fotografia real do fornecedor convertida e hospedada como WebP própria; se não houver acesso técnico para converter ou subir a foto no momento, usar provisoriamente a própria foto do anúncio oficial, guardando a origem e sinalizando pendência de internalização. Se não houver foto utilizável, exibir placeholder honesto, nunca foto de outro item.
+
+A autorização NÃO dispensa conciliação por código/UUID, conferência de variante, condição, custo, cálculo, disponibilidade nem integridade de dados. Origem, modelo, preço ou configuração materialmente ambíguos exigem pesquisa adicional e não devem ser inventados. A exceção do banco para ofertas comprovadamente F1/F4 é definida pela migração 20261119150000_guanacel_autopublish_official_sources.sql e mantém os bloqueios normais para outros fornecedores. Não altera autorização de mudanças de layout, infraestrutura ou preço manual.
+
+A fonte de perfumes agora integra a sincronização oficial: https://meucomercio.com.br/PERFUME2026 (Guana Perfumes, F4). Androids/eletrônicos: https://meucomercio.com.br/GUANACELL08 (F1). iPhones: https://guanacell2025.rdi.store/products (F1).
+
+Este parágrafo substitui somente as instruções abaixo que exigiam aguardar foto WebP própria ou aprovação humana para publicar uma oferta Guanacel bem identificada. A normalização própria permanece recomendada e deve ser realizada automaticamente quando possível.
 
 ## Fontes obrigatórias
 
