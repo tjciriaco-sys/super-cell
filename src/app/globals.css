@@ -246,9 +246,7 @@
 
 /* Customer experience v6 — complete store image and accessory delivery. */
 .hero{display:block}
-.hero-store-visual{position:relative;z-index:2;width:100%;overflow:hidden}
-.hero-store-visual img{display:block;width:100%;height:auto;object-fit:contain}
-.hero .hero-copy{width:100%;max-width:820px;margin-top:-34px;padding-top:12px}
+.hero .hero-copy{width:100%;max-width:820px;margin-top:0;padding-top:54px}
 .accessory-delivery{display:flex;align-items:center;gap:5px;width:max-content;margin:3px 0 8px;color:#72571d;font-size:11px;line-height:1.2}
 .accessory-delivery.free{color:var(--success)}
 .accessory-delivery>span{font-size:12px;line-height:1}
@@ -266,9 +264,7 @@
 
 @media(max-width:700px){
   .hero{display:block;margin-bottom:0}
-  .hero-store-visual{width:100%}
-  .hero-store-visual img{width:100%;height:auto;object-fit:contain;object-position:center}
-  .hero .hero-copy{width:100%;max-width:none;margin-top:-22px;padding:4px 20px 8px}
+  .hero .hero-copy{width:100%;max-width:none;margin-top:0;padding:24px 20px 8px}
   .card-delivery-note{margin-top:-7px}
   .price-block{display:flex;align-items:baseline;gap:3px;white-space:nowrap}
   .price-block strong{flex:none}
