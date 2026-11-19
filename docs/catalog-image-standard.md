@@ -2,6 +2,10 @@
 
 Este padrão é obrigatório para todo produto novo ou atualizado por catálogo de fornecedor.
 
+## Exceção Guanacel — 19/11/2026
+
+A autorização expressa do gestor dispensa homologação humana individual de novos produtos nos três catálogos Guanacel e impede que a etapa puramente visual atrase vendas. Primeiro tentar baixar a foto real do anúncio, normalizar WebP 900x900 e hospedar no Storage próprio. Se o processamento ou upload estiver indisponível, pode ser publicada temporariamente a imagem oficial do fornecedor, com origem registrada para futura migração; sem foto acessível, exibir o placeholder “Imagem em preparação”. Nunca fingir que foto de outro modelo ou cor representa o produto. Esta permissão excepcional prevalece sobre proibições absolutas de hotlink abaixo SOMENTE para ofertas oficiais Guanacel F1/F4 identificadas; o banco preserva exigência WebP para os demais fornecedores. A internalização continua trabalho do agente e não é exigência manual do proprietário.
+
 ## Fonte e propriedade do arquivo
 
 - Priorizar material oficial do fabricante.
