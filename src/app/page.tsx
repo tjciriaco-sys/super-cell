@@ -1,5 +1,4 @@
 import { CreditCard, HandCoins, MapPinned, Truck } from "lucide-react";
-import Image from "next/image";
 import { Suspense } from "react";
 import { Header } from "@/components/header";
 import { CatalogGrid } from "@/components/catalog-grid";
@@ -23,9 +22,6 @@ export default async function Home() {
     <Header instagramUrl={instagramUrl || undefined}/>
     <div className="home-intro">
     <section className="hero shell">
-      <div className="hero-store-visual" aria-label="Operação Super Cell, do atendimento à entrega">
-        <Image src="/supercell-store-hero.jpg" alt="Loja Super Cell com aparelhos, equipe de atendimento, separação de pedidos e entregadores" width={1536} height={523} priority sizes="(max-width: 700px) calc(100vw - 24px), 1180px"/>
-      </div>
       <div className="hero-copy">
         <h1>Comprar seu celular pode ser tão simples quanto pedir uma pizza. <span className="headline-emoji" aria-hidden="true">😊</span></h1>
         <p>Escolha o aparelho, veja o preço e o parcelamento e finalize pelo WhatsApp.</p>
