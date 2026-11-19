@@ -2,6 +2,10 @@
 
 Aplica-se a qualquer entrada por catálogo online (ex.: Guanacel F1-A), listas WhatsApp (ex.: iPhones F1-B, Ramoncel F2), novos fornecedores e cadastro administrativo.
 
+## Exceção de autopublicação — Guanacel, 19/11/2026
+
+Para novos produtos/variantes identificados de modo inequívoco nos três catálogos oficiais Guanacel, o gestor autorizou publicação em produção sem homologação individual. Concluir conferência de fonte, variante, categoria, custo, preço e disponibilidade e publicar na mesma execução. Preferir foto real normalizada e hospedada pela Supercell; se esse processamento não for possível na execução, permitir foto real do anúncio do fornecedor como fallback temporário, com origem e pendência registradas. Sem imagem, usar placeholder; não inventar atributos ou misturar variantes. Esta exceção comercial restrita prevalece sobre antigas exigências absolutas de WebP própria para Guanacel, mas preserva a validação técnica e todos os bloqueios de outros fornecedores.
+
 ## Fluxo obrigatório
 1. Ler a fonte atual com conector apropriado, preservando código externo, nome, cor, RAM física, armazenamento, versão, custo, imagem, data e URL de origem. Nunca presumir que o HTML simples contenha todos os itens: validar paginação/cobertura.
 2. Comparar com produtos, product_variants e supplier_offers do Supabase. Chave comercial: modelo/versão de rede + RAM física + armazenamento + cor + condição. Vincular oferta a variante existente e não duplicar produto. Respeitar fornecedores fixados e seleção automática de menor custo.
