@@ -264,7 +264,7 @@
 
 @media(max-width:700px){
   .hero{display:block;margin-bottom:0}
-  .hero .hero-copy{width:100%;max-width:none;margin-top:0;padding:12px 20px 8px}
+  .hero .hero-copy{width:100%;max-width:none;margin-top:0;padding:4px 20px 8px}
   .card-delivery-note{margin-top:-7px}
   .price-block{display:flex;align-items:baseline;gap:3px;white-space:nowrap}
   .price-block strong{flex:none}
