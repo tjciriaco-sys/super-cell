@@ -23,7 +23,7 @@ export default async function Home() {
     <div className="home-intro">
     <section className="hero shell">
       <div className="hero-copy">
-        <h1>Comprar seu celular pode ser tão simples quanto pedir uma pizza. <span className="headline-emoji" aria-hidden="true">😊</span></h1>
+        <h1>Comprar seu celular aqui é tão simples quanto pedir uma pizza. <span className="headline-emoji" aria-hidden="true">😊</span></h1>
         <p>Escolha o aparelho, veja o preço e o parcelamento e finalize pelo WhatsApp.</p>
         <CatalogCta/>
       </div>
