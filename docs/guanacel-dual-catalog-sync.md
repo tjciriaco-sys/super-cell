@@ -2,6 +2,16 @@
 
 **Decisão comercial:** 11/11/2026. **Fornecedor exclusivo de celulares:** Guanacel (F1). Esta regra vigora para todas as próximas solicitações de atualização do catálogo, sem precisar recolher os links novamente.
 
+## Regra permanente de estoque — 25/11/2026
+
+**Decisão explícita do gestor:** o desaparecimento de um aparelho da **listagem integral e atual** dos catálogos oficiais Guanacel significa **estoque zerado**; portanto, a oferta correspondente deve desaparecer imediatamente da vitrine da Supercell, sem necessidade de confirmação ou homologação individual. Vale para iPhones RDI (UUID exato) e Androids/eletrônicos NEX (código do fornecedor, preservando pontuação quando fizer parte do identificador). Para F4 perfumes, aplicar o mesmo critério por código NEX apenas após leitura integral confirmada da respectiva fonte. Esta diretriz esclarece e reforça o item 3 da rotina de sincronização abaixo; prevalece sobre políticas anteriores que conservavam ativos indefinidamente os códigos ausentes.
+
+**Condição de segurança indispensável:** antes de desativar, comprovar que a fonte está funcional e que a listagem foi carregada integralmente (paginação, rolagem dinâmica e filtros aplicáveis); em falha de carregamento, lista vazia inesperada, acesso bloqueado ou captura parcial, NÃO interpretar ausência como esgotamento e repetir/diagnosticar a consulta. Confirmar código ou UUID de cada oferta, sem deduzir indisponibilidade de modelos semelhantes.
+
+**Operação correta:** atualizar somente a oferta comercial correspondente em `supplier_offers.available=false`, mantendo `products`, `product_variants`, imagens, margens, preços manuais e registros históricos. Gatilhos existentes sincronizam `product_variants.commercial_status` e `products.commercial_status` para `restocking` quando não houver outra oferta válida. Para modelos com outras variantes disponíveis, somente a variante esgotada sai de venda; não retirar o modelo inteiro. A reentrada do mesmo código/UUID permite reativação e atualização de custo. Não desativar ofertas de outros fornecedores nem misturar fontes F1/F4.
+
+**Readback obrigatório:** conferir os códigos afetados no banco (`available=false`), a ausência de variantes vendáveis sem oferta, `public_catalog` e a vitrine efetivamente servida aos clientes (considerar cache). Registrar todos os códigos desativados e preservados por variante. A rotina diária das 08h, no horário `America/Fortaleza`, também segue esta regra.
+
 ## Regra nova e prioritária — 19/11/2026
 
 O gestor autorizou cadastro e publicação automática em produção de novos produtos e variantes verificados dos três catálogos Guanacel, SEM solicitar homologação individual. A prioridade é não perder vendas por atraso de cadastro. Preferir fotografia real do fornecedor convertida e hospedada como WebP própria; se não houver acesso técnico para converter ou subir a foto no momento, usar provisoriamente a própria foto do anúncio oficial, guardando a origem e sinalizando pendência de internalização. Se não houver foto utilizável, exibir placeholder honesto, nunca foto de outro item.
